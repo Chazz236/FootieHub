@@ -1,7 +1,30 @@
+'use client'
+
 import Header from '../app/components/Header';
 import Sidebar from '../app/components/Sidebar';
+import { useEffect } from 'react';
 
 const Home = () => {
+
+  useEffect(() => {
+      const setupDB = async () => {
+        try {
+          const res = await fetch('./api/setup-db');
+          const data = await res.json();
+          if (res.ok) {
+            console.log(data.message);
+          }
+          else {
+            console.error('Error: ', data.error);
+          }
+        } catch (error) {
+          console.error('Error: ', error);
+        }
+      }
+
+      setupDB();
+    }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
