@@ -1,15 +1,15 @@
 'use client'
 
-import Header from '../app/components/Header';
-import Sidebar from '../app/components/Sidebar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Home = () => {
+
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
       const setupDB = async () => {
         try {
-          const res = await fetch('./api/setup-db');
+          const res = await fetch('./api/setupDB');
           const data = await res.json();
           if (res.ok) {
             console.log(data.message);
@@ -25,17 +25,31 @@ const Home = () => {
       setupDB();
     }, []);
 
+    useEffect(() => {
+      const getPlayers = async () => {
+        try {
+          const res = await fetch('./api/players');
+          const data = await res.json();
+          if (res.ok) {
+            setPlayers(data);
+          }
+          else {
+            console.error('Error: ', data.error);
+          }
+        } catch (error) {
+          console.error('Error: ', error);
+        }
+      }
+
+      getPlayers();
+    }, []);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <div className ="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-6">
-          <h2>Stuff here?</h2>
-          <p>some more stuff?</p>
-        </main>
-      </div>
-    </div>
+    <main className="flex-1 p-6">
+      <h2>Stuff here?</h2>
+      <p>some more stuff?</p>
+      <p>{players.length}</p>
+    </main>
   )
 }
 
