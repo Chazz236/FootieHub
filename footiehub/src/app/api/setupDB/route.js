@@ -12,6 +12,6 @@ export async function GET() {
     await goalContributions();
     return NextResponse.json({message: 'Database setup'});
   } catch (error) {
-    return NextResponse.json({error: error.message}, {status: 500});
+      return NextResponse.json({error: error.message}, {status: 500});
   }
 }

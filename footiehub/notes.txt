@@ -1,0 +1,8 @@
+can make folders to seperate functionalities in db
+table creation files are all using default export, everything else will probably use named export, can change defaults into named for consistency
+
+nested page:
+app/
+  player-details/
+    [id]/
+      page.js

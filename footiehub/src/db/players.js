@@ -1,0 +1,24 @@
+const db = require('./mysql');
+
+export async function getAllPlayers() {
+    const query = 
+    `SELECT * FROM players;`;
+    try {
+        return await db.query(query);
+    } catch (error) {
+        console.error('Error getting the players: ', error);
+        throw error;
+    }
+}
+
+export async function addPlayer(name, playstyle) {
+    const query = 
+    `INSERT INTO players (name, playstyle)
+	 VALUES (?, ?)`;
+    try {
+        await db.query(query, [name, playstyle]);
+    } catch (error) {
+        console.error('Error adding player: ', error);
+        throw error;
+    }
+}
