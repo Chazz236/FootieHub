@@ -1,34 +1,37 @@
-'use client'
+export async function getPlayerStats() {
+  const res = await fetch('http://localhost:3000/api/playerStats');
+  const data = await res.json();
+  return data;
+}
 
-import { useEffect, useState } from 'react';
+const Players = async () => {
 
-const Players = () => {
-
-  const [playerStats, setPlayerStats] = useState([]);
-
-  useEffect(() => {
-    const getPlayerStats = async () => {
-      try {
-        const res = await fetch('./api/playerStats');
-        const data = await res.json();
-        if (res.ok) {
-          setPlayerStats(data);
-        }
-        else {
-          console.error('Error: ', data.error);
-        }
-      } catch (error) {
-        console.error('Error: ', error);
-      }
-    }
-
-    getPlayerStats();
-  }, []);
+  const playerStats = await getPlayerStats();
 
   return (
-    <main className="flex-1 p-6">
-      <h2>{playerStats.length}</h2>
-
+    <main className='flex-1 p-6'>
+      <table className='table-auto'>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Games</th>
+            <th>Goals</th>
+            <th>Assists</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            playerStats.map((player, index) => (
+              <tr key={index} className='text-center'>
+                <td className='px-6'>{player.player_name}</td>
+                <td className='px-6'>{player.games_played}</td>
+                <td className='px-6'>{player.goals ?? 0}</td>
+                <td className='px-6'>{player.assists ?? 0}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
     </main>
   )
 }

@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import playerTable from '@/db/createPlayersTable';
 import matchesTable from '@/db/createMatchesTable';
-import playerPerformance from "@/db/createPlayerPerformanceTable";
-import goalContributions from "@/db/createGoalContributionsTable";
+import playerPerformance from '@/db/createPlayerPerformanceTable';
+import goalContributions from '@/db/createGoalContributionsTable';
 
 export async function GET() {
   try {

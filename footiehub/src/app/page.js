@@ -45,7 +45,7 @@ const Home = () => {
     }, []);
 
   return (
-    <main className="flex-1 p-6">
+    <main className='flex-1 p-6'>
       <h2>Stuff here?</h2>
       <p>some more stuff?</p>
       <p>{players.length}</p>
