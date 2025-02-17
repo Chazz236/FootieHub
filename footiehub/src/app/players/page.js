@@ -6,7 +6,7 @@ export async function getPlayerStats() {
 
 const Players = async () => {
 
-  const playerStats = await getPlayerStats();
+  const {stats} = await getPlayerStats();
 
   return (
     <main className='flex-1 p-6'>
@@ -21,7 +21,7 @@ const Players = async () => {
         </thead>
         <tbody>
           {
-            playerStats.map((player, index) => (
+            stats.map((player, index) => (
               <tr key={index} className='text-center'>
                 <td className='px-6'>{player.player_name}</td>
                 <td className='px-6'>{player.games_played}</td>
