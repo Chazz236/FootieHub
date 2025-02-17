@@ -6,17 +6,16 @@ import { useState } from 'react';
 const AddPlayer = () => {
 
   const [name, setName] = useState('');
-  const [playstyle, setPlaystyle] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!name || !playstyle)
+    if (!name)
     {
       return;
     }
     try {
-      const res = await fetch('/api/players', {method: 'POST', body: JSON.stringify({name,playstyle})});
+      const res = await fetch('/api/players', {method: 'POST', body: JSON.stringify({name})});
       const data = await res.json();
       if (res.ok) {
         console.log('all good, ', data.message);
@@ -28,19 +27,14 @@ const AddPlayer = () => {
       console.log(error);
     }
     setName('');
-    setPlaystyle('');
   };
 
   return (
-    <main className="flex-1 p-6">
+    <main className='flex-1 p-6'>
       <Form onSubmit={handleSubmit}>
         <div className='mb-6'>
           <label>Name</label>
           <input type='text' id='name' value={name} onChange={(e) => setName(e.target.value)} className='ml-2 border border-black' required />
-        </div>
-        <div className='mb-6'>
-          <label>Playstyle</label>
-          <input type='text' id='playstyle' value={playstyle} onChange={(e) => setPlaystyle(e.target.value)} className='ml-2 border border-black' required />
         </div>
         <button type='submit' className='border border-black'>Add Player</button>
       </Form>

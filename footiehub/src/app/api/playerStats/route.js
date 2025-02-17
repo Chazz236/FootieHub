@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { getStats } from "@/db/playerStats";
+import { NextResponse } from 'next/server';
+import { getStats } from '@/db/playerStats';
 
 export async function GET() {
     try {
