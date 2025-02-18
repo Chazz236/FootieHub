@@ -7,7 +7,7 @@ const Sidebar = () => {
         <li><Link href='/'>Home</Link></li>
         <li><Link href='/players'>Players</Link></li>
         <li><Link href='/addPlayer'>Add Player</Link></li>
-        <li>boop</li>
+        <li><Link href='/addMatch'>Add Match</Link></li>
       </ul>
     </aside>
   );

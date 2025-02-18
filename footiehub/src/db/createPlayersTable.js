@@ -1,4 +1,4 @@
-const db = require('./mysql');
+import db from '@/db/mysql';
 
 const createPlayersTable = async () => {
   const query = 
