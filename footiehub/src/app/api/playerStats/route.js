@@ -6,6 +6,7 @@ export async function GET() {
         const [stats] = await getStats();
         const [goals] = await getTopGoals();
         const [assists] = await getTopAssists();
+        console.log('Fetched player stats:', stats);
         return NextResponse.json({stats, goals, assists});
     } catch (error) {
         return NextResponse.json({error: error.message}, {status: 500});

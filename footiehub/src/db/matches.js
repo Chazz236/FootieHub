@@ -25,6 +25,16 @@ export async function addMatch(date, home_score, away_score, connection) {
 }
 
 export async function addGoalContributions(matchID, goalContributions, connection) {
+    
+    if (Array.isArray(goalContributions)) {
+        // Proceed with processing the goal contributions
+        console.log('Goal Contributions:', goalContributions);
+        // Add your logic to insert into the database
+      } else {
+        // If goalContributions is not an array
+        console.log('not an array');
+      }
+    
     const query =
     `INSERT INTO goal_contributions (match_id, goal_scorer_id, assist_player_id)
 	 VALUES ?`;
@@ -48,6 +58,9 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, conne
         return stats;
     }, {})
 
+    console.log(players);
+    console.log(playerStats);
+
     const query =
     `SELECT goal_scorer_id, assist_player_id
      FROM goal_contributions
@@ -55,7 +68,8 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, conne
 
     try {
         const result = await connection.query(query, [matchID]);
-        result.forEach(({ goal_scorer_id, assist_player_id }) => {
+        console.log(result[0]);
+        result[0].forEach(({ goal_scorer_id, assist_player_id }) => {
             playerStats[goal_scorer_id].goals += 1;
             playerStats[assist_player_id].assists += 1;
         });

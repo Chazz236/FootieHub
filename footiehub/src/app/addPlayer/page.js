@@ -1,6 +1,5 @@
 'use client'
 
-import Form from 'next/form';
 import { useState } from 'react';
 
 const AddPlayer = () => {
@@ -26,18 +25,19 @@ const AddPlayer = () => {
     } catch (error) {
       console.log(error);
     }
+    
     setName('');
   };
 
   return (
     <main className='flex-1 p-6'>
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className='mb-6'>
           <label>Name</label>
           <input type='text' id='name' value={name} onChange={(e) => setName(e.target.value)} className='ml-2 border border-black' required />
         </div>
         <button type='submit' className='border border-black'>Add Player</button>
-      </Form>
+      </form>
     </main>
   )
 }

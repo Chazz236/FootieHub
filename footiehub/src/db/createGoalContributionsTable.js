@@ -6,10 +6,10 @@ const createGoalContributionsTable = async () => {
 	    id INT AUTO_INCREMENT PRIMARY KEY,
         match_id INT NOT NULL,
         goal_scorer_id INT NOT NULL,
-        assist_maker_id INT NOT NULL,
+        assist_player_id INT NOT NULL,
 	    FOREIGN KEY (match_id) REFERENCES matches(id),
         FOREIGN KEY (goal_scorer_id) REFERENCES players(id),
-        FOREIGN KEY (assist_maker_id) REFERENCES players(id)
+        FOREIGN KEY (assist_player_id) REFERENCES players(id)
     );`;
     try {
         await db.query(query);
