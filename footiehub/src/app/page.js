@@ -22,8 +22,8 @@ const Home = async () => {
           </thead>
           <tbody>
             {
-              goals.map((player, index) => (
-                <tr key={index} className='text-center'>
+              goals.map((player, i) => (
+                <tr key={i} className='text-center'>
                   <td className='px-6'>{player.player_name}</td>
                   <td className='px-6'>{player.goals ?? 0}</td>
                 </tr>
@@ -40,8 +40,8 @@ const Home = async () => {
           </thead>
           <tbody>
             {
-              assists.map((player, index) => (
-                <tr key={index} className='text-center'>
+              assists.map((player, i) => (
+                <tr key={i} className='text-center'>
                   <td className='px-6'>{player.player_name}</td>
                   <td className='px-6'>{player.assists ?? 0}</td>
                 </tr>

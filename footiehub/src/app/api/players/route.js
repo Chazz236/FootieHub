@@ -13,6 +13,9 @@ export async function GET() {
 
 export async function POST(req) {
     const {name} = await req.json();
+    if (!name) {
+        return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+      }
     try {
         await addPlayer(name);
         return NextResponse.json({message: 'Player added'});
