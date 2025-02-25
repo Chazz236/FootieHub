@@ -1,10 +1,22 @@
 import db from '@/db/mysql';
 
-export async function getAllMatches() {
+export async function getMatches() {
     const query =
         `SELECT * FROM matches;`;
+    const query2 = 
+        `SELECT 
+            players.name, 
+            player_performance.match_id, 
+            player_performance.team, 
+            player_performance.goals 
+         FROM players
+         LEFT JOIN player_performance
+            ON players.id = player_performance.player_id
+         WHERE player_performance.match_id IS NOT NULL;`;
     try {
-        return await db.query(query);
+        const [matches] = await db.query(query);
+        const [goals] = await db.query(query2);
+        return {matches, goals};
     } catch (error) {
         console.error('Error getting matches: ', error);
         throw error;
