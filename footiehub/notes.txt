@@ -6,3 +6,5 @@ app/
   player-details/
     [id]/
       page.js
+
+can't add match where score is 0?

@@ -6,7 +6,7 @@ export async function getPlayerStats() {
 
 const Players = async () => {
 
-  const {stats} = await getPlayerStats();
+  const { stats } = await getPlayerStats();
 
   return (
     <main className='flex-1 p-6'>

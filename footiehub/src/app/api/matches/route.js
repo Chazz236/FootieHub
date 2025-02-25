@@ -1,4 +1,4 @@
-import { addMatch, addGoalContributions, updatePlayerPerformance } from '@/db/matches';
+import { addMatch, addGoalContributions, updatePlayerPerformance, getMatches } from '@/db/matches';
 import { NextResponse } from 'next/server';
 import db from '@/db/mysql';
 
@@ -22,5 +22,16 @@ export async function POST(req) {
         return NextResponse.json({error: error.message}, {status: 500});
     } finally {
         connection.release();
+    }
+}
+
+export async function GET() {
+    try {
+        const {matches, goals} = await getMatches();
+        console.log('got the matches');
+        return NextResponse.json({matches, goals});
+
+    } catch (error) {
+        return NextResponse.json({error: error.message}, {status:500});
     }
 }
