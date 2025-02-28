@@ -8,7 +8,8 @@ export async function getMatches() {
             players.name, 
             player_performance.match_id, 
             player_performance.team, 
-            player_performance.goals 
+            player_performance.goals,
+            player_performance.assists  
          FROM players
          LEFT JOIN player_performance
             ON players.id = player_performance.player_id
@@ -36,17 +37,7 @@ export async function addMatch(date, home_score, away_score, connection) {
     }
 }
 
-export async function addGoalContributions(matchID, goalContributions, connection) {
-    
-    if (Array.isArray(goalContributions)) {
-        // Proceed with processing the goal contributions
-        console.log('Goal Contributions:', goalContributions);
-        // Add your logic to insert into the database
-      } else {
-        // If goalContributions is not an array
-        console.log('not an array');
-      }
-    
+export async function addGoalContributions(matchID, goalContributions, connection) {  
     const query =
     `INSERT INTO goal_contributions (match_id, goal_scorer_id, assist_player_id)
 	 VALUES ?`;
