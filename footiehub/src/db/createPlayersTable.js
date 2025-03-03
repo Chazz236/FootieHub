@@ -4,7 +4,8 @@ const createPlayersTable = async () => {
   const query = 
     `CREATE TABLE IF NOT EXISTS players (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(100) NOT NULL
+      name VARCHAR(100) NOT NULL,
+      value BIGINT NOT NULL
     );`;
   try {
     await db.query(query);

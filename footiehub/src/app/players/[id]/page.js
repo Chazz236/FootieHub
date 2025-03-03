@@ -12,6 +12,7 @@ const Player = async ({ params }) => {
   return (
     <main className='flex-1 p-6'>
       <h1 className='text-4xl font-bold text-gray-900 mt-4 mb-2'>{player[0].name}</h1>
+      <h1 className='text-4xl font-bold text-gray-900 mt-4 mb-2'>${Intl.NumberFormat().format(player[0].value)}</h1>
       <table className=''>
         <thead>
           <tr>
@@ -27,12 +28,12 @@ const Player = async ({ params }) => {
         <tbody>
           <tr>
             <td className='px-6'>2025</td>
-            <td className='px-6'>{stats[0].games_played}</td>
+            <td className='px-6'>{stats[0].games}</td>
             <td className='px-6'>{stats[0].goals ?? 0}</td>
             <td className='px-6'>{stats[0].assists ?? 0}</td>
-            <td className='px-6'>{((stats[0].goals ?? 0) / stats[0].games_played).toFixed(2)}</td>
-            <td className='px-6'>{((stats[0].assists ?? 0) / stats[0].games_played).toFixed(2)}</td>
-            <td className='px-6'>{(((wins[0].wins ?? 0) / stats[0].games_played) * 100).toFixed(2)}%</td>
+            <td className='px-6'>{((stats[0].goals ?? 0) / stats[0].games).toFixed(2)}</td>
+            <td className='px-6'>{((stats[0].assists ?? 0) / stats[0].games).toFixed(2)}</td>
+            <td className='px-6'>{(((wins[0].wins ?? 0) / stats[0].games) * 100).toFixed(2)}%</td>
           </tr>
         </tbody>
       </table>

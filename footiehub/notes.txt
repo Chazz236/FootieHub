@@ -1,10 +1,7 @@
-can make folders to seperate functionalities in db
-table creation files are all using default export, everything else will probably use named export, can change defaults into named for consistency
+can't add match where score is 0
+test validation and stuff
+make everything look nice
+page with graph showing teammates, graph has quadrants, x axis win percentage, y axis goals+assists
 
-nested page:
-app/
-  player-details/
-    [id]/
-      page.js
-
-can't add match where score is 0?
+formula for value:
+newV = oldV + goals * 1000000 + assists * 500000 + win * 5000000 + loss * -3000000 + goalDifference * 1000000 + cleanSheet * 2000000

@@ -3,10 +3,11 @@ import db from '@/db/mysql';
 export async function getStats() {
     const query =
         `SELECT
-	    players.name AS player_name,
-	    COUNT(player_performance.match_id) as games_played,
+	    players.name AS name,
+	    COUNT(player_performance.match_id) as games,
 	    SUM(player_performance.goals) AS goals,
-	    SUM(player_performance.assists) AS assists
+	    SUM(player_performance.assists) AS assists,
+        players.value AS value
      FROM players
      LEFT JOIN player_performance 
 	    ON players.id = player_performance.player_id
@@ -22,7 +23,7 @@ export async function getStats() {
 export async function getTopGoals() {
     const query =
         `SELECT
-	    players.name AS player_name,
+	    players.name AS name,
 	    SUM(player_performance.goals) AS goals
      FROM players
      LEFT JOIN player_performance 
@@ -41,7 +42,7 @@ export async function getTopGoals() {
 export async function getTopAssists() {
     const query =
         `SELECT
-	    players.name AS player_name,
+	    players.name AS name,
 	    SUM(player_performance.assists) AS assists
      FROM players
      LEFT JOIN player_performance 
@@ -57,10 +58,24 @@ export async function getTopAssists() {
     }
 }
 
+export async function getTopValue() {
+    const query =
+        `SELECT name, value
+     FROM players
+     ORDER BY value DESC
+     LIMIT 5;`;
+    try {
+        return await db.query(query);
+    } catch (error) {
+        console.error('Error getting top value: ', error);
+        throw error;
+    }
+}
+
 export async function getPlayerStats(id) {
     const query =
         `SELECT
-	    COUNT(player_performance.match_id) as games_played,
+	    COUNT(player_performance.match_id) as games,
 	    SUM(player_performance.goals) AS goals,
 	    SUM(player_performance.assists) AS assists
      FROM players

@@ -25,7 +25,7 @@ export async function addPlayer(name) {
 
 export async function getPlayer(id) {
     const query = 
-    `SELECT name
+    `SELECT name, value
      FROM players
      WHERE id = ?;`;
     try {
