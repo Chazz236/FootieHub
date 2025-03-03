@@ -94,17 +94,17 @@ const Matches = () => {
             <p>
               <strong>Home Team</strong>
               <>
-              <table>
-              <tbody>
-                  {goals.filter((goal) => goal.team === 'home' && goal.match_id === selectedMatch.id)
-                    .map((goal, j) => (
-                      <tr>
-                        <td>{goal.name}</td>
-                        <td className='px-2'>{goal.goals}G</td>
-                        <td className='px-2'>{goal.assists}A</td>
-                      </tr>
-                    ))}
-                    </tbody>
+                <table>
+                  <tbody>
+                    {goals.filter((goal) => goal.team === 'home' && goal.match_id === selectedMatch.id)
+                      .map((goal, j) => (
+                        <tr>
+                          <td>{goal.name}</td>
+                          <td className='px-2'>{goal.goals}G</td>
+                          <td className='px-2'>{goal.assists}A</td>
+                        </tr>
+                      ))}
+                  </tbody>
                 </table>
               </>
             </p>
@@ -113,15 +113,15 @@ const Matches = () => {
               <>
                 <table>
                   <tbody>
-                  {goals.filter((goal) => goal.team === 'away' && goal.match_id === selectedMatch.id)
-                    .map((goal, j) => (
-                      <tr>
-                        <td>{goal.name}</td>
-                        <td className='px-2'>{goal.goals}G</td>
-                        <td className='px-2'>{goal.assists}A</td>
-                      </tr>
-                    ))}
-                    </tbody>
+                    {goals.filter((goal) => goal.team === 'away' && goal.match_id === selectedMatch.id)
+                      .map((goal, j) => (
+                        <tr>
+                          <td>{goal.name}</td>
+                          <td className='px-2'>{goal.goals}G</td>
+                          <td className='px-2'>{goal.assists}A</td>
+                        </tr>
+                      ))}
+                  </tbody>
                 </table>
               </>
             </p>

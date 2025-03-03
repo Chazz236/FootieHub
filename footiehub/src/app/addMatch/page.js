@@ -42,8 +42,6 @@ const AddMatch = () => {
     }
 
     if (goalContributions.length !== homeScore + awayScore) {
-      console.log(goalContributions.length);
-      console.log(homeScore + awayScore);
       alert('Goal contributions count does not match the total score:', goalContributions, homeScore+awayScore);
       return;
     }

@@ -22,3 +22,16 @@ export async function addPlayer(name) {
         throw error;
     }
 }
+
+export async function getPlayer(id) {
+    const query = 
+    `SELECT name
+     FROM players
+     WHERE id = ?;`;
+    try {
+        return await db.query(query, [id]);
+    } catch (error) {
+        console.error('Error getting the players: ', error);
+        throw error;
+    }
+}

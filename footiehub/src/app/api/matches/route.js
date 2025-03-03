@@ -28,7 +28,7 @@ export async function POST(req) {
 export async function GET() {
     try {
         const {matches, goals} = await getMatches();
-        console.log('got the matches');
+        //console.log('got the matches');
         return NextResponse.json({matches, goals});
 
     } catch (error) {

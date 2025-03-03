@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export async function getPlayerStats() {
   const res = await fetch('http://localhost:3000/api/playerStats');
   const data = await res.json();
@@ -23,7 +25,7 @@ const Players = async () => {
           {
             stats.map((player, i) => (
               <tr key={i} className='text-center'>
-                <td className='px-6'>{player.player_name}</td>
+                <td className='px-6'><Link href={`/players/${i+1}`}>{player.player_name}</Link></td>
                 <td className='px-6'>{player.games_played}</td>
                 <td className='px-6'>{player.goals ?? 0}</td>
                 <td className='px-6'>{player.assists ?? 0}</td>
