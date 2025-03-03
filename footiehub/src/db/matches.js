@@ -1,6 +1,6 @@
 import db from '@/db/mysql';
 
-export async function getMatches() {
+export async function getMatches() { //maybe change query 2?
     const query =
         `SELECT * FROM matches;`;
     const query2 = 
@@ -11,9 +11,8 @@ export async function getMatches() {
             player_performance.goals,
             player_performance.assists  
          FROM players
-         LEFT JOIN player_performance
-            ON players.id = player_performance.player_id
-         WHERE player_performance.match_id IS NOT NULL;`;
+         JOIN player_performance
+            ON players.id = player_performance.player_id;`;
     try {
         const [matches] = await db.query(query);
         const [goals] = await db.query(query2);
@@ -61,9 +60,6 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, conne
         return stats;
     }, {})
 
-    console.log(players);
-    console.log(playerStats);
-
     const query =
     `SELECT goal_scorer_id, assist_player_id
      FROM goal_contributions
@@ -71,7 +67,6 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, conne
 
     try {
         const result = await connection.query(query, [matchID]);
-        console.log(result[0]);
         result[0].forEach(({ goal_scorer_id, assist_player_id }) => {
             playerStats[goal_scorer_id].goals += 1;
             playerStats[assist_player_id].assists += 1;
