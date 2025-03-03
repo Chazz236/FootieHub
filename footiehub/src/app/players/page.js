@@ -19,16 +19,18 @@ const Players = async () => {
             <th>Games</th>
             <th>Goals</th>
             <th>Assists</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
           {
             stats.map((player, i) => (
               <tr key={i} className='text-center'>
-                <td className='px-6'><Link href={`/players/${i+1}`}>{player.player_name}</Link></td>
-                <td className='px-6'>{player.games_played}</td>
+                <td className='px-6'><Link href={`/players/${i+1}`}>{player.name}</Link></td>
+                <td className='px-6'>{player.games}</td>
                 <td className='px-6'>{player.goals ?? 0}</td>
                 <td className='px-6'>{player.assists ?? 0}</td>
+                <td className='px-6'>${Intl.NumberFormat().format(player.value)}</td>
               </tr>
             ))
           }

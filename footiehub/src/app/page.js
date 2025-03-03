@@ -7,7 +7,7 @@ export async function getPlayerStats() { //using this method in the page.js in p
 const Home = async () => {
 
   //await setupDB();
-  const { goals, assists } = await getPlayerStats();
+  const { goals, assists, value } = await getPlayerStats();
 
 
   return (
@@ -24,7 +24,7 @@ const Home = async () => {
             {
               goals.map((player, i) => (
                 <tr key={i} className='text-center'>
-                  <td className='px-6'>{player.player_name}</td>
+                  <td className='px-6'>{player.name}</td>
                   <td className='px-6'>{player.goals ?? 0}</td>
                 </tr>
               ))
@@ -42,8 +42,26 @@ const Home = async () => {
             {
               assists.map((player, i) => (
                 <tr key={i} className='text-center'>
-                  <td className='px-6'>{player.player_name}</td>
+                  <td className='px-6'>{player.name}</td>
                   <td className='px-6'>{player.assists ?? 0}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <table className='table-auto'>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              value.map((player, i) => (
+                <tr key={i} className='text-center'>
+                  <td className='px-6'>{player.name}</td>
+                  <td className='px-6'>${Intl.NumberFormat().format(player.value)}</td>
                 </tr>
               ))
             }
