@@ -14,7 +14,7 @@ export async function POST(req) {
     try {
         const matchID = await addMatch(date, homeScore, awayScore, connection);
         await addGoalContributions(matchID, goalContributions, connection)
-        await updatePlayerPerformance(matchID, homeTeam, awayTeam, connection);
+        await updatePlayerPerformance(matchID, homeTeam, awayTeam, homeScore, awayScore, connection);
         await connection.commit();
         return NextResponse.json({message: 'Match, goal contributions, player performances added/updated'});
     } catch (error) {
