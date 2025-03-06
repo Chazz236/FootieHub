@@ -13,10 +13,10 @@ export async function getAllPlayers() {
 
 export async function addPlayer(name) {
     const query = 
-    `INSERT INTO players (name)
-	 VALUES (?)`;
+    `INSERT INTO players (name, value)
+	 VALUES (?, ?)`;
     try {
-        await db.query(query, [name]);
+        await db.query(query, [name, 10000000]);
     } catch (error) {
         console.error('Error adding player: ', error);
         throw error;

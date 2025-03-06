@@ -8,6 +8,7 @@ const createPlayerPerformanceTable = async () => {
       team ENUM('home', 'away') NOT NULL,
       goals INT NOT NULL DEFAULT 0,
       assists INT NOT NULL DEFAULT 0,
+      value_change BIGINT NOT NULL,
       PRIMARY KEY (player_id, match_id),
       FOREIGN KEY (player_id) REFERENCES players(id),
       FOREIGN KEY (match_id) REFERENCES matches(id)

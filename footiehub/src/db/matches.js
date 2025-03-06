@@ -53,7 +53,7 @@ export async function addGoalContributions(matchID, goalContributions, connectio
     }
 }
 
-export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, connection) {
+export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, homeScore, awayScore, connection) {
     const players = [...homeTeam, ...awayTeam];
     const playerStats = players.reduce((stats, id) => {
         stats[id] = { goals: 0, assists: 0 };
@@ -73,18 +73,34 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, conne
         });
 
         const query2 =
-        `INSERT INTO player_performance (player_id, match_id, team, goals, assists)
-         VALUES (?, ?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE goals = ?, assists = ?`;
+        `INSERT INTO player_performance (player_id, match_id, team, goals, assists, value_change)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE goals = ?, assists = ?, value_change = ?`;
+
+        const values = [];
 
         const performances = players.map(id => {
             const { goals, assists } = playerStats[id];
             const team = homeTeam.includes(id) ? 'home' : 'away';
-            return connection.query(query2, [id, matchID, team, goals, assists, goals, assists]);
+            const win = team === 'home' ? (homeScore > awayScore ? 1 : 0) : (awayScore > homeScore ? 1 : 0);
+            const loss = 1 - win;
+            const goalDifference = team === 'home' ? (homeScore - awayScore) : (awayScore - homeScore);
+            const cleanSheet = team === 'home' ? (homeScore === 0 ? 1 : 0) : (awayScore === 0 ? 1 : 0);
+            const valueChange = goals*1000000 + assists*500000 + win*5000000 + loss*-3000000 + goalDifference*1000000 + cleanSheet*2000000;
+            values.push({ id, valueChange });
+            return connection.query(query2, [id, matchID, team, goals, assists, valueChange, goals, assists, valueChange]);
         });
         await Promise.all(performances);
+
+        const query3 = `UPDATE players SET value = value + ? WHERE id = ?`;
+        const updateValues = values.map(({ id, valueChange }) => {
+            return connection.query(query3, [valueChange, id]);
+        });     
+        await Promise.all(updateValues);
+        
     } catch (error) {
         console.error('Error updating player performance: ', error);
         throw error;
     }
 }
+
