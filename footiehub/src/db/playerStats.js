@@ -22,15 +22,15 @@ export async function getStats() {
 
 export async function getTopGoals() {
     const query =
-        `SELECT
+    `SELECT
+        players.id AS id,
 	    players.name AS name,
 	    SUM(player_performance.goals) AS goals
      FROM players
      LEFT JOIN player_performance 
 	    ON players.id = player_performance.player_id
      GROUP BY players.id
-     ORDER BY goals DESC
-     LIMIT 5;`;
+     ORDER BY goals DESC;`;
     try {
         return await db.query(query);
     } catch (error) {
@@ -42,14 +42,14 @@ export async function getTopGoals() {
 export async function getTopAssists() {
     const query =
         `SELECT
+        players.id AS id,
 	    players.name AS name,
 	    SUM(player_performance.assists) AS assists
      FROM players
      LEFT JOIN player_performance 
 	    ON players.id = player_performance.player_id
      GROUP BY players.id
-     ORDER BY assists DESC
-     LIMIT 5;`;
+     ORDER BY assists DESC;`;
     try {
         return await db.query(query);
     } catch (error) {
@@ -58,16 +58,41 @@ export async function getTopAssists() {
     }
 }
 
-export async function getTopValue() {
+export async function getTopWinPercentage() {
     const query =
-        `SELECT name, value
-     FROM players
-     ORDER BY value DESC
-     LIMIT 5;`;
+    `SELECT
+        players.id AS id,
+	    players.name AS name,
+	    COUNT(player_performance.match_id) as games,
+        COUNT(CASE
+         WHEN player_performance.team = 'home' AND matches.home_score > matches.away_score THEN 1
+         WHEN player_performance.team = 'away' AND matches.away_score > matches.home_score THEN 1
+         ELSE NULL
+         END)/COUNT(player_performance.match_id)*100 AS wins
+     FROM player_performance
+     LEFT JOIN players 
+	    ON players.id = player_performance.player_id
+     LEFT JOIN matches 
+	    ON player_performance.match_id = matches.id
+     GROUP BY players.id
+     ORDER BY wins DESC;`;
     try {
         return await db.query(query);
     } catch (error) {
-        console.error('Error getting top value: ', error);
+        console.error('Error getting top win %: ', error);
+        throw error;
+    }
+}
+
+export async function getTopValue() {
+    const query =
+    `SELECT id, name, value
+     FROM players
+     ORDER BY value DESC;`;
+    try {
+        return await db.query(query);
+    } catch (error) {
+        console.error('Error getting value: ', error);
         throw error;
     }
 }
