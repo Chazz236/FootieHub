@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getStats, getTopGoals, getTopAssists, getTopValue } from '@/db/playerStats';
+import { getStats, getTopGoals, getTopAssists, getTopWinPercentage, getTopValue } from '@/db/playerStats';
 
 export async function GET() {
     try {
         const [stats] = await getStats();
         const [goals] = await getTopGoals();
         const [assists] = await getTopAssists();
+        const [winPercentage] = await getTopWinPercentage();
         const [value] = await getTopValue();
         //console.log('Fetched player stats:', stats);
-        return NextResponse.json({stats, goals, assists, value});
+        return NextResponse.json({stats, goals, assists, winPercentage, value});
     } catch (error) {
         return NextResponse.json({error: error.message}, {status: 500});
     }
