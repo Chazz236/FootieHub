@@ -42,7 +42,7 @@ const AddMatch = () => {
     }
 
     if (goalContributions.length !== homeScore + awayScore) {
-      alert('Goal contributions count does not match the total score:', goalContributions, homeScore+awayScore);
+      alert('Goal contributions count does not match the total score:', goalContributions, homeScore + awayScore);
       return;
     }
 
@@ -68,11 +68,11 @@ const AddMatch = () => {
   };
 
   const handleHomeTeamChange = (playerID) => {
-    setHomeTeam((team) => team.includes(playerID) ? team.filter(id => id != playerID) :[...team, playerID]);
+    setHomeTeam((team) => team.includes(playerID) ? team.filter(id => id != playerID) : [...team, playerID]);
   }
 
   const handleAwayTeamChange = (playerID) => {
-    setAwayTeam((team) => team.includes(playerID) ? team.filter(id => id != playerID) :[...team, playerID]);
+    setAwayTeam((team) => team.includes(playerID) ? team.filter(id => id != playerID) : [...team, playerID]);
   }
 
   const handleGoalContributionChange = (i, field, value) => {
