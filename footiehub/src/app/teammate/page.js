@@ -13,7 +13,9 @@ export default function Page() {
   const [playerId, setPlayerId] = useState(null);
   const [stats, setStats] = useState(null);
   const [players, setPlayers] = useState([]);
-  const [chartData, setChartData] = useState(null);
+  const [bestTeammateChartData, setBestTeammateChartData] = useState(null);
+  const [teammateGoalsAssistsChartData, setTeammateGoalsAssistsChartData] = useState(null);
+
 
   useEffect(() => {
     const getPlayerNames = async () => {
@@ -25,17 +27,17 @@ export default function Page() {
 
   useEffect(() => {
     if (stats && stats.length > 0) {
-      const data = stats.map(player => ({
+      const bestTeammateData = stats.map(player => ({
         x: player.win_percentage,
-        y: player.total_contributions,
+        y: player.assists_received + player.assists_provided,
         label: player.name
       }));
-      const value = {
+      const bestTeammateValue = {
         data: {
           datasets: [
             {
               label: 'Teammates Performance',
-              data: data,
+              data: bestTeammateData,
               pointRadius: 5
             }
           ]
@@ -86,7 +88,68 @@ export default function Page() {
           }
         }
       };
-      setChartData(value);
+      setBestTeammateChartData(bestTeammateValue);
+
+      const teammateGoalsAssistsData = stats.map(player => ({
+        x: player.assists_received,
+        y:  player.assists_provided,
+        label: player.name
+      }));
+      const teammateGoalsAssistsValue = {
+        data: {
+          datasets: [
+            {
+              label: 'Teammate Goals and Assists',
+              data: teammateGoalsAssistsData,
+              pointRadius: 5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  return tooltipItem.raw.label + ': (' + tooltipItem.raw.x + ' Assists Received, ' + tooltipItem.raw.y + ' Assists Provided)';
+                }
+              }
+            },
+            quadrants: {
+              topLeft: 'rgba(195, 235, 18, 0.2)',
+              topRight: 'rgba(54, 162, 235, 0.2)',
+              bottomRight: 'rgba(195, 235, 18, 0.2)',
+              bottomLeft: 'rgba(185, 21, 21, 0.2)'
+            },
+            title: {
+              display: true,
+              text: 'Teammate Assists Distribution',
+              font: {
+                  size: 18
+              }
+          }
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              title: {
+                display: true,
+                text: 'Assists Received'
+              },
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+              title: {
+                display: true,
+                text: 'Assists Provided'
+              }
+            }
+          }
+        }
+      };
+      setTeammateGoalsAssistsChartData(teammateGoalsAssistsValue);
     }
   }, [stats]);
 
@@ -118,11 +181,19 @@ export default function Page() {
       </select>
 
     
-        {chartData ? (
-          <ScatterChart value={chartData} />
+        <div className='flex'>
+        {bestTeammateChartData ? (
+          <ScatterChart value={bestTeammateChartData} />
         ) : (
-          <div>Select a Player</div>
+          <div></div>
         )}
+
+        {teammateGoalsAssistsChartData ? (
+          <ScatterChart value={teammateGoalsAssistsChartData} />
+        ) : (
+          <div></div>
+        )}
+        </div>
       
     </div>
   );
