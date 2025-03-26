@@ -4,7 +4,8 @@ export async function getAllTeammates(id) {
     const query = 
     `SELECT pp2.player_id AS id,
        players.name AS name,
-       COALESCE(gc1.assistedOnGoals, 0) + COALESCE(gc2.goalsScoredOn, 0) AS total_contributions,
+       COALESCE(gc1.assistedOnGoals, 0) AS assists_provided,
+       COALESCE(gc2.goalsScoredOn, 0) AS assists_received,
        COUNT(DISTINCT matches.id) AS games,
        COUNT(CASE
                  WHEN (pp1.team = pp2.team
