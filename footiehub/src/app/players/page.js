@@ -1,3 +1,4 @@
+//DOUBLE CHECK AS PLAYERSTATS.JS HAS BEEN CHANGED
 import Link from 'next/link'
 
 export async function getPlayerStats() {
