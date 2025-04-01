@@ -3,7 +3,7 @@ test validation and stuff
 make everything look nice
 page with graph showing teammates, graph has quadrants, x axis win percentage, y axis goals+assists
 players page tables should be assists received and assists given to be clearer
-
+sum makes goals and assists string instead of number? so have to cast the other stuff and change front end bits
 
 formula for value:
 newV = oldV + goals * 1000000 + assists * 500000 + win * 5000000 + loss * -3000000 + goalDifference * 1000000 + cleanSheet * 2000000
