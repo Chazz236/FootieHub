@@ -37,9 +37,7 @@ const quadrantPlugin = {
 
 ChartJS.register(Tooltip, Title, CategoryScale, LinearScale, PointElement, quadrantPlugin);
 
-const ScatterChart = ({ value }) => {
-  const { data, options } = value;
-
+const ScatterChart = ({ data, options }) => {
   return (
     <div className='w-[500px] h-full'>
       <Scatter

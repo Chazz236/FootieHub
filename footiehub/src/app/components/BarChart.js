@@ -6,7 +6,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 const BarChart = ({ data, options }) => {
   return (
-      <Bar data={data} options={options} />
+    <div>
+      <Bar
+        data={data}
+        options={options}
+      />
+    </div>
   );
 }
 

@@ -108,6 +108,16 @@ export async function getPlayerStats(id) {
          WHEN player_performance.team = 'away' AND matches.away_score > matches.home_score THEN 1
          ELSE NULL
          END) AS wins,
+    COUNT(CASE
+         WHEN player_performance.team = 'home' AND matches.home_score = matches.away_score THEN 1
+         WHEN player_performance.team = 'away' AND matches.away_score = matches.home_score THEN 1
+         ELSE NULL
+         END) AS draws,
+    COUNT(CASE
+         WHEN player_performance.team = 'home' AND matches.home_score < matches.away_score THEN 1
+         WHEN player_performance.team = 'away' AND matches.away_score < matches.home_score THEN 1
+         ELSE NULL
+         END) AS losses,
 	COUNT(CASE
          WHEN player_performance.team = 'home' AND matches.home_score = 0 THEN 1
          WHEN player_performance.team = 'away' AND matches.away_score = 0 THEN 1
