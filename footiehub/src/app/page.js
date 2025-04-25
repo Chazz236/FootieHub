@@ -50,29 +50,29 @@ const Home = () => {
         </div>
       </div>
 
-<div className='mt-8'>
-      <h2 className='text-2xl font-semibold mb-4 text-center'>Leaders</h2>
-      <div className='flex justify-evenly'>
-        {['goals', 'assists', 'winPercentage'].map((stat) => (
-          <table className='table-auto w-1/5 rounded-lg border border-gray-200 border-separate'>
-            <thead>
-              <tr>
-                <th colSpan={2} className='text-center'>{stat === 'winPercentage' ? 'Win Percentage' : stat.charAt(0).toUpperCase() + stat.slice(1)}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats[stat].slice(0, 5).map((player, i) => (
-                <tr key={i} className='text-center'>
-                  <td className='px-6 text-left'>{player.name}</td>
-                  <td className='px-6 text-right'>
-                    {stat === 'winPercentage' ? `${parseFloat(player.wins).toFixed(2)}%` : player[stat] ?? 0}
-                  </td>
+      <div className='mt-8'>
+        <h2 className='text-2xl font-semibold mb-4 text-center'>Leaders</h2>
+        <div className='flex justify-evenly'>
+          {['goals', 'assists', 'winPercentage'].map((stat) => (
+            <table className='table-auto w-1/5 rounded-lg border border-gray-200 border-separate'>
+              <thead>
+                <tr>
+                  <th colSpan={2} className='text-center'>{stat === 'winPercentage' ? 'Win Percentage' : stat.charAt(0).toUpperCase() + stat.slice(1)}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ))}
-      </div>
+              </thead>
+              <tbody>
+                {stats[stat].slice(0, 5).map((player, i) => (
+                  <tr key={i} className='text-center'>
+                    <td className='px-6 text-left'>{player.name}</td>
+                    <td className='px-6 text-right'>
+                      {stat === 'winPercentage' ? `${parseFloat(player.wins).toFixed(2)}%` : player[stat] ?? 0}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ))}
+        </div>
       </div>
     </main>
   )
