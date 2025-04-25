@@ -5,7 +5,7 @@ import db from '@/db/mysql';
 export async function POST(req) {
     const {date, homeScore, awayScore, homeTeam, awayTeam, goalContributions} = await req.json();
     
-    if (!date || !homeScore || !awayScore || !homeTeam || !awayTeam || !Array.isArray(goalContributions)) {
+    if (!date || homeScore === null || homeScore === undefined || homeScore === '' || awayScore === null || awayScore === undefined || awayScore === '' || homeTeam.length === 0 || awayTeam.length === 0 || !Array.isArray(goalContributions)) {
         return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
     }
 

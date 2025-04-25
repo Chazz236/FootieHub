@@ -27,19 +27,46 @@ const AddMatch = () => {
     getPlayerNames();
   }, []);
 
+  useEffect(() => {
+    const totalGoals = homeScore + awayScore;
+    if (totalGoals !== goalContributions.length) {
+      const totalGoalContributions = Array(totalGoals).fill({ goal_scorer_id: 0, assist_player_id: 0 });
+      setGoalContributions(totalGoalContributions);
+    }
+  }, [homeScore, awayScore]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Form submitted');
 
     if (!Array.isArray(goalContributions)) {
       console.error('goalContributions is not an array:', goalContributions);
       return;
     }
 
-    if (!date || !homeScore || !awayScore || !homeTeam || !awayTeam || !goalContributions) {
-      alert('Please fill all required fields and select players for both teams');
+    if (!date) {
+      alert('Please fill date');
       return;
     }
+    if (homeScore === null || homeScore === undefined || homeScore === '') {
+      alert('Please fill homeScore');
+      return;
+    }
+    if (awayScore === null || awayScore === undefined || awayScore === '') {
+      alert('Please fill awayScore');
+      return;
+    }
+    if (homeTeam.length === 0) {
+      alert('Please fill homeTeam');
+      return;
+    }
+    if (awayTeam.length === 0) {
+      alert('Please fill awayTeam');
+      return;
+    }
+    // if (!goalContributions) {
+    //   alert('Please fill goalContributions');
+    //   return;
+    // }
 
     if (goalContributions.length !== homeScore + awayScore) {
       alert('Goal contributions count does not match the total score:', goalContributions, homeScore + awayScore);
@@ -51,6 +78,7 @@ const AddMatch = () => {
       const data = await res.json();
       if (res.ok) {
         console.log('all good, ', data.message);
+        alert('Match submitted')
       }
       else {
         console.log('oh no, ', data.error);
@@ -68,11 +96,19 @@ const AddMatch = () => {
   };
 
   const handleHomeTeamChange = (playerID) => {
-    setHomeTeam((team) => team.includes(playerID) ? team.filter(id => id != playerID) : [...team, playerID]);
+    setHomeTeam((oldTeam) => {
+      const newTeam = oldTeam.includes(playerID) ? oldTeam.filter(id => id != playerID) : [...oldTeam, playerID];
+      setAwayTeam((team) => team.filter(id => id !== playerID));
+      return newTeam;
+    });
   }
 
   const handleAwayTeamChange = (playerID) => {
-    setAwayTeam((team) => team.includes(playerID) ? team.filter(id => id != playerID) : [...team, playerID]);
+    setAwayTeam((oldTeam) => {
+      const newTeam = oldTeam.includes(playerID) ? oldTeam.filter(id => id != playerID) : [...oldTeam, playerID];
+      setHomeTeam((team) => team.filter(id => id !== playerID));
+      return newTeam;
+    });
   }
 
   const handleGoalContributionChange = (i, field, value) => {
@@ -81,18 +117,11 @@ const AddMatch = () => {
     setGoalContributions(updatedGoalContributions);
   }
 
-  const addGoalContribution = () => {
-    setGoalContributions([...goalContributions, { goal_scorer_id: 0, assist_player_id: 0 }]);
-  };
-
-  const removeGoalContribution = (i) => {
-    const updatedGoalContributions = goalContributions.filter((_, j) => j !== i);
-    setGoalContributions(updatedGoalContributions);
-  };
-
   return (
     <main className='flex-1 p-6'>
       <form onSubmit={handleSubmit}>
+      <div className='flex gap-32'>
+        <div>
         <div className='mb-6'>
           <label>Date</label>
           <input type='date' id='date' value={date} onChange={(e) => setDate(e.target.value)} className='ml-2 border border-black' required />
@@ -100,41 +129,40 @@ const AddMatch = () => {
 
         <div className='mb-6'>
           <label>Home Score</label>
-          <input type='number' id='homeScore' value={homeScore} onChange={(e) => setHomeScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' required />
+          <input type='number' id='homeScore' value={homeScore} onChange={(e) => setHomeScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
         </div>
 
         <div className='mb-6'>
           <label>Away Score</label>
-          <input type='number' id='awayScore' value={awayScore} onChange={(e) => setAwayScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' required />
+          <input type='number' id='awayScore' value={awayScore} onChange={(e) => setAwayScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
         </div>
 
         <div className='flex'>
-          <div className='mb-6'>
+          <div>
             <label>Home Team</label>
             {players.map((player) => (
               <div key={player.id}>
-                <input type='checkbox' id={player.id} onChange={() => handleHomeTeamChange(player.id)} className='ml-2 border border-black' />
+                <input type='checkbox' id={player.id} checked={homeTeam.includes(player.id)} onChange={() => handleHomeTeamChange(player.id)} className='ml-2 border border-black' />
                 <label>{player.name}</label>
               </div>
             ))}
           </div>
 
-          <div className='mb-6'>
+          <div className='ml-6'>
             <label>Away Team</label>
             {players.map((player) => (
               <div key={player.id}>
-                <input type='checkbox' id={player.id} onChange={() => handleAwayTeamChange(player.id)} className='ml-2 border border-black' />
+                <input type='checkbox' id={player.id} checked={awayTeam.includes(player.id)} onChange={() => handleAwayTeamChange(player.id)} className='ml-2 border border-black' />
                 <label>{player.name}</label>
               </div>
             ))}
           </div>
         </div>
-
+        </div>
         <div className='mb-6'>
           <label>Goal Contributions</label>
-          {console.log('goalContributions:', goalContributions)}
           {Array.isArray(goalContributions) && goalContributions.map((contribution, i) => (
-            <div key={i}>
+            <div key={i} className='mb-3'>
               <div>
                 <label>Goal</label>
                 <select value={contribution.goal_scorer_id} onChange={(e) => handleGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
@@ -153,13 +181,12 @@ const AddMatch = () => {
                   ))}
                 </select>
               </div>
-              <button type='button' onClick={() => removeGoalContribution(i)} className="ml-2 text-red-500">Remove</button>
             </div>
           ))}
-          <button type='button' onClick={addGoalContribution} className="ml-2 text-red-500">Add Goal Contribution</button>
+        </div>
+        <button type='submit' className='border border-black self-start'>Add Match</button>
         </div>
 
-        <button type='submit' className='border border-black'>Add Match</button>
       </form>
     </main>
   )
