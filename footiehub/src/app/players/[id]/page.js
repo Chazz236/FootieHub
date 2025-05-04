@@ -11,7 +11,8 @@ export async function getPlayer(id) {
 const Player = async ({ params }) => {
 
   const id = (await params).id;
-  const { stats } = await getPlayer(id);
+  const { stats, transferChanges } = await getPlayer(id);
+  console.log(transferChanges);
 
   const gameData = {
     datasets: [
