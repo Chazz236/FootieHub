@@ -138,3 +138,18 @@ WHERE players.id = ?;`;
         throw error;
     }
 }
+
+export async function getTransferChanges(id) {
+    const query =
+        `SELECT value_change, date 
+FROM player_performance
+LEFT JOIN matches
+ON player_performance.match_id = matches.id
+WHERE player_performance.player_id = ?;`;
+    try {
+        return await db.query(query, [id]);
+    } catch (error) {
+        console.error('Error getting stats: ', error);
+        throw error;
+    }
+}
