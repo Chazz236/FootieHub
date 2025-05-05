@@ -1,4 +1,5 @@
-import DoughnutChart from "@/app/components/DoughnutChart";
+import DoughnutChart from '@/app/components/DoughnutChart';
+import LineChart from '@/app/components/LineChart'
 
 export async function getPlayer(id) {
   const res = await fetch(`http://localhost:3000/api/players/${id}`);
@@ -12,7 +13,8 @@ const Player = async ({ params }) => {
 
   const id = (await params).id;
   const { stats, transferChanges } = await getPlayer(id);
-
+  // console.log(stats);
+  // console.log(transferChanges);
   const gameData = {
     datasets: [
       {
@@ -41,6 +43,9 @@ const Player = async ({ params }) => {
           weight: 'bold'
         },
         color: 'rgba(0, 0, 0, 0.6)'
+      },
+      tooltip: {
+        enabled: false
       }
     },
   }
@@ -73,6 +78,9 @@ const Player = async ({ params }) => {
           weight: 'bold'
         },
         color: 'rgba(0, 0, 0, 0.6)'
+      },
+      tooltip: {
+        enabled: false
       }
     },
   }
@@ -105,6 +113,9 @@ const Player = async ({ params }) => {
           weight: 'bold'
         },
         color: 'rgba(0, 0, 0, 0.6)'
+      },
+      tooltip: {
+        enabled: false
       }
     },
   }
@@ -137,6 +148,9 @@ const Player = async ({ params }) => {
           weight: 'bold'
         },
         color: 'rgba(0, 0, 0, 0.6)'
+      },
+      tooltip: {
+        enabled: false
       }
     },
   }
@@ -175,14 +189,18 @@ const Player = async ({ params }) => {
           </tbody>
         </table>
       </div>
-      <div className='flex w-32'>
-        <div className='w-32 h-32'><DoughnutChart data={gameData} options={gameOptions} /></div>
-        <div className='w-32 h-32'><DoughnutChart data={winData} options={winOptions} /></div>
-        <div className='w-32 h-32'><DoughnutChart data={drawData} options={drawOptions} /></div>
-        <div className='w-32 h-32'><DoughnutChart data={lossData} options={lossOptions} /></div>
-      </div>
+      {stats && stats.length > 0 ? (
+        <div className='flex w-32'>
+          <div className='w-32 h-32'><DoughnutChart data={gameData} options={gameOptions} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={winData} options={winOptions} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={drawData} options={drawOptions} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={lossData} options={lossOptions} /></div>
+        </div>
+      ) : (
+        <div></div> //could put a loading thing?
+      )}
       <div>
-      {/* line chart to show value change */}
+        {/*line chart here*/}
       </div>
     </main>
   )
