@@ -2,6 +2,7 @@
 
 import { Scatter } from 'react-chartjs-2';
 import { Chart as ChartJS, Tooltip, Title, CategoryScale, LinearScale, PointElement } from 'chart.js';
+import { useEffect } from 'react';
 
 const quadrantPlugin = {
   id: 'quadrants',
@@ -35,9 +36,17 @@ const quadrantPlugin = {
   }
 };
 
-ChartJS.register(Tooltip, Title, CategoryScale, LinearScale, PointElement, quadrantPlugin);
+ChartJS.register(Tooltip, Title, CategoryScale, LinearScale, PointElement);
 
 const ScatterChart = ({ data, options }) => {
+
+  useEffect(() => {
+    ChartJS.register(quadrantPlugin);
+    return () => {
+      ChartJS.unregister(quadrantPlugin);
+    }
+  }, [])
+
   return (
     <div className='w-[500px] h-full'>
       <Scatter
