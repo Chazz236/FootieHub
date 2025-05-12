@@ -2,6 +2,7 @@
 
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, ArcElement } from 'chart.js';
+import { useEffect } from 'react';
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -27,9 +28,17 @@ const centerTextPlugin = {
   }
 };
 
-ChartJS.register(Title, ArcElement, centerTextPlugin);
+ChartJS.register(Title, ArcElement);
 
 const DoughnutChart = ({ data, options }) => {
+
+  useEffect(() => {
+    ChartJS.register(centerTextPlugin);
+    return () => {
+      ChartJS.unregister(centerTextPlugin);
+    }
+  }, [])
+
   return (
     <div>
       <Doughnut
