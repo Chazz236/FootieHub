@@ -22,7 +22,17 @@ export default function Page() {
   useEffect(() => {
     const getPlayerNames = async () => {
       const playerNames = await getPlayers();
+      console.log(playerNames);
       setPlayers(playerNames);
+      setPlayerId(playerNames[0].id)
+      try {
+        const res = await fetch(`/api/teammate?id=${playerNames[0].id}`);
+        const data = await res.json();
+        setStats(data.stats);
+        // console.log(stats);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
     }
     getPlayerNames();
   }, []);
@@ -159,8 +169,6 @@ export default function Page() {
     const id = event.target.value;
     setPlayerId(id);
 
-    if (!id) return;
-
     try {
       const res = await fetch(`/api/teammate?id=${id}`);
       const data = await res.json();
@@ -173,16 +181,17 @@ export default function Page() {
 
   return (
     <div>
-      <select onChange={handlePlayerChange} value={playerId}>
-        <option value={null}>Select a Player</option>
-        {players.map(player => (
-          <option key={player.id} value={player.id}>
-            {player.name}
-          </option>
-        ))}
-      </select>
-
-
+      {players.length > 0 ?
+        <select onChange={handlePlayerChange} value={playerId}>
+          {players.map(player => (
+            <option key={player.id} value={player.id}>
+              {player.name}
+            </option>
+          ))}
+        </select>
+        :
+        <div></div>
+      }
       <div className='flex'>
         {bestTeammateChartData ? (
           <ScatterChart
