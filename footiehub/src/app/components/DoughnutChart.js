@@ -32,18 +32,23 @@ ChartJS.register(Title, ArcElement);
 
 const DoughnutChart = ({ data, options }) => {
 
-  useEffect(() => {
-    ChartJS.register(centerTextPlugin);
-    return () => {
-      ChartJS.unregister(centerTextPlugin);
-    }
-  }, [])
+ const chartOptions = {
+  ...options,
+  plugins: {
+    ...options?.plugins,
+    centerText: {
+      ...options?.plugins?.centerText
+    },
+    centerTextPlugin: centerTextPlugin
+  }
+ };
 
   return (
     <div>
       <Doughnut
         data={data}
-        options={options}
+        options={chartOptions}
+        plugins={[centerTextPlugin]}
       />
     </div>
   );
