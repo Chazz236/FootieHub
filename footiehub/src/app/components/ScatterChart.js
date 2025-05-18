@@ -40,18 +40,23 @@ ChartJS.register(Tooltip, Title, CategoryScale, LinearScale, PointElement);
 
 const ScatterChart = ({ data, options }) => {
 
-  useEffect(() => {
-    ChartJS.register(quadrantPlugin);
-    return () => {
-      ChartJS.unregister(quadrantPlugin);
-    }
-  }, [])
+  const chartOptions = {
+  ...options,
+  plugins: {
+    ...options?.plugins,
+    quadrants: {
+      ...options?.plugins?.quadrants
+    },
+    quadrantPlugin: quadrantPlugin
+  }
+ };
 
   return (
     <div className='w-[500px] h-full'>
       <Scatter
         data={data}
-        options={options}
+        options={chartOptions}
+        plugins={[quadrantPlugin]}
       />
     </div>
   );
