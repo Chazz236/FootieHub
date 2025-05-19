@@ -1,10 +1,50 @@
 import DoughnutChart from '@/app/components/DoughnutChart';
 import LineChart from '@/app/components/LineChart'
 
-export async function getPlayer(id) {
+export async function getPlayer(id) { //find all these kinds of functions and put them in another place
   const res = await fetch(`http://localhost:3000/api/players/${id}`);
   const data = await res.json();
   return data;
+}
+
+const doughnutChartConfig = (games, value, colour, title) => {
+  const data = {
+    datasets: [
+      {
+        data: [value, games - value],
+        backgroundColor: [colour, 'rgb(252, 252, 252)'],
+        borderWidth: 0
+      }
+    ]
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: title,
+        font: {
+          size: 18
+        }
+      },
+      centerText: {
+        display: true,
+        text: `${value}`,
+        font: {
+          size: 24,
+          weight: 'bold'
+        },
+        color: 'rgba(0, 0, 0, 0.6)'
+      },
+      tooltip: {
+        enabled: false
+      }
+    },
+  };
+
+  return {data, options};
 }
 
 //bar chart to show past 5 games goals and assists, each one bar
@@ -15,145 +55,85 @@ const Player = async ({ params }) => {
   const { stats, transferChanges } = await getPlayer(id);
   // console.log(stats);
   // console.log(transferChanges);
-  const gameData = {
-    datasets: [
-      {
-        data: [stats[0].games, stats[0].games - stats[0].games],
-        backgroundColor: ['rgb(31, 41, 55)', 'rgb(252, 252, 252)'],
-        borderWidth: 0
-      }
-    ]
-  }
-  const gameOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: 'Games',
-        font: {
-          size: 18
-        }
-      },
-      centerText: {
-        display: true,
-        text: `${stats[0].games}`,
-        font: {
-          size: 24,
-          weight: 'bold'
-        },
-        color: 'rgba(0, 0, 0, 0.6)'
-      },
-      tooltip: {
-        enabled: false
-      }
-    },
-  }
 
-  const winData = {
-    datasets: [
-      {
-        data: [stats[0].wins, stats[0].games - stats[0].wins],
-        backgroundColor: ['rgb(22, 151, 87)', 'rgb(252, 252, 252)'],
-        borderWidth: 0
-      }
-    ]
-  }
-  const winOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: 'Wins',
-        font: {
-          size: 18
-        }
-      },
-      centerText: {
-        display: true,
-        text: `${stats[0].wins}`,
-        font: {
-          size: 24,
-          weight: 'bold'
-        },
-        color: 'rgba(0, 0, 0, 0.6)'
-      },
-      tooltip: {
-        enabled: false
-      }
-    },
-  }
+  const gamesChart = doughnutChartConfig(stats[0].games, stats[0].games, 'rgb(31, 41, 55)', 'Games');
+  const winsChart = doughnutChartConfig(stats[0].games, stats[0].wins, 'rgb(22, 151, 87)', 'Wins');
+  const drawsChart = doughnutChartConfig(stats[0].games, stats[0].draws, 'rgb(132, 151, 22)', 'Draws');
+  const lossesChart = doughnutChartConfig(stats[0].games, stats[0].losses, 'rgb(151, 37, 22)', 'Losses');
 
-  const drawData = {
-    datasets: [
-      {
-        data: [stats[0].draws, stats[0].games - stats[0].draws],
-        backgroundColor: ['rgb(132, 151, 22)', 'rgb(252, 252, 252)'],
-        borderWidth: 0
-      }
-    ]
-  }
-  const drawOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: 'Draws',
-        font: {
-          size: 18
-        }
-      },
-      centerText: {
-        display: true,
-        text: `${stats[0].draws}`,
-        font: {
-          size: 24,
-          weight: 'bold'
-        },
-        color: 'rgba(0, 0, 0, 0.6)'
-      },
-      tooltip: {
-        enabled: false
-      }
-    },
-  }
+  const sortedTransferChanges = [...transferChanges].sort((a,b) => {
+    return new Date(b.date) - new Date(a.date);
+  })
+  let value = stats[0].value;
+  const values = [];
 
-  const lossData = {
+  const transferData = {
     datasets: [
       {
-        data: [stats[0].losses, stats[0].games - stats[0].losses],
-        backgroundColor: ['rgb(151, 37, 22)', 'rgb(252, 252, 252)'],
-        borderWidth: 0
+        label: 'Transfer Change',
+        data: sortedTransferChanges.map(change => {
+          values.unshift(value);
+          value -= change.value_change;
+          return {
+          x: new Date(change.date),
+          y: values[0]
+          };
+        }),
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+        fill: false
       }
     ]
-  }
-  const lossOptions = {
+  };
+
+  const yValues = transferData.datasets[0].data.map(item => item.y);
+  const minY = Math.min(...yValues);
+  const maxY = Math.max(...yValues);
+
+  const transferOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
-        text: 'Losses',
+        text: 'Market Value Over Time',
         font: {
-          size: 18
-        }
-      },
-      centerText: {
-        display: true,
-        text: `${stats[0].losses}`,
-        font: {
-          size: 24,
-          weight: 'bold'
+          size: 18,
         },
-        color: 'rgba(0, 0, 0, 0.6)'
       },
       tooltip: {
-        enabled: false
-      }
+        mode: 'index',
+        intersect: false,
+      },
     },
-  }
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'month',
+          displayFormats: {
+            month: 'MMM', // Display full month name
+          },
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 10 // Adjust as needed
+        },
+        title: {
+          display: true,
+          text: 'Month',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Value',
+        },
+        min: Math.round(minY * 1.1),
+        max: Math.round(maxY * 1.1)
+      },
+    },
+  };
 
   return (
     <main className='flex-1 p-6'>
@@ -191,16 +171,16 @@ const Player = async ({ params }) => {
       </div>
       {stats && stats.length > 0 ? (
         <div className='flex w-32'>
-          <div className='w-32 h-32'><DoughnutChart data={gameData} options={gameOptions} /></div>
-          <div className='w-32 h-32'><DoughnutChart data={winData} options={winOptions} /></div>
-          <div className='w-32 h-32'><DoughnutChart data={drawData} options={drawOptions} /></div>
-          <div className='w-32 h-32'><DoughnutChart data={lossData} options={lossOptions} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={gamesChart.data} options={gamesChart.options} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={winsChart.data} options={winsChart.options} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={drawsChart.data} options={drawsChart.options} /></div>
+          <div className='w-32 h-32'><DoughnutChart data={lossesChart.data} options={lossesChart.options} /></div>
         </div>
       ) : (
         <div></div> //could put a loading thing?
       )}
       <div>
-        {/*line chart here*/}
+        <LineChart data={transferData} options={transferOptions} />
       </div>
     </main>
   )
