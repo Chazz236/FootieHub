@@ -7,6 +7,12 @@ export async function getPlayer(id) { //find all these kinds of functions and pu
   return data;
 }
 
+export async function getTransfers(id) {
+  const res = await fetch(`http://localhost:3000/api/transferValues/${id}`);
+  const data = await res.json();
+  return data;
+}
+
 const doughnutChartConfig = (games, value, colour, title) => {
   const data = {
     datasets: [
@@ -44,7 +50,7 @@ const doughnutChartConfig = (games, value, colour, title) => {
     },
   };
 
-  return {data, options};
+  return { data, options };
 }
 
 //bar chart to show past 5 games goals and assists, each one bar
@@ -52,7 +58,9 @@ const doughnutChartConfig = (games, value, colour, title) => {
 const Player = async ({ params }) => {
 
   const id = (await params).id;
-  const { stats, transferChanges } = await getPlayer(id);
+  const { stats } = await getPlayer(id);
+  const { transferChanges } = await getTransfers(id);
+
   // console.log(stats);
   // console.log(transferChanges);
 
@@ -61,7 +69,7 @@ const Player = async ({ params }) => {
   const drawsChart = doughnutChartConfig(stats[0].games, stats[0].draws, 'rgb(132, 151, 22)', 'Draws');
   const lossesChart = doughnutChartConfig(stats[0].games, stats[0].losses, 'rgb(151, 37, 22)', 'Losses');
 
-  const sortedTransferChanges = [...transferChanges].sort((a,b) => {
+  const sortedTransferChanges = [...transferChanges].sort((a, b) => {
     return new Date(b.date) - new Date(a.date);
   })
   let value = stats[0].value;
@@ -75,8 +83,8 @@ const Player = async ({ params }) => {
           values.unshift(value);
           value -= change.value_change;
           return {
-          x: new Date(change.date),
-          y: values[0]
+            x: new Date(change.date),
+            y: values[0]
           };
         }),
         borderColor: 'rgb(75, 192, 192)',
@@ -112,12 +120,12 @@ const Player = async ({ params }) => {
         time: {
           unit: 'month',
           displayFormats: {
-            month: 'MMM', // Display full month name
+            month: 'MMM',
           },
         },
         ticks: {
           autoSkip: true,
-          maxTicksLimit: 10 // Adjust as needed
+          // maxTicksLimit: 10
         },
         title: {
           display: true,

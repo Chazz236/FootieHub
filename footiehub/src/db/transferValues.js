@@ -1,0 +1,30 @@
+import db from '@/db/mysql';
+
+export async function getTransferChanges(id) {
+    const query =
+        `SELECT value_change, date 
+FROM player_performance
+LEFT JOIN matches
+ON player_performance.match_id = matches.id
+WHERE player_performance.player_id = ?;`;
+    try {
+        return await db.query(query, [id]);
+    } catch (error) {
+        console.error('Error getting stats: ', error);
+        throw error;
+    }
+}
+
+export async function getAllTransferChanges() {
+    const query =
+        `SELECT player_id, value_change, date
+FROM player_performance
+LEFT JOIN matches
+ON player_performance.match_id = matches.id;`;
+    try {
+        return await db.query(query);
+    } catch (error) {
+        console.error('Error getting stats: ', error);
+        throw error;
+    }
+}
