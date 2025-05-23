@@ -1,32 +1,26 @@
 'use client'
 
 import { useState } from 'react';
+import { createPlayer } from '@/lib/actions/players';
 
 const AddPlayer = () => {
-
+  
   const [name, setName] = useState('');
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (!name)
     {
       return;
     }
     try {
-      const res = await fetch('/api/players', {method: 'POST', body: JSON.stringify({name})});
-      const data = await res.json();
-      if (res.ok) {
-        console.log('all good, ', data.message);
-      }
-      else {
-        console.log('oh no, ', data.error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    
-    setName('');
+          const res = await createPlayer(name);
+          alert(res.message);
+          setName('')
+        } catch (error) {
+          console.error('failed to add player:', error.message);
+          alert(`Error: ${error.message}`);
+        }
   };
 
   return (

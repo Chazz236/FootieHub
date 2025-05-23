@@ -20,7 +20,7 @@ const centerTextPlugin = {
     ctx.textBaseline = 'middle';  // Ensure text is vertically centered
 
     // Adjust the vertical alignment based on font size if needed
-    const yPosition = height / 2 + fontSize / 1.2;  // Adjust for better vertical centering
+    const yPosition = height / 2 + fontSize / 1;  // Adjust for better vertical centering
 
     // Draw the text at the center of the doughnut chart
     ctx.fillText(text, width / 2, yPosition);

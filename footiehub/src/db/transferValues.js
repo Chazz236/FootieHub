@@ -1,6 +1,6 @@
 import db from '@/db/mysql';
 
-export async function getTransferChanges(id) {
+export async function getPlayerTransferChanges(id) {
     const query =
         `SELECT value_change, date 
 FROM player_performance
