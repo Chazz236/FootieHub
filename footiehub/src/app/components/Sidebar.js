@@ -8,7 +8,8 @@ const Sidebar = () => {
         <li><Link href='/players'>Players</Link></li>
         <li><Link href='/matches'>Matches</Link></li>
         <li><Link href='/teammate'>Best Teammates</Link></li>
-        <li><Link href='/compare'>Compare</Link></li>
+        <li><Link href='/compare'>Compare Players</Link></li>
+        <li><Link href='/transferCompare'>Compare Transfers</Link></li>
         <li><Link href='/addPlayer'>Add Player</Link></li>
         <li><Link href='/addMatch'>Add Match</Link></li>
       </ul>
