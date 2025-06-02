@@ -1,80 +1,33 @@
-const TransferCompare = () => {
-  return (
-    <main className='flex-1 p-6'>
-      <div className=''>
-        Transfer Compare page
-      </div>
-    </main>
-  )
+import { getPlayers } from '@/lib/data/players';
+import { getTransferChanges } from '@/lib/data/transfers';
+import Display from './display'
+export default async function TransferCompare() {
+  
+  try {
+    const players = await getPlayers();
+    const player1 = players[0];
+    const transferChanges = await getTransferChanges();
+
+    const playerTransferChanges = transferChanges.reduce(
+      (accumulator, currentValue) => {
+        const id = currentValue.player_id;
+        if (!accumulator[id]) {
+          accumulator[id] = []
+        }
+        accumulator[id].push(currentValue);
+        return accumulator;
+      },
+      {}
+    );
+
+    return (
+      <Display
+        allPlayers={players}
+        firstPlayerId={player1.id}
+        allChanges={playerTransferChanges}
+      />
+    )
+  } catch (error) {
+    console.error('error getting all transfer changes:', error);
+  }
 }
-
-export default TransferCompare;
-
-
-// const transferData = {
-//     datasets: [
-//       {
-//         label: 'Transfer Change',
-//         data: sortedTransferChanges.map(change => {
-//           values.unshift(value);
-//           value -= change.value_change;
-//           return {
-//             x: new Date(change.date),
-//             y: values[0]
-//           };
-//         }),
-//         borderColor: 'rgb(75, 192, 192)',
-//         tension: 0.1,
-//         fill: false
-//       }
-//     ]
-//   };
-
-//   const yValues = transferData.datasets[0].data.map(item => item.y);
-//   const minY = Math.min(...yValues);
-//   const maxY = Math.max(...yValues);
-
-//   const transferOptions = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     plugins: {
-//       title: {
-//         display: true,
-//         text: 'Market Value Over Time',
-//         font: {
-//           size: 18,
-//         },
-//       },
-//       tooltip: {
-//         mode: 'index',
-//         intersect: false,
-//       },
-//     },
-//     scales: {
-//       x: {
-//         type: 'time',
-//         time: {
-//           unit: 'month',
-//           displayFormats: {
-//             month: 'MMM',
-//           },
-//         },
-//         ticks: {
-//           autoSkip: true,
-//           // maxTicksLimit: 10
-//         },
-//         title: {
-//           display: true,
-//           text: 'Month',
-//         },
-//       },
-//       y: {
-//         title: {
-//           display: true,
-//           text: 'Value',
-//         },
-//         min: Math.round(minY * 1.1),
-//         max: Math.round(maxY * 1.1)
-//       },
-//     },
-//   };
