@@ -7,13 +7,6 @@ export default async function Compare() {
     const player1 = players[0];
     const player2 = players[1];
 
-    // const allPlayersStats = {};
-
-    // for (const player of players) {
-    //   const stats = await getStats(player.id);
-    //   allPlayersStats[player.id] = stats[0];
-    // }
-
     const statsPromises = players.map(player => getStats(player.id));
     const allStatsResults = await Promise.all(statsPromises);
     const allPlayersStats = {};

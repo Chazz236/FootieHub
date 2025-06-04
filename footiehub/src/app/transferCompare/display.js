@@ -7,7 +7,7 @@ const Display = ({ allPlayers, firstPlayerId, allChanges }) => {
 
   const [players, setPlayers] = useState([firstPlayerId]);
 
-  const datasets = players.map((player) => {
+  const datasets = players.map(player => {
     const sortedTransferChanges = [...allChanges[player]].sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     })
@@ -94,7 +94,7 @@ const transferData = {
         <LineChart key={players.join('-')} data={transferData} options={transferOptions} />
       </div>
       <div className='flex flex-wrap gap-6 justify-center'>
-        {allPlayers.map((player) => (
+        {allPlayers.map(player => (
           <div key={player.id} className='space-x-1'>
             <input type='checkbox' id={player.id} checked={players.includes(player.id)} onChange={() => handleChange(player.id)} />
             <label>{player.name}</label>

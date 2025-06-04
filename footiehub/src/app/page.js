@@ -14,7 +14,7 @@ export default async function Home() {
       <div className=''>
         <h2 className='text-2xl font-semibold mb-4 text-center'>Most Valuable Players</h2>
         <div className='flex justify-center gap-32 mt-8'>
-          {values.slice(0, 3).map((player) => (
+          {values.slice(0, 3).map(player => (
             <div key={player.id} className='w-1/5 rounded-lg border border-gray-200 p-4'>
               <h3 className='text-xl font-semibold text-center'>{player.name}</h3>
               <p className='text-md mb-2'>
@@ -48,7 +48,7 @@ export default async function Home() {
               </tr>
             </thead>
             <tbody>
-              {goals.slice(0, 5).map((player, i) => (
+              {goals.slice(0, 5).map(player => (
                 <tr key={player.id} className='text-center'>
                   <td className='px-6 text-left'>{player.name}</td>
                   <td className='px-6 text-right'>{player.goals}</td>
@@ -63,7 +63,7 @@ export default async function Home() {
               </tr>
             </thead>
             <tbody>
-              {assists.slice(0, 5).map((player, i) => (
+              {assists.slice(0, 5).map(player => (
                 <tr key={player.id} className='text-center'>
                   <td className='px-6 text-left'>{player.name}</td>
                   <td className='px-6 text-right'>{player.assists}</td>
@@ -78,7 +78,7 @@ export default async function Home() {
               </tr>
             </thead>
             <tbody>
-              {winPercentages.slice(0, 5).map((player, i) => (
+              {winPercentages.slice(0, 5).map(player => (
                 <tr key={player.id} className='text-center'>
                   <td className='px-6 text-left'>{player.name}</td>
                   <td className='px-6 text-right'>{parseFloat(player.wins).toFixed(2)}%</td>
