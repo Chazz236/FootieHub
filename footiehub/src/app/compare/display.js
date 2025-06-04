@@ -46,7 +46,7 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
     return (
       <tr>
         <td>{statName}</td>
-        {players.map((id) => {
+        {players.map(id => {
           const stats = allStats[id];
           const max = getMaxStat(stat);
           const isMax = stats[stat] === max;
@@ -77,8 +77,8 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
         {players.length < maxCompares && <button onClick={addPlayer}>Add Player</button>}
         {players.map((player, i) => (
           <div>
-            <select onChange={(e) => handlePlayerChange(e, i)} value={player}>
-              {allPlayers.map(player => (
+            <select onChange={e => handlePlayerChange(e, i)} value={player}>
+              {allPlayers.filter(play => play.id === player || !players.includes(play.id)).map(player => (
                 <option key={player.id} value={player.id}>
                   {player.name}
                 </option>
@@ -92,7 +92,7 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
         <thead>
           <tr>
             <th></th>
-            {players.map((id) => {
+            {players.map(id => {
               const playerStats = allStats[id];
               return (
                 <th>
