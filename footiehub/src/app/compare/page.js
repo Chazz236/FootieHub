@@ -33,5 +33,4 @@ export default async function Compare() {
   } catch (error) {
     console.error('error getting stats to compare:', error);
   }
-
 }
