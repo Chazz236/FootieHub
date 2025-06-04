@@ -18,7 +18,7 @@ const DisplayGoals = ({ goals }) => (
 const GoalDetails = ({ goals }) => (
   <table>
     <tbody>
-      {goals.map((goal, j) => (
+      {goals.map(goal => (
         <tr>
           <td>{goal.name}</td>
           <td className='px-2'>{goal.goals}G</td>

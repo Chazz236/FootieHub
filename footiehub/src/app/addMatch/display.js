@@ -157,23 +157,23 @@ const Display = ({ players }) => {
           <div>
             <div className='mb-6'>
               <label>Date</label>
-              <input type='date' id='date' value={date} onChange={(e) => setDate(e.target.value)} className='ml-2 border border-black' required />
+              <input type='date' id='date' value={date} onChange={e => setDate(e.target.value)} className='ml-2 border border-black' required />
             </div>
 
             <div className='mb-6'>
               <label>Home Score</label>
-              <input type='number' id='homeScore' value={homeScore} onChange={(e) => setHomeScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
+              <input type='number' id='homeScore' value={homeScore} onChange={e => setHomeScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
             </div>
 
             <div className='mb-6'>
               <label>Away Score</label>
-              <input type='number' id='awayScore' value={awayScore} onChange={(e) => setAwayScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
+              <input type='number' id='awayScore' value={awayScore} onChange={e => setAwayScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
             </div>
 
             <div className='flex'>
               <div>
                 <label>Home Team</label>
-                {players.map((player) => (
+                {players.map(player => (
                   <div key={player.id}>
                     <input type='checkbox' id={player.id} checked={homeTeam.includes(player.id)} onChange={() => handleHomeTeamChange(player.id)} className='ml-2 border border-black' />
                     <label>{player.name}</label>
@@ -183,7 +183,7 @@ const Display = ({ players }) => {
 
               <div className='ml-6'>
                 <label>Away Team</label>
-                {players.map((player) => (
+                {players.map(player => (
                   <div key={player.id}>
                     <input type='checkbox' id={player.id} checked={awayTeam.includes(player.id)} onChange={() => handleAwayTeamChange(player.id)} className='ml-2 border border-black' />
                     <label>{player.name}</label>
@@ -198,18 +198,18 @@ const Display = ({ players }) => {
               <div key={i} className='mb-3'>
                 <div>
                   <label>Goal</label>
-                  <select value={contribution.goal_scorer_id} onChange={(e) => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
+                  <select value={contribution.goal_scorer_id} onChange={e => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
                     <option key='' value=''>Goal</option>
-                    {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.assist_player_id).map((player) => (
+                    {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label>Assist</label>
-                  <select value={contribution.assist_player_id} onChange={(e) => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='ml-2 border border-black'>
+                  <select value={contribution.assist_player_id} onChange={e => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='ml-2 border border-black'>
                     <option key='' value=''>Assist</option>
-                    {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map((player) => (
+                    {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
@@ -223,18 +223,18 @@ const Display = ({ players }) => {
               <div key={i} className='mb-3'>
                 <div>
                   <label>Goal</label>
-                  <select value={contribution.goal_scorer_id} onChange={(e) => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
+                  <select value={contribution.goal_scorer_id} onChange={e => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
                     <option key='' value=''>Goal</option>
-                    {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.assist_player_id).map((player) => (
+                    {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label>Assist</label>
-                  <select value={contribution.assist_player_id} onChange={(e) => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='ml-2 border border-black'>
+                  <select value={contribution.assist_player_id} onChange={e => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='ml-2 border border-black'>
                     <option key='' value=''>Assist</option>
-                    {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map((player) => (
+                    {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>

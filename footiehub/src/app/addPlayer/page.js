@@ -28,7 +28,7 @@ const AddPlayer = () => {
       <form onSubmit={handleSubmit}>
         <div className='mb-6'>
           <label>Name</label>
-          <input type='text' id='name' value={name} onChange={(e) => setName(e.target.value)} className='ml-2 border border-black' required />
+          <input type='text' id='name' value={name} onChange={e => setName(e.target.value)} className='ml-2 border border-black' required />
         </div>
         <button type='submit' className='border border-black'>Add Player</button>
       </form>
