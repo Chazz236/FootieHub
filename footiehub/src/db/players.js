@@ -45,8 +45,8 @@ export async function getPlayerStats(id) {
          ELSE NULL
          END) AS losses,
 	COUNT(CASE
-         WHEN player_performance.team = 'home' AND matches.home_score = 0 THEN 1
-         WHEN player_performance.team = 'away' AND matches.away_score = 0 THEN 1
+         WHEN player_performance.team = 'home' AND matches.away_score = 0 THEN 1
+         WHEN player_performance.team = 'away' AND matches.home_score = 0 THEN 1
          ELSE NULL
          END) AS clean_sheets,
 	CAST(COALESCE(SUM(player_performance.goals), 0) AS UNSIGNED) AS goals,
