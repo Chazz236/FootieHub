@@ -41,7 +41,7 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
     });
     return max;
   };
-
+  
   const tableRow = (statName, stat) => {
     return (
       <tr>
@@ -49,16 +49,16 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
         {players.map(id => {
           const stats = allStats[id];
           const max = getMaxStat(stat);
-          const isMax = stats[stat] === max;
+          let isMax = stats[stat] === max;
           if (statName === 'Value') {
             return (
               <td className={`text-center ${isMax ? 'bg-lime-300' : ''}`}>${Intl.NumberFormat().format(stats.value)}</td>
             );
           }
           else if (statName === 'Win Percentage') {
-            const isMaxWP = (stats.wins / stats.games * 100) === max;
+            isMax = stats[stat].toFixed(2) === max.toFixed(2);
             return (
-              <td className={`text-center ${isMaxWP ? 'bg-lime-300' : ''}`}>{parseFloat(stats.wins / stats.games * 100).toFixed(2)}%</td>
+              <td className={`text-center ${isMax ? 'bg-lime-300' : ''}`}>{stats.win_percentage.toFixed(2)}%</td>
             );
           }
           else {
