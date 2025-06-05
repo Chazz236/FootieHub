@@ -2,7 +2,6 @@
 
 import DoughnutChart from '@/app/components/DoughnutChart';
 import LineChart from '@/app/components/LineChart';
-//bar chart to show past 5 games goals and assists, each one bar?
 
 const doughnutChartConfig = (games, value, colour, title) => {
   const data = {
@@ -157,7 +156,7 @@ const Display = ({ stats, transferChanges }) => {
               <td className='px-6'>{stats[0].assists}</td>
               <td className='px-6'>{(stats[0].goals / stats[0].games).toFixed(2)}</td>
               <td className='px-6'>{(stats[0].assists / stats[0].games).toFixed(2)}</td>
-              <td className='px-6'>{((stats[0].wins / stats[0].games) * 100).toFixed(2)}%</td>
+              <td className='px-6'>{stats[0].win_percentage.toFixed(2)}%</td>
             </tr>
           </tbody>
         </table>
