@@ -3,6 +3,7 @@ import db from '@/db/mysql';
 export async function getStats() {
     const query =
         `SELECT
+        players.id AS id,
 	    players.name AS name,
 	    COUNT(player_performance.match_id) as games,
 	    SUM(player_performance.goals) AS goals,

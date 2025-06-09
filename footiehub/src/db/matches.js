@@ -5,6 +5,7 @@ export async function getMatches() { //maybe change query 2?
         `SELECT * FROM matches;`;
     const query2 =
         `SELECT 
+            players.id,
             players.name, 
             player_performance.match_id, 
             player_performance.team, 

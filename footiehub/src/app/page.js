@@ -1,4 +1,5 @@
-import { getAllStats, getGoalsOrdered, getAssistsOrdered, getWinPercentageOrdered, getValuesOrdered } from "@/lib/data/stats";
+import Link from 'next/link'
+import { getGoalsOrdered, getAssistsOrdered, getWinPercentageOrdered, getValuesOrdered } from "@/lib/data/stats";
 
 export default async function Home() {
 
@@ -16,7 +17,7 @@ export default async function Home() {
         <div className='flex justify-center gap-32 mt-8'>
           {values.slice(0, 3).map(player => (
             <div key={player.id} className='w-1/5 rounded-lg border border-gray-200 p-4'>
-              <h3 className='text-xl font-semibold text-center'>{player.name}</h3>
+              <h3 className='text-xl font-semibold text-center'><Link href={`/players/${player.id}`}>{player.name}</Link></h3>
               <p className='text-md mb-2'>
                 <span className='inline-block text-left w-1/2'>Goals: </span>
                 <span className='inline-block text-right w-1/2'>{goals.find((p => p.id === player.id)).goals}</span>
@@ -50,7 +51,7 @@ export default async function Home() {
             <tbody>
               {goals.slice(0, 5).map(player => (
                 <tr key={player.id} className='text-center'>
-                  <td className='px-6 text-left'>{player.name}</td>
+                  <td className='px-6 text-left'><Link href={`/players/${player.id}`}>{player.name}</Link></td>
                   <td className='px-6 text-right'>{player.goals}</td>
                 </tr>
               ))}
@@ -65,7 +66,7 @@ export default async function Home() {
             <tbody>
               {assists.slice(0, 5).map(player => (
                 <tr key={player.id} className='text-center'>
-                  <td className='px-6 text-left'>{player.name}</td>
+                  <td className='px-6 text-left'><Link href={`/players/${player.id}`}>{player.name}</Link></td>
                   <td className='px-6 text-right'>{player.assists}</td>
                 </tr>
               ))}
@@ -80,7 +81,7 @@ export default async function Home() {
             <tbody>
               {winPercentages.slice(0, 5).map(player => (
                 <tr key={player.id} className='text-center'>
-                  <td className='px-6 text-left'>{player.name}</td>
+                  <td className='px-6 text-left'><Link href={`/players/${player.id}`}>{player.name}</Link></td>
                   <td className='px-6 text-right'>{parseFloat(player.wins).toFixed(2)}%</td>
                 </tr>
               ))}

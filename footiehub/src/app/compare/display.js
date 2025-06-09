@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 
 const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
@@ -96,7 +97,7 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
               const playerStats = allStats[id];
               return (
                 <th>
-                  {playerStats.name}
+                  <Link href={`/players/${id}`}>{playerStats.name}</Link>
                 </th>
               );
             })}
