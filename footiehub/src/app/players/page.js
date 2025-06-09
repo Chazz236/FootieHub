@@ -21,7 +21,7 @@ const Players = async () => {
             {
               stats.map((player, i) => (
                 <tr key={i} className='text-center'>
-                  <td className='px-6'><Link href={`/players/${i + 1}`}>{player.name}</Link></td>
+                  <td className='px-6'><Link href={`/players/${player.id}`}>{player.name}</Link></td>
                   <td className='px-6'>{player.games}</td>
                   <td className='px-6'>{player.goals ?? 0}</td>
                   <td className='px-6'>{player.assists ?? 0}</td>

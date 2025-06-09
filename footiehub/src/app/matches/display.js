@@ -1,12 +1,12 @@
 'use client'
 
+import Link from 'next/link';
 import React, { useState } from 'react';
-
 const DisplayGoals = ({ goals }) => (
   <>
     {goals.map((goal, i) => (
       <div key={i}>
-        {goal.name}
+        <Link href={`/players/${goal.id}`}>{goal.name}</Link>
         {Array.from({ length: goal.goals }).map((_, j) => (
           <img key={j} src='/ball.png' alt='Soccer Ball' className='inline-block w-3 h-3' />
         ))}
@@ -20,7 +20,7 @@ const GoalDetails = ({ goals }) => (
     <tbody>
       {goals.map(goal => (
         <tr>
-          <td>{goal.name}</td>
+          <td><Link href={`/players/${goal.id}`}>{goal.name}</Link></td>
           <td className='px-2'>{goal.goals}G</td>
           <td className='px-2'>{goal.assists}A</td>
         </tr>
