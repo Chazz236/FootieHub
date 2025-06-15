@@ -1,7 +1,7 @@
 'use client';
 
-import DoughnutChart from '@/app/components/DoughnutChart';
-import LineChart from '@/app/components/LineChart';
+import DoughnutChart from '@/app/components/charts/DoughnutChart';
+import LineChart from '@/app/components/charts/LineChart';
 
 const doughnutChartConfig = (games, value, colour, title) => {
   const data = {

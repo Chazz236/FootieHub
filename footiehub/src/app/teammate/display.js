@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ScatterChart from '../components/ScatterChart';
+import ScatterChart from '../components/charts/ScatterChart';
 
 const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
   const [playerId, setPlayerId] = useState(firstPlayerId);

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import LineChart from '../components/LineChart';
+import LineChart from '../components/charts/LineChart';
 
 const Display = ({ allPlayers, firstPlayerId, allChanges }) => {
 
