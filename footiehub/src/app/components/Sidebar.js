@@ -1,18 +1,29 @@
-import Link from 'next/link'
+'use client'
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Sidebar = () => {
+
+  const path = usePathname();
+  
+  const linkStyles = 'block py-2 px-3 hover:text-primary-accent transition-colors duration-200';
+  const activeLinkStyle = 'text-primary-accent font-semibold';
+
   return (
-    <aside className='bg-gray-800 text-white w-48 p-4'>
-      <ul>
-        <li><Link href='/'>Home</Link></li>
-        <li><Link href='/players'>Players</Link></li>
-        <li><Link href='/matches'>Matches</Link></li>
-        <li><Link href='/teammate'>Best Teammates</Link></li>
-        <li><Link href='/compare'>Compare Players</Link></li>
-        <li><Link href='/transferCompare'>Compare Transfers</Link></li>
-        <li><Link href='/addPlayer'>Add Player</Link></li>
-        <li><Link href='/addMatch'>Add Match</Link></li>
-      </ul>
+    <aside className='bg-panel-background text-panel-foreground w-52 p-4'>
+      <nav>
+        <ul className='space-y-3'>
+          <li><Link href='/' className={`${linkStyles} ${path === '/' ? activeLinkStyle : ''}`}>Home</Link></li>
+          <li><Link href='/players' className={`${linkStyles} ${path === '/players' ? activeLinkStyle : ''}`}>Players</Link></li>
+          <li><Link href='/matches' className={`${linkStyles} ${path === '/matches' ? activeLinkStyle : ''}`}>Matches</Link></li>
+          <li><Link href='/teammate' className={`${linkStyles} ${path === '/teammate' ? activeLinkStyle : ''}`}>Teammate Dynamics</Link></li>
+          <li><Link href='/compare' className={`${linkStyles} ${path === '/compare' ? activeLinkStyle : ''}`}>Compare Players</Link></li>
+          <li><Link href='/transferCompare' className={`${linkStyles} ${path === '/transferCompare' ? activeLinkStyle : ''}`}>Value Trends</Link></li>
+          <li className='pt-4 mt-4 border-t border-panel-foreground/20'><Link href='/addPlayer' className={`${linkStyles} ${path === '/addPlayer' ? activeLinkStyle : ''}`}>Add Player</Link></li>
+          <li><Link href='/addMatch' className={`${linkStyles} ${path === '/addMatch' ? activeLinkStyle : ''}`}>Add Match</Link></li>
+        </ul>
+      </nav>
     </aside>
   );
 }
