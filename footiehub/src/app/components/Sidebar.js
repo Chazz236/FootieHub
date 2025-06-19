@@ -14,13 +14,14 @@ const Sidebar = () => {
     <aside className='bg-panel-background text-panel-foreground w-52 p-4'>
       <nav>
         <ul className='space-y-3'>
-          <li><Link href='/' className={`${linkStyles} ${path === '/' ? activeLinkStyle : ''}`}>Home</Link></li>
+          <li className='text-xl'>FootieHub</li>
+          <li className='pt-4 mt-4 border-t'><Link href='/' className={`${linkStyles} ${path === '/' ? activeLinkStyle : ''}`}>Home</Link></li>
           <li><Link href='/players' className={`${linkStyles} ${path === '/players' ? activeLinkStyle : ''}`}>Players</Link></li>
           <li><Link href='/matches' className={`${linkStyles} ${path === '/matches' ? activeLinkStyle : ''}`}>Matches</Link></li>
           <li><Link href='/teammate' className={`${linkStyles} ${path === '/teammate' ? activeLinkStyle : ''}`}>Teammate Dynamics</Link></li>
           <li><Link href='/compare' className={`${linkStyles} ${path === '/compare' ? activeLinkStyle : ''}`}>Compare Players</Link></li>
           <li><Link href='/transferCompare' className={`${linkStyles} ${path === '/transferCompare' ? activeLinkStyle : ''}`}>Value Trends</Link></li>
-          <li className='pt-4 mt-4 border-t border-panel-foreground/20'><Link href='/addPlayer' className={`${linkStyles} ${path === '/addPlayer' ? activeLinkStyle : ''}`}>Add Player</Link></li>
+          <li className='pt-4 mt-4 border-t'><Link href='/addPlayer' className={`${linkStyles} ${path === '/addPlayer' ? activeLinkStyle : ''}`}>Add Player</Link></li>
           <li><Link href='/addMatch' className={`${linkStyles} ${path === '/addMatch' ? activeLinkStyle : ''}`}>Add Match</Link></li>
         </ul>
       </nav>
