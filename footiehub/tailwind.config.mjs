@@ -15,7 +15,9 @@ export default {
         'primary-accent': 'var(--primary-accent)',
         'success-color': 'var(--success-color)',
         'warning-color': 'var(--warning-color)',
-        'danger-color': 'var(--danger-color)'
+        'danger-color': 'var(--danger-color)',
+        'disable-bg': 'var(--disable-bg)',
+        'disable-text': 'var(--disable-text)'
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'sans-serif'],

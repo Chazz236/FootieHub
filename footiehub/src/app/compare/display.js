@@ -2,17 +2,20 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import Table from '@/app/components/ui/Table';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { XCircleIcon } from '@heroicons/react/20/solid';
 
 const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
   const [players, setPlayers] = useState([firstPlayerId, secondPlayerId]);
 
-  const maxCompares = 8;
+  const maxCompares = 4;
 
   const handlePlayerChange = async (e, player) => {
-    const id = e.target.value;
+    const id = parseInt(e.target.value);
     setPlayers(prevPlayers => {
       const newPlayers = [...prevPlayers];
-      newPlayers[player] = parseInt(id);
+      newPlayers[player] = id;
       return newPlayers;
     })
   };
@@ -24,17 +27,20 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
     }
   };
 
-  const removePlayer = () => {
-    setPlayers(prevPlayers => prevPlayers.slice(0, prevPlayers.length - 1));
+  const removePlayer = (index) => {
+    setPlayers(prevPlayers => prevPlayers.filter((_, i) => i !== index));
   };
 
   const getMaxStat = (stat) => {
     let max = -Infinity;
     players.forEach(id => {
       const stats = allStats[id];
+      if (!stats) {
+        return;
+      }
       if (stat === 'win_percentage') {
-        const winPercentage = stats.wins / stats.games * 100;
-        max = Math.max(max, winPercentage); //check for NaN?
+        const winPercentage = stats.games > 0 ? stats.wins / stats.games * 100 : 0;
+        max = Math.max(max, winPercentage);
       }
       else {
         max = Math.max(max, stats[stat]);
@@ -42,68 +48,91 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
     });
     return max;
   };
-  
+
   const tableRow = (statName, stat) => {
     return (
-      <tr>
-        <td>{statName}</td>
+      <Table.Row>
+        <Table.Cell>{statName}</Table.Cell>
         {players.map(id => {
           const stats = allStats[id];
-          const max = getMaxStat(stat);
-          let isMax = stats[stat] === max;
-          if (statName === 'Value') {
+          if (!stats) {
             return (
-              <td className={`text-center ${isMax ? 'bg-lime-300' : ''}`}>${Intl.NumberFormat().format(stats.value)}</td>
+              <Table.Cell key={id} className='text-center'>N/A</Table.Cell>
             );
+          }
+          const max = getMaxStat(stat);
+          let statValue = stats[stat];
+          let isMax = false;
+          if (statName === 'Value') {
+            isMax = statValue === max;
+            statValue = `$${Intl.NumberFormat().format(statValue)}`;
           }
           else if (statName === 'Win Percentage') {
-            isMax = stats[stat].toFixed(2) === max.toFixed(2);
-            return (
-              <td className={`text-center ${isMax ? 'bg-lime-300' : ''}`}>{stats.win_percentage.toFixed(2)}%</td>
-            );
+            statValue = stats.games > 0 ? stats.wins / stats.games * 100 : 0;
+            isMax = statValue.toFixed(2) === max.toFixed(2);
+            statValue = `${statValue.toFixed(2)}%`;
           }
           else {
-            return (
-              <td className={`text-center ${isMax ? 'bg-lime-300' : ''}`}>{stats[stat]}</td>
-            );
+            isMax = statValue === max;
           }
+          return (
+            <Table.Cell key={id} className={`text-center ${isMax ? 'bg-success-color font-semibold' : ''}`}>{statValue}</Table.Cell>
+          );
         })}
-      </tr>
+      </Table.Row>
     );
   };
 
   return (
     <main className='flex-1 p-6'>
-      <div className='flex flex-wrap'>
-        {players.length < maxCompares && <button onClick={addPlayer}>Add Player</button>}
-        {players.map((player, i) => (
-          <div>
-            <select onChange={e => handlePlayerChange(e, i)} value={player}>
-              {allPlayers.filter(play => play.id === player || !players.includes(play.id)).map(player => (
-                <option key={player.id} value={player.id}>
-                  {player.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        ))}
-        {players.length > 2 && <button onClick={removePlayer}>Remove Player</button>}
+      <div className='flex flex-wrap justify-center items-center gap-4 mb-8 p-4'>
+        {players.map((selectedPlayer, i) => {
+          return (
+            <div key={`player-${i}`} className='relative flex flex-col items-center gap-2'>
+              <select id={`player-${i}`} onChange={e => handlePlayerChange(e, i)} value={selectedPlayer}
+                className='block p-2 rounded-md shadow-sm bg-foreground text-panel-foreground'>
+                {allPlayers.filter(player => player.id === selectedPlayer || !players.includes(player.id)).map(player => (
+                  <option key={player.id} value={player.id}>
+                    {player.name}
+                  </option>
+                ))}
+              </select>
+              {players.length > 2 &&
+                <button onClick={() => removePlayer(i)} className='text-danger-color p-1 absolute -top-2 -right-2 z-10'>
+                  <XCircleIcon className='h-5 w-5'></XCircleIcon>
+                </button>
+              }
+            </div>
+          );
+        })}
+        <button
+          onClick={addPlayer}
+          disabled={players.length >= maxCompares}
+          className={`flex items-center text-sm font-medium p-2 rounded-md shadow-sm 
+              ${players.length >= maxCompares
+              ? 'bg-disable-bg text-disable-text'
+              : 'bg-foreground text-background'}
+            `}>
+          <PlusCircleIcon className={`h-5 w-5 ${players.length >= maxCompares ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
+          Add Player
+        </button>
       </div>
-      <table className='table-auto border-separate border-spacing-4'>
-        <thead>
-          <tr>
-            <th></th>
+      <h2 className='text-2xl font-semibold text-center'>Stats</h2>
+      <Table className='table-auto mt-4 mx-auto'>
+        <Table.Header>
+          <Table.HeaderRow>
+            <Table.HeaderCell></Table.HeaderCell>
             {players.map(id => {
               const playerStats = allStats[id];
               return (
-                <th>
+                <Table.HeaderCell key={id} className='text-center text-primary-accent font-semibold'>
                   <Link href={`/players/${id}`}>{playerStats.name}</Link>
-                </th>
+                </Table.HeaderCell>
               );
             })}
-          </tr>
-        </thead>
-        <tbody>
+          </Table.HeaderRow>
+        </Table.Header>
+        <Table.Body>
           {tableRow('Value', 'value')}
           {tableRow('Games', 'games')}
           {tableRow('Wins', 'wins')}
@@ -111,8 +140,8 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
           {tableRow('Goals', 'goals')}
           {tableRow('Assists', 'assists')}
           {tableRow('Clean Sheets', 'clean_sheets')}
-        </tbody>
-      </table>
+        </Table.Body>
+      </Table>
     </main>
   )
 }

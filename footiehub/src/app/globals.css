@@ -8,9 +8,11 @@
   --panel-background: #0f172a;
   --panel-foreground: #f8fafc;
   --primary-accent: #60a5fa;
-  --success-color: #059669;
+  --success-color: #84cc16; /*darker green: #059669*/
   --warning-color: #f59e0b;
   --danger-color: #dc2626;
+  --disable-bg: #374151;
+  --disable-text: #9ca3af;
 }
 
 /* @media (prefers-color-scheme: dark) {
