@@ -1,6 +1,6 @@
 const Table = ({ children, className = '', ...props }) => {
   return (
-    <table className={`table-fixed bg-white shadow-md rounded-lg overflow-hidden mx-auto w-5/6 border-collapse ${className}`} {...props}>
+    <table className={`table-fixed bg-white shadow-md rounded-lg overflow-hidden border-collapse ${className}`} {...props}>
       {children}
     </table>
   );

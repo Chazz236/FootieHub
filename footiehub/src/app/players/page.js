@@ -7,7 +7,7 @@ const Players = async () => {
     const stats = await getAllStats();
     return (
       <main className='flex-1 p-6'>
-        <Table>
+        <Table className='mx-auto w-5/6'>
           <Table.Header>
             <Table.HeaderRow>
               <Table.HeaderCell>NAME</Table.HeaderCell>
