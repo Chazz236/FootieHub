@@ -85,7 +85,8 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
   };
 
   const datasets = players.map(player => {
-    const sortedTransferChanges = [...allChanges[player]].sort((a, b) => {
+    const changes = allChanges[player]|| [];
+    const sortedTransferChanges = [...changes].sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     })
     let value = allPlayers[player - 1].value;
