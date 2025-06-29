@@ -20,7 +20,6 @@ const Sidebar = () => {
           <li><Link href='/matches' className={`${linkStyles} ${path === '/matches' ? activeLinkStyle : ''}`}>Matches</Link></li>
           <li><Link href='/teammate' className={`${linkStyles} ${path === '/teammate' ? activeLinkStyle : ''}`}>Teammate Dynamics</Link></li>
           <li><Link href='/compare' className={`${linkStyles} ${path === '/compare' ? activeLinkStyle : ''}`}>Compare Players</Link></li>
-          <li><Link href='/transferCompare' className={`${linkStyles} ${path === '/transferCompare' ? activeLinkStyle : ''}`}>Value Trends</Link></li>
           <li className='pt-4 mt-4 border-t'><Link href='/addPlayer' className={`${linkStyles} ${path === '/addPlayer' ? activeLinkStyle : ''}`}>Add Player</Link></li>
           <li><Link href='/addMatch' className={`${linkStyles} ${path === '/addMatch' ? activeLinkStyle : ''}`}>Add Match</Link></li>
         </ul>

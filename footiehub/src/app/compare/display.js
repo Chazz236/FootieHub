@@ -5,9 +5,10 @@ import { useState } from 'react';
 import Table from '@/app/components/ui/Table';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { XCircleIcon } from '@heroicons/react/20/solid';
+import LineChart from '../components/charts/LineChart';
 
-const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
-  const [players, setPlayers] = useState([firstPlayerId, secondPlayerId]);
+const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPlayerId, fourthPlayerId, allChanges }) => {
+  const [players, setPlayers] = useState([firstPlayerId, secondPlayerId, thirdPlayerId, fourthPlayerId]);
 
   const maxCompares = 4;
 
@@ -83,6 +84,68 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
     );
   };
 
+  const datasets = players.map(player => {
+    const sortedTransferChanges = [...allChanges[player]].sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    })
+    let value = allPlayers[player - 1].value;
+    const values = [];
+    const points = sortedTransferChanges.map(change => {
+      values.unshift(value);
+      value -= change.value_change;
+      return {
+        x: new Date(change.date),
+        y: values[0]
+      };
+    });
+    return {
+      label: allPlayers[player - 1].name,
+      data: points,
+      tension: 0.1,
+      fill: false
+    }
+  });
+
+  const transferData = {
+    datasets: datasets
+  };
+
+  const transferOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+      },
+    },
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'month',
+          displayFormats: {
+            month: 'MMM',
+          },
+        },
+        ticks: {
+          autoSkip: true,
+          // maxTicksLimit: 10
+        },
+        title: {
+          display: true,
+          text: 'Month',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Value',
+        },
+      },
+    },
+  };
+
   return (
     <main className='flex-1 p-6'>
       <div className='flex flex-wrap justify-center items-center gap-4 mb-8 p-4'>
@@ -142,6 +205,10 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId }) => {
           {tableRow('Clean Sheets', 'clean_sheets')}
         </Table.Body>
       </Table>
+      <h2 className='text-2xl font-semibold text-center mt-24'>Market Value Over Time</h2>
+      <div className='h-96'>
+        <LineChart key={players.join('-')} data={transferData} options={transferOptions} />
+      </div>
     </main>
   )
 }
