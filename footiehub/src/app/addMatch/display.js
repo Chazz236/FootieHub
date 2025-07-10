@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/actions/matches';
+import Card from '@/app/components/ui/Card';
 
 const Display = ({ players }) => {
 
@@ -90,10 +91,6 @@ const Display = ({ players }) => {
       alert('Please fill awayTeam');
       return;
     }
-    // if (!goalContributions) {
-    //   alert('Please fill goalContributions');
-    //   return;
-    // }
 
     const matchData = {
       date,
@@ -152,63 +149,76 @@ const Display = ({ players }) => {
 
   return (
     <main className='flex-1 p-6'>
-      <form onSubmit={handleSubmit}>
-        <div className='flex gap-32'>
-          <div>
+      <div className='flex justify-between items-center mb-6'>
+        <h2 className='text-2xl font-bold text-foreground'>Add New Match</h2>
+        <div>
+          <button type='button' onClick={(e) => handleSubmit(e)} className='py-2 px-4 bg-primary-accent text-panel-foreground font-semibold rounded-md shadow-sm'>Add Match</button>
+        </div>
+      </div>
+      <form className='grid grid-cols-[max-content_1fr_1fr_1fr] gap-6 w-full max-w-6xl'>
+        <div>
+          <Card>
             <div className='mb-6'>
-              <label>Date</label>
-              <input type='date' id='date' value={date} onChange={e => setDate(e.target.value)} className='ml-2 border border-black' required />
+              <label className='block text-xs font-medium text-foreground mb-1'>Date</label>
+              <input type='date' id='date' value={date} onChange={e => setDate(e.target.value)} className='w-40 p-2 border border-gray-300 rounded-md text-foreground bg-white' required />
             </div>
-
             <div className='mb-6'>
-              <label>Home Score</label>
-              <input type='number' id='homeScore' value={homeScore} onChange={e => setHomeScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
+              <label className='block text-xs font-medium text-foreground mb-1'>Home Score</label>
+              <input type='number' id='homeScore' value={homeScore} onChange={e => setHomeScore(parseInt(e.target.value, 10))} className='w-40 p-2 border border-gray-300 rounded-md text-foreground bg-white' min='0' required />
             </div>
-
-            <div className='mb-6'>
-              <label>Away Score</label>
-              <input type='number' id='awayScore' value={awayScore} onChange={e => setAwayScore(parseInt(e.target.value, 10))} className='ml-2 border border-black' min='0' required />
+            <div>
+              <label className='block text-xs font-medium text-foreground mb-1'>Away Score</label>
+              <input type='number' id='awayScore' value={awayScore} onChange={e => setAwayScore(parseInt(e.target.value, 10))} className='w-40 p-2 border border-gray-300 rounded-md text-foreground bg-white' min='0' required />
             </div>
-
-            <div className='flex'>
-              <div>
-                <label>Home Team</label>
+          </Card>
+        </div>
+        <div>
+          <Card>
+            <div className='flex flex-col gap-2'>
+              <label className='block text-xs font-medium text-foreground mb-3'>Select Teams</label>
+              <div className='max-h-96 overflow-y-auto pr-8'>
+                <div className='flex items-center justify-between pb-2'>
+                  <span></span>
+                  <div className='flex items-center gap-8'>
+                    <span className='flex justify-center text-xs font-medium text-foreground w-3'>Home</span>
+                    <span className='flex justify-center text-xs font-medium text-foreground w-3'>Away</span>
+                  </div>
+                </div>
                 {players.map(player => (
-                  <div key={player.id}>
-                    <input type='checkbox' id={player.id} checked={homeTeam.includes(player.id)} onChange={() => handleHomeTeamChange(player.id)} className='ml-2 border border-black' />
-                    <label>{player.name}</label>
+                  <div key={player.id} className='flex items-center justify-between pb-2'>
+                    <span className='text-foreground font-medium'>{player.name}</span>
+                    <div className='flex items-center gap-8'>
+                      <div>
+                        <input type='checkbox' id={`home-${player.id}`} checked={homeTeam.includes(player.id)} onChange={() => handleHomeTeamChange(player.id)} className='border border-black accent-primary-accent' />
+                      </div>
+                      <div>
+                        <input type='checkbox' id={`away-${player.id}`} checked={awayTeam.includes(player.id)} onChange={() => handleAwayTeamChange(player.id)} className='border border-black accent-danger-color' />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
-
-              <div className='ml-6'>
-                <label>Away Team</label>
-                {players.map(player => (
-                  <div key={player.id}>
-                    <input type='checkbox' id={player.id} checked={awayTeam.includes(player.id)} onChange={() => handleAwayTeamChange(player.id)} className='ml-2 border border-black' />
-                    <label>{player.name}</label>
-                  </div>
-                ))}
-              </div>
             </div>
-          </div>
-          <div className='mb-6'>
-            <label>Home Goals</label>
+          </Card>
+        </div>
+        <Card className='self-start'>
+          <label className='block text-xs font-medium text-foreground mb-3'>Home Goals</label>
+          <div className='max-h-96 overflow-y-auto pr-2'>
             {Array.isArray(homeGoals) && homeGoals.map((contribution, i) => (
-              <div key={i} className='mb-3'>
+              <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
                 <div>
-                  <label>Goal</label>
-                  <select value={contribution.goal_scorer_id} onChange={e => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
-                    <option key='' value=''>Goal</option>
+                  <label className='block text-xs font-medium text-foreground mb-1'>Goal</label>
+                  <select id={`home-goal-${i}`} value={contribution.goal_scorer_id} onChange={e => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                    <option value=''>None</option>
                     {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label>Assist</label>
-                  <select value={contribution.assist_player_id} onChange={e => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='ml-2 border border-black'>
-                    <option key='' value=''>Assist</option>
+                  <label className='block text-xs font-medium text-foreground mb-1'>Assist</label>
+                  <select id={`home-assist-${i}`} value={contribution.assist_player_id} onChange={e => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                    <option value=''>None</option>
                     {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
@@ -217,23 +227,25 @@ const Display = ({ players }) => {
               </div>
             ))}
           </div>
-          <div className='mb-6'>
-            <label>Away Goals</label>
+        </Card>
+        <Card className='self-start'>
+          <label className='block text-xs font-medium text-foreground mb-3'>Away Goals</label>
+          <div className='max-h-96 overflow-y-auto pr-2'>
             {Array.isArray(awayGoals) && awayGoals.map((contribution, i) => (
-              <div key={i} className='mb-3'>
+              <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
                 <div>
-                  <label>Goal</label>
-                  <select value={contribution.goal_scorer_id} onChange={e => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='ml-2 border border-black'>
-                    <option key='' value=''>Goal</option>
+                  <label className='block text-xs font-medium text-foreground mb-1'>Goal</label>
+                  <select id={`away-goal-${i}`} value={contribution.goal_scorer_id} onChange={e => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                    <option value=''>None</option>
                     {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label>Assist</label>
-                  <select value={contribution.assist_player_id} onChange={e => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='ml-2 border border-black'>
-                    <option key='' value=''>Assist</option>
+                  <label className='block text-xs font-medium text-foreground mb-1'>Assist</label>
+                  <select id={`away-assist-${i}`} value={contribution.assist_player_id} onChange={e => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                    <option value=''>None</option>
                     {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
@@ -242,8 +254,7 @@ const Display = ({ players }) => {
               </div>
             ))}
           </div>
-          <button type='submit' className='border border-black self-start'>Add Match</button>
-        </div>
+        </Card>
       </form>
     </main>
   )
