@@ -180,8 +180,8 @@ const Display = ({ players }) => {
                 <div className='flex items-center justify-between pb-2'>
                   <span></span>
                   <div className='flex items-center gap-8'>
-                    <span className='flex justify-center text-xs font-medium text-foreground w-3'>Home</span>
-                    <span className='flex justify-center text-xs font-medium text-foreground w-3'>Away</span>
+                    <span className='flex justify-center text-xs font-medium text-primary-accent w-3'>Home</span>
+                    <span className='flex justify-center text-xs font-medium text-danger-color w-3'>Away</span>
                   </div>
                 </div>
                 {players.map(player => (
@@ -202,7 +202,7 @@ const Display = ({ players }) => {
           </Card>
         </div>
         <Card className='self-start'>
-          <label className='block text-xs font-medium text-foreground mb-3'>Home Goals</label>
+          <label className='block text-xs font-medium mb-3 text-primary-accent'>Home Goals</label>
           <div className='max-h-96 overflow-y-auto pr-2'>
             {Array.isArray(homeGoals) && homeGoals.map((contribution, i) => (
               <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
@@ -229,7 +229,7 @@ const Display = ({ players }) => {
           </div>
         </Card>
         <Card className='self-start'>
-          <label className='block text-xs font-medium text-foreground mb-3'>Away Goals</label>
+          <label className='block text-xs font-medium mb-3 text-danger-color'>Away Goals</label>
           <div className='max-h-96 overflow-y-auto pr-2'>
             {Array.isArray(awayGoals) && awayGoals.map((contribution, i) => (
               <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
