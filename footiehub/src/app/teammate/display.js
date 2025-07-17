@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ScatterChart from '../components/charts/ScatterChart';
+import Card from '@/app/components/ui/Card';
 
 const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
   const [playerId, setPlayerId] = useState(firstPlayerId);
@@ -10,8 +11,8 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
   const [bestTeammateChartOptions, setBestTeammateChartOptions] = useState(null);
   const [teammateGoalsAssistsChartData, setTeammateGoalsAssistsChartData] = useState(null);
   const [teammateGoalsAssistsChartOptions, setTeammateGoalsAssistsChartOptions] = useState(null);
+  const [sortBy, setSortBy] = useState('win percentage');
 
-  //make a function for data and options
   useEffect(() => {
     if (stats && stats.length > 0) {
       const bestTeammateData = stats.map(player => ({
@@ -39,17 +40,22 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
             }
           },
           quadrants: {
-            topLeft: 'rgba(195, 235, 18, 0.2)',
-            topRight: 'rgba(54, 162, 235, 0.2)',
-            bottomRight: 'rgba(195, 235, 18, 0.2)',
-            bottomLeft: 'rgba(185, 21, 21, 0.2)'
+            topLeft: '#fdf90033',
+            topRight: '#84cc1633',
+            bottomRight: '#fdf90033',
+            bottomLeft: '#dc262633'
           },
           title: {
             display: true,
-            text: 'Best Teammates',
+            text: 'Success With Teammates',
             font: {
               size: 18
             }
+          }
+        },
+        layout: {
+          padding: {
+            left: 40
           }
         },
         scales: {
@@ -103,10 +109,10 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
             }
           },
           quadrants: {
-            topLeft: 'rgba(195, 235, 18, 0.2)',
-            topRight: 'rgba(54, 162, 235, 0.2)',
-            bottomRight: 'rgba(195, 235, 18, 0.2)',
-            bottomLeft: 'rgba(185, 21, 21, 0.2)'
+            topLeft: '#fdf90033',
+            topRight: '#84cc1633',
+            bottomRight: '#fdf90033',
+            bottomLeft: '#dc262633'
           },
           title: {
             display: true,
@@ -114,6 +120,11 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
             font: {
               size: 18
             }
+          }
+        },
+        layout: {
+          padding: {
+            left: 40
           }
         },
         scales: {
@@ -152,38 +163,107 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
     setStats(teammateStats[id]);
   };
 
+  const sortedTeammates = stats ?
+    [...stats].sort((a, b) => {
+      if (sortBy === 'win percentage') {
+        const winPercentageDiff = b.win_percentage - a.win_percentage;
+        if (winPercentageDiff === 0) {
+          const aContributions = a.assists_provided + a.assists_received;
+          const bContributions = b.assists_provided + b.assists_received;
+          return bContributions - aContributions;
+        }
+        return winPercentageDiff;
+      }
+      else {
+        const aContributions = a.assists_provided + a.assists_received;
+        const bContributions = b.assists_provided + b.assists_received;
+        const contributionsDiff = bContributions - aContributions;
+        if (contributionsDiff === 0) {
+          return b.win_percentage - a.win_percentage;
+        }
+        return contributionsDiff;
+      }
+    }) : [];
+
   return (
     <main className='flex-1 p-6'>
-      <div>
-        {allPlayers.length > 0 ?
-          <select onChange={handlePlayerChange} value={playerId}>
-            {allPlayers.map(player => (
-              <option key={player.id} value={player.id}>
-                {player.name}
-              </option>
-            ))}
-          </select>
-          :
-          <div></div>
-        }
-        <div className='flex'>
-          {bestTeammateChartData ? (
-            <ScatterChart
-              data={bestTeammateChartData}
-              options={bestTeammateChartOptions}
-            />
-          ) : (
-            <div></div>
-          )}
-
-          {teammateGoalsAssistsChartData ? (
-            <ScatterChart
-              data={teammateGoalsAssistsChartData}
-              options={teammateGoalsAssistsChartOptions}
-            />
-          ) : (
-            <div>No Teammate Data</div>
-          )}
+      <div className='grid grid-cols-2 gap-6'>
+        <div className='flex flex-col gap-6'>
+          <h2 className='text-2xl font-bold text-foreground'>Teammage Dynamics</h2>
+          <Card className='w-full'>
+            <div className='mb-6'>
+              <label className='block text-xs font-medium text-foreground mb-1'>Player</label>
+              {allPlayers.length > 0 ? (
+                <select onChange={handlePlayerChange} value={playerId} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                  {allPlayers.map(player => (
+                    <option key={player.id} value={player.id}>
+                      {player.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p>No Players To Select</p>
+              )}
+            </div>
+          </Card>
+          <Card>
+            <div className='flex justify-between mb-4'>
+              <h3 className='text-lg font-bold text-foreground'>Top Teammates</h3>
+              <div>
+                <label className='block text-xs font-medium text-foreground mb-1'>Sort By</label>
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                  <option value='win percentage'>Win Percentage</option>
+                  <option value='contributions'>Goal Contributions</option>
+                </select>
+              </div>
+            </div>
+            {sortedTeammates.length > 0 ? (
+              <table className='table-fixed'>
+                <thead>
+                  <tr>
+                    <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/4'>Name</th>
+                    <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/4'>{sortBy === 'win percentage' ? 'Win Percentage' : 'Total Contributions'}</th>
+                    <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/4'>Assists Received</th>
+                    <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/4'>Assists Provided</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedTeammates.slice(0, 5).map((player) => (
+                    <tr key={player.id}>
+                      <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{player.name}</td>
+                      <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{sortBy === 'win percentage' ? `${parseFloat(player.win_percentage).toFixed(2)}%` : player.assists_received + player.assists_provided}</td>
+                      <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{player.assists_received}</td>
+                      <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{player.assists_provided}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Select A Player To View Teammate Data</p>
+            )}
+          </Card>
+        </div>
+        <div className='flex flex-col gap-6'>
+          <Card className='!p-0'>
+            {bestTeammateChartData ? (
+              <ScatterChart
+                data={bestTeammateChartData}
+                options={bestTeammateChartOptions}
+              />
+            ) : (
+              <p>Select A Player To View Teammate Data</p>
+            )}
+          </Card>
+          <Card className='!p-0'>
+            {teammateGoalsAssistsChartData ? (
+              <ScatterChart
+                data={teammateGoalsAssistsChartData}
+                options={teammateGoalsAssistsChartOptions}
+              />
+            ) : (
+              <p>Select A Player To View Teammate Data</p>
+            )}
+          </Card>
         </div>
       </div>
     </main>
