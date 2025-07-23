@@ -189,7 +189,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
     <main className='flex-1 p-6'>
       <div className='grid grid-cols-2 gap-6'>
         <div className='flex flex-col gap-6'>
-          <h2 className='text-2xl font-bold text-foreground'>Teammage Dynamics</h2>
+          <h2 className='text-2xl font-bold text-foreground'>Teammate Dynamics</h2>
           <Card className='w-full'>
             <div className='mb-6'>
               <label className='block text-xs font-medium text-foreground mb-1'>Player</label>
