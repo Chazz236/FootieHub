@@ -25,7 +25,9 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
           {
             label: 'Teammates Performance',
             data: bestTeammateData,
-            pointRadius: 5
+            pointRadius: 5,
+            backgroundColor: '#4BC0C0',
+            borderColor: '#2D8282'
           }
         ]
       };
@@ -93,7 +95,9 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
           {
             label: 'Teammate Goals and Assists',
             data: teammateGoalsAssistsData,
-            pointRadius: 5
+            pointRadius: 5,
+            backgroundColor: '#4BC0C0',
+            borderColor: '#2D8282'
           }
         ]
       };
@@ -190,7 +194,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
       <div className='grid grid-cols-2 gap-6'>
         <div className='flex flex-col gap-6'>
           <h2 className='text-2xl font-bold text-foreground'>Teammate Dynamics</h2>
-          <Card className='w-full'>
+          <Card className='w-full p-6'>
             <div className='mb-6'>
               <label className='block text-xs font-medium text-foreground mb-1'>Player</label>
               {allPlayers.length > 0 ? (
@@ -206,7 +210,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
               )}
             </div>
           </Card>
-          <Card>
+          <Card className='p-6'>
             <div className='flex justify-between mb-4'>
               <h3 className='text-lg font-bold text-foreground'>Top Teammates</h3>
               <div>
@@ -243,23 +247,29 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
             )}
           </Card>
         </div>
-        <div className='flex flex-col gap-6'>
-          <Card className='!p-0'>
+        <div className='flex flex-col gap-6 my-auto'>
+          <Card className='p-0'>
             {bestTeammateChartData ? (
-              <ScatterChart
-                data={bestTeammateChartData}
-                options={bestTeammateChartOptions}
-              />
+              <div>
+                <ScatterChart
+                  data={bestTeammateChartData}
+                  options={bestTeammateChartOptions}
+                />
+                <p className='text-xs text-gray-500 mx-auto'>Hover over points to view teammate data</p>
+              </div>
             ) : (
               <p>Select A Player To View Teammate Data</p>
             )}
           </Card>
-          <Card className='!p-0'>
+          <Card className='p-0'>
             {teammateGoalsAssistsChartData ? (
-              <ScatterChart
-                data={teammateGoalsAssistsChartData}
-                options={teammateGoalsAssistsChartOptions}
-              />
+              <div>
+                <ScatterChart
+                  data={teammateGoalsAssistsChartData}
+                  options={teammateGoalsAssistsChartOptions}
+                />
+                <p className='text-xs text-gray-500 mx-auto'>Hover over points to view teammate data</p>
+              </div>
             ) : (
               <p>Select A Player To View Teammate Data</p>
             )}
