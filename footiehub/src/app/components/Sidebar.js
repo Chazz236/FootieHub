@@ -11,7 +11,7 @@ const Sidebar = () => {
   const activeLinkStyle = 'text-primary-accent font-semibold';
 
   return (
-    <aside className='bg-panel-background text-panel-foreground w-52 p-4 sticky top-0 h-screen'>
+    <aside className='bg-panel-background text-panel-foreground w-53 p-4 sticky top-0 h-screen'>
       <nav>
         <ul className='space-y-3'>
           <li className='text-xl'>FootieHub</li>
