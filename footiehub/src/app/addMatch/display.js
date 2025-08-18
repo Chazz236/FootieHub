@@ -155,9 +155,9 @@ const Display = ({ players }) => {
           <button type='button' onClick={(e) => handleSubmit(e)} className='py-2 px-4 bg-primary-accent text-panel-foreground font-semibold rounded-md shadow-sm'>Add Match</button>
         </div>
       </div>
-      <form className='grid grid-cols-[max-content_1fr_1fr_1fr] gap-6 w-full max-w-6xl'>
+      <form className='grid grid-cols-[max-content_1fr_1fr_1fr] gap-6 w-full'>
         <div>
-          <Card>
+          <Card className='p-6'>
             <div className='mb-6'>
               <label className='block text-xs font-medium text-foreground mb-1'>Date</label>
               <input type='date' id='date' value={date} onChange={e => setDate(e.target.value)} className='w-40 p-2 border border-gray-300 rounded-md text-foreground bg-white' required />
@@ -173,10 +173,10 @@ const Display = ({ players }) => {
           </Card>
         </div>
         <div>
-          <Card>
+          <Card className='p-6'>
             <div className='flex flex-col gap-2'>
               <label className='block text-xs font-medium text-foreground mb-3'>Select Teams</label>
-              <div className='max-h-96 overflow-y-auto pr-8'>
+              <div className='max-h-96 overflow-y-scroll pr-8'>
                 <div className='flex items-center justify-between pb-2'>
                   <span></span>
                   <div className='flex items-center gap-8'>
@@ -201,9 +201,9 @@ const Display = ({ players }) => {
             </div>
           </Card>
         </div>
-        <Card className='self-start'>
+        <Card className='self-start p-6'>
           <label className='block text-xs font-medium mb-3 text-primary-accent'>Home Goals</label>
-          <div className='max-h-96 overflow-y-auto pr-2'>
+          <div className='max-h-96 overflow-y-scroll pr-2'>
             {Array.isArray(homeGoals) && homeGoals.map((contribution, i) => (
               <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
                 <div>
@@ -228,9 +228,9 @@ const Display = ({ players }) => {
             ))}
           </div>
         </Card>
-        <Card className='self-start'>
+        <Card className='self-start p-6'>
           <label className='block text-xs font-medium mb-3 text-danger-color'>Away Goals</label>
-          <div className='max-h-96 overflow-y-auto pr-2'>
+          <div className='max-h-96 overflow-y-scroll pr-2'>
             {Array.isArray(awayGoals) && awayGoals.map((contribution, i) => (
               <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
                 <div>

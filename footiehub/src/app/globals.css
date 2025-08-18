@@ -30,3 +30,13 @@ body {
   color: var(--foreground);
   background: var(--background);
 }
+
+
+/*for scrollbar design: https://dev.to/luckey/stylizing-the-scrollbar-in-nextjs-1o99*/
+* {
+  scrollbar-width: thin;
+}
+
+/* *::-webkit-scrollbar {
+  width: 17px;
+} */
