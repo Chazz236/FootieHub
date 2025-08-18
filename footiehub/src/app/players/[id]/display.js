@@ -147,19 +147,21 @@ const Display = ({ stats, transferChanges }) => {
     <main className='flex-1 p-6'>
       <h1 className='text-2xl font-bold text-foreground mb-6'>{stats[0].name}</h1>
       <div className='grid grid-cols-2 gap-6 items-start'>
-        <Card>
+        <Card className='p-6'>
           <div className='flex justify-between mb-4 '>
             <h2 className='text-lg font-bold text-foreground'>Statistics</h2>
           </div>
           <table className='table-auto mb-8'>
             <thead>
               <tr>
-                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/6'>Games</th>
-                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/6'>Goals</th>
-                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/6'>Assists</th>
-                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/6'>Goals/Game</th>
-                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/6'>Assists/Game</th>
-                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase w-1/6'>Win Percentage</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Games</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Goals</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Assists</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Goals/Game</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Assists/Game</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Win Percentage</th>
+                <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Clean Sheets</th>
+
               </tr>
             </thead>
             <tbody>
@@ -170,27 +172,29 @@ const Display = ({ stats, transferChanges }) => {
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{(stats[0].goals / stats[0].games).toFixed(2)}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{(stats[0].assists / stats[0].games).toFixed(2)}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].win_percentage.toFixed(2)}%</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].clean_sheets}</td>
               </tr>
             </tbody>
           </table>
           {stats && stats.length > 0 ? (
-            <div className='flex w-32 mb-6'>
-              <div className='w-32 h-32'><DoughnutChart data={gamesChart.data} options={gamesChart.options} /></div>
-              <div className='w-32 h-32'><DoughnutChart data={winsChart.data} options={winsChart.options} /></div>
-              <div className='w-32 h-32'><DoughnutChart data={drawsChart.data} options={drawsChart.options} /></div>
-              <div className='w-32 h-32'><DoughnutChart data={lossesChart.data} options={lossesChart.options} /></div>
+            <div className='flex mb-14 justify-between'>
+              <div className='w-24 h-24'><DoughnutChart data={gamesChart.data} options={gamesChart.options} /></div>
+              <div className='w-24 h-24'><DoughnutChart data={winsChart.data} options={winsChart.options} /></div>
+              <div className='w-24 h-24'><DoughnutChart data={drawsChart.data} options={drawsChart.options} /></div>
+              <div className='w-24 h-24'><DoughnutChart data={lossesChart.data} options={lossesChart.options} /></div>
             </div>
           ) : (
             <div></div>
           )}
         </Card>
-        <Card>
+        <Card className='p-6'>
           <div className='flex justify-between items-center'>
             <h2 className='text-lg font-bold text-foreground'>Market Value:</h2>
             <h2 className='text-lg font-bold text-foreground'>{marketValue}</h2>
           </div>
           <h3 className='text-sm font-bold text-foreground text-right'>{marketDate}</h3>
           <LineChart data={transferData} options={transferOptions} />
+          <p className='text-xs text-gray-500'>Hover over points to see past market values</p>
         </Card>
       </div>
     </main>
