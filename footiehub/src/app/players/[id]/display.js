@@ -124,12 +124,10 @@ const Display = ({ stats, transferChanges }) => {
 
         const date = new Date(hoveredPoint.x);
         const value = hoveredPoint.y;
+        const lastDate = new Date(transferChanges[transferChanges.length - 1].date);
 
-        console.log(date);
-        console.log(transferChanges[transferChanges.length - 1].date)
-
-        if (date.getTime() === transferChanges[transferChanges.length - 1].date.getTime() && value === stats[0].value ) {
-          setMarketDate(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
+        if (date.getTime() === lastDate.getTime() && value === stats[0].value ) {
+          setMarketDate(`As of ${lastDate.toLocaleDateString('en-US', dateOptions)}`);
         }
         else {
           setMarketDate(`${date.toLocaleDateString('en-US', dateOptions)}`);
@@ -169,8 +167,8 @@ const Display = ({ stats, transferChanges }) => {
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].games}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].goals}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].assists}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{(stats[0].goals / stats[0].games).toFixed(2)}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{(stats[0].assists / stats[0].games).toFixed(2)}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].games > 0 ? (stats[0].goals / stats[0].games).toFixed(2) : 0}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].games > 0 ? (stats[0].assists / stats[0].games).toFixed(2) : 0}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].win_percentage.toFixed(2)}%</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].clean_sheets}</td>
               </tr>

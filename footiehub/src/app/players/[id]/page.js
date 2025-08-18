@@ -11,8 +11,13 @@ export default async function Player({ params }) {
       getPlayerChanges(id)
     ])
 
+    const playerTransferChanges = transferChanges && transferChanges.length > 0 ? transferChanges : [{
+      value_change: stats[0].value,
+      date: new Date().toISOString()
+    }];
+
     return (
-      <Display stats={stats} transferChanges={transferChanges} />
+      <Display stats={stats} transferChanges={playerTransferChanges} />
     )
   } catch (error) {
     console.error('error getting player stuff:', error);
