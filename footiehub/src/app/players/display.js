@@ -105,6 +105,15 @@ const Display = ({ stats }) => {
                     {sorter.col === 'clean_sheets' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
                   </div>
                 </th>
+                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
+                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('value')}>
+                    Value
+                    {sorter.col !== 'value' && <ChevronUpDownIcon className='w-4 h-4' />}
+                    {sorter.col === 'value' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
+                    {sorter.col === 'value' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
+                    {sorter.col === 'value' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -115,6 +124,9 @@ const Display = ({ stats }) => {
                   <td className='py-2 text-sm font-medium text-foreground text-center'>{player.goals}</td>
                   <td className='py-2 text-sm font-medium text-foreground text-center'>{player.assists}</td>
                   <td className='py-2 text-sm font-medium text-foreground text-center'>{player.clean_sheets}</td>
+                  <td className={`py-2 text-sm font-medium text-center ${player.value > 0 ? 'text-success-color' : 'text-danger-color'}`}>
+                    {player.value > 0 ? '$' : '-$'}{Intl.NumberFormat().format(Math.abs(player.value))}
+                  </td>
                 </tr>
               ))}
             </tbody>
