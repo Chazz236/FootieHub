@@ -1,36 +1,39 @@
 import Link from 'next/link'
 import { getAllStats } from '@/lib/data/stats';
-import Table from '@/app/components/ui/Table';
+import Card from '@/app/components/ui/Card';
 
 const Players = async () => {
   try {
     const stats = await getAllStats();
     return (
       <main className='flex-1 p-6'>
-        <Table className='mx-auto w-5/6'>
-          <Table.Header>
-            <Table.HeaderRow>
-              <Table.HeaderCell>NAME</Table.HeaderCell>
-              <Table.HeaderCell className='text-center'>GAMES</Table.HeaderCell>
-              <Table.HeaderCell className='text-center'>GOALS</Table.HeaderCell>
-              <Table.HeaderCell className='text-center'>ASSISTS</Table.HeaderCell>
-              <Table.HeaderCell className='text-right border-r-0'>VALUE</Table.HeaderCell>
-            </Table.HeaderRow>
-          </Table.Header>
-          <Table.Body>
-            {
-              stats.map((player, i) => (
-                <Table.Row key={i}>
-                  <Table.Cell className='text-primary-accent font-semibold'><Link href={`/players/${player.id}`}>{player.name}</Link></Table.Cell>
-                  <Table.Cell className='text-center'>{player.games}</Table.Cell>
-                  <Table.Cell className='text-center'>{player.goals ?? 0}</Table.Cell>
-                  <Table.Cell className='text-center'>{player.assists ?? 0}</Table.Cell>
-                  <Table.Cell className={`${player.value > 0 ? 'text-success-color' : 'text-danger-color'} text-right font-semibold border-r-0`}>{player.value > 0 ? '$' : '-$'}{Intl.NumberFormat().format(Math.abs(player.value))}</Table.Cell>
-                </Table.Row>
-              ))
-            }
-          </Table.Body>
-        </Table>
+        <h2 className='text-2xl font-bold text-foreground mb-6'>Players</h2>
+        <Card className='p-6'>
+          <div className='max-h-96 overflow-y-scroll'>
+            <table className='table-fixed w-full'>
+              <thead>
+                <tr>
+                  <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>Name</th>
+                  <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>Games</th>
+                  <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>Goals</th>
+                  <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>Assists</th>
+                  <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>Clean Sheets</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.map(player => (
+                  <tr key={player.id}>
+                    <td className='py-2 text-sm font-medium text-foreground text-center'><Link href={`/players/${player.id}`}>{player.name}</Link></td>
+                    <td className='py-2 text-sm font-medium text-foreground text-center'>{player.games}</td>
+                    <td className='py-2 text-sm font-medium text-foreground text-center'>{player.goals}</td>
+                    <td className='py-2 text-sm font-medium text-foreground text-center'>{player.assists}</td>
+                    <td className='py-2 text-sm font-medium text-foreground text-center'>{player.clean_sheets}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </main>
     )
   } catch (error) {
