@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import Table from '@/app/components/ui/Table';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { XCircleIcon } from '@heroicons/react/20/solid';
 import LineChart from '../components/charts/LineChart';
+import Card from '@/app/components/ui/Card';
 
-const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPlayerId, fourthPlayerId, allChanges }) => {
-  const [players, setPlayers] = useState([firstPlayerId, secondPlayerId, thirdPlayerId, fourthPlayerId]);
+const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPlayerId, allChanges }) => {
+  const [players, setPlayers] = useState([firstPlayerId, secondPlayerId, thirdPlayerId]);
 
-  const maxCompares = 4;
+  const maxCompares = 3;
 
   const handlePlayerChange = async (e, player) => {
     const id = parseInt(e.target.value);
@@ -52,13 +52,13 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
 
   const tableRow = (statName, stat) => {
     return (
-      <Table.Row>
-        <Table.Cell>{statName}</Table.Cell>
+      <tr>
+        <td className='px-2 py-2 text-sm font-bold text-foreground text-left'>{statName}</td>
         {players.map(id => {
           const stats = allStats[id];
           if (!stats) {
             return (
-              <Table.Cell key={id} className='text-center'>N/A</Table.Cell>
+              <td key={id} className='px-2 py-2 text-sm font-medium text-foreground text-center'>N/A</td>
             );
           }
           const max = getMaxStat(stat);
@@ -77,15 +77,15 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
             isMax = statValue === max;
           }
           return (
-            <Table.Cell key={id} className={`text-center ${isMax ? 'bg-success-color font-semibold' : ''}`}>{statValue}</Table.Cell>
+            <td key={id} className={`px-2 py-2 text-sm font-medium text-foreground text-center  ${isMax ? 'bg-green-100 rounded-lg font-bold' : ''}`}>{statValue}</td>
           );
         })}
-      </Table.Row>
+      </tr>
     );
   };
 
   const datasets = players.map(player => {
-    const changes = allChanges[player]|| [];
+    const changes = allChanges[player] || [];
     const sortedTransferChanges = [...changes].sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     })
@@ -131,7 +131,6 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
         },
         ticks: {
           autoSkip: true,
-          // maxTicksLimit: 10
         },
         title: {
           display: true,
@@ -149,66 +148,77 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
 
   return (
     <main className='flex-1 p-6'>
-      <div className='flex flex-wrap justify-center items-center gap-4 mb-8 p-4'>
-        {players.map((selectedPlayer, i) => {
-          return (
-            <div key={`player-${i}`} className='relative flex flex-col items-center gap-2'>
-              <select id={`player-${i}`} onChange={e => handlePlayerChange(e, i)} value={selectedPlayer}
-                className='block p-2 rounded-md shadow-sm bg-foreground text-panel-foreground'>
-                {allPlayers.filter(player => player.id === selectedPlayer || !players.includes(player.id)).map(player => (
-                  <option key={player.id} value={player.id}>
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-              {players.length > 2 &&
-                <button onClick={() => removePlayer(i)} className='text-danger-color p-1 absolute -top-2 -right-2 z-10'>
-                  <XCircleIcon className='h-5 w-5'></XCircleIcon>
-                </button>
-              }
-            </div>
-          );
-        })}
-        <button
-          onClick={addPlayer}
-          disabled={players.length >= maxCompares}
-          className={`flex items-center text-sm font-medium p-2 rounded-md shadow-sm 
-              ${players.length >= maxCompares
-              ? 'bg-disable-bg text-disable-text'
-              : 'bg-foreground text-background'}
-            `}>
-          <PlusCircleIcon className={`h-5 w-5 ${players.length >= maxCompares ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
-          Add Player
-        </button>
-      </div>
-      <h2 className='text-2xl font-semibold text-center'>Stats</h2>
-      <Table className='table-auto mt-4 mx-auto'>
-        <Table.Header>
-          <Table.HeaderRow>
-            <Table.HeaderCell></Table.HeaderCell>
-            {players.map(id => {
-              const playerStats = allStats[id];
+      <h2 className='text-2xl font-bold text-foreground mb-6'>Compare</h2>
+      <div className='grid grid-cols-2 gap-6'>
+        <div>
+          <Card className='flex flex-wrap justify-center items-center gap-4 p-4 mb-6'>
+            {players.map((selectedPlayer, i) => {
               return (
-                <Table.HeaderCell key={id} className='text-center text-primary-accent font-semibold'>
-                  <Link href={`/players/${id}`}>{playerStats.name}</Link>
-                </Table.HeaderCell>
+                <div key={`player-${i}`} className='relative flex flex-col items-center gap-2'>
+                  <select id={`player-${i}`} onChange={e => handlePlayerChange(e, i)} value={selectedPlayer}
+                    className='p-2 bg-white rounded-lg shadow-md border border-gray-200'>
+                    {allPlayers.filter(player => player.id === selectedPlayer || !players.includes(player.id)).map(player => (
+                      <option key={player.id} value={player.id}>
+                        {player.name}
+                      </option>
+                    ))}
+                  </select>
+                  {players.length > 2 &&
+                    <button onClick={() => removePlayer(i)} className='text-danger-color p-1 absolute -top-2 -right-2 z-10'>
+                      <XCircleIcon className='h-5 w-5'></XCircleIcon>
+                    </button>
+                  }
+                </div>
               );
             })}
-          </Table.HeaderRow>
-        </Table.Header>
-        <Table.Body>
-          {tableRow('Value', 'value')}
-          {tableRow('Games', 'games')}
-          {tableRow('Wins', 'wins')}
-          {tableRow('Win Percentage', 'win_percentage')}
-          {tableRow('Goals', 'goals')}
-          {tableRow('Assists', 'assists')}
-          {tableRow('Clean Sheets', 'clean_sheets')}
-        </Table.Body>
-      </Table>
-      <h2 className='text-2xl font-semibold text-center mt-24'>Market Value Over Time</h2>
-      <div className='h-96'>
-        <LineChart key={players.join('-')} data={transferData} options={transferOptions} />
+            <button
+              onClick={addPlayer}
+              disabled={players.length >= maxCompares}
+              className={`flex items-center block p-2 bg-white rounded-lg shadow-md border border-gray-200 
+              ${players.length >= maxCompares
+                  ? 'text-disable-text'
+                  : 'text-foreground'}
+            `}>
+              <PlusCircleIcon className={`h-5 w-5 ${players.length >= maxCompares ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
+              Add Player
+            </button>
+          </Card>
+          <Card className='p-6'>
+            <h3 className='text-lg font-bold text-foreground mb-6'>Stats</h3>
+            <table className='table-auto mt-4 mx-auto'>
+              <thead>
+                <tr>
+                  <th></th>
+                  {players.map(id => {
+                    const playerStats = allStats[id];
+                    return (
+                      <th key={id} className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>
+                        <Link href={`/players/${id}`}>{playerStats.name}</Link>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {tableRow('Value', 'value')}
+                {tableRow('Games', 'games')}
+                {tableRow('Wins', 'wins')}
+                {tableRow('Win Percentage', 'win_percentage')}
+                {tableRow('Goals', 'goals')}
+                {tableRow('Assists', 'assists')}
+                {tableRow('Clean Sheets', 'clean_sheets')}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+        <div>
+          <Card className='p-6'>
+            <h3 className='text-lg font-bold text-foreground mb-6'>Market Value Over Time</h3>
+            <div className='h-96'>
+              <LineChart key={players.join('-')} data={transferData} options={transferOptions} />
+            </div>
+          </Card>
+        </div>
       </div>
     </main>
   )

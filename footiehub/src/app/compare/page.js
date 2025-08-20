@@ -34,7 +34,6 @@ export default async function Compare() {
         firstPlayerId={players[0].id}
         secondPlayerId={players[1].id}
         thirdPlayerId={players[2].id}
-        fourthPlayerId={players[3].id}
         allChanges={playerTransferChanges}
       />
     )
