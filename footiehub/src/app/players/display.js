@@ -70,7 +70,7 @@ const Display = ({ stats }) => {
     <main className='flex-1 p-6'>
       <h2 className='text-2xl font-bold text-foreground mb-6'>Players</h2>
       <Card className='p-6'>
-        <div className='max-h-96 overflow-y-scroll'>
+        <div className='max-h-[calc(100vh-10rem)] overflow-y-scroll'>
           <table className='table-fixed w-full'>
             <thead>
               <tr>
