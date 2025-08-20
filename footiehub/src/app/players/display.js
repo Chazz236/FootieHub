@@ -52,6 +52,20 @@ const Display = ({ stats }) => {
     setSorter({ col, sort });
   };
 
+  const tableHeader = sort => {
+    return (
+      <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
+        <div className='flex items-center justify-center gap-1' onClick={() => changeSort(sort)}>
+          {sort === 'clean_sheets' ? 'Clean Sheets' : sort.charAt(0).toUpperCase() + sort.slice(1)}
+          {sorter.col !== sort && <ChevronUpDownIcon className='w-4 h-4' />}
+          {sorter.col === sort && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
+          {sorter.col === sort && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
+          {sorter.col === sort && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
+        </div>
+      </th>
+    );
+  };
+
   return (
     <main className='flex-1 p-6'>
       <h2 className='text-2xl font-bold text-foreground mb-6'>Players</h2>
@@ -60,60 +74,12 @@ const Display = ({ stats }) => {
           <table className='table-fixed w-full'>
             <thead>
               <tr>
-                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
-                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('name')}>
-                    Name
-                    {sorter.col !== 'name' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'name' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'name' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
-                    {sorter.col === 'name' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
-                  </div>
-                </th>
-                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
-                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('games')}>
-                    Games
-                    {sorter.col !== 'games' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'games' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'games' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
-                    {sorter.col === 'games' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
-                  </div>
-                </th>
-                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
-                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('goals')}>
-                    Goals
-                    {sorter.col !== 'goals' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'goals' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'goals' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
-                    {sorter.col === 'goals' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
-                  </div>
-                </th>
-                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
-                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('assists')}>
-                    Assists
-                    {sorter.col !== 'assists' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'assists' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'assists' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
-                    {sorter.col === 'assists' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
-                  </div>
-                </th>
-                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
-                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('clean_sheets')}>
-                    Clean Sheets
-                    {sorter.col !== 'clean_sheets' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'clean_sheets' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'clean_sheets' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
-                    {sorter.col === 'clean_sheets' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
-                  </div>
-                </th>
-                <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
-                  <div className='flex items-center justify-center gap-1' onClick={() => changeSort('value')}>
-                    Value
-                    {sorter.col !== 'value' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'value' && sorter.sort === 'none' && <ChevronUpDownIcon className='w-4 h-4' />}
-                    {sorter.col === 'value' && sorter.sort === 'ascending' && <ChevronUpIcon className='w-4 h-4' />}
-                    {sorter.col === 'value' && sorter.sort === 'descending' && <ChevronDownIcon className='w-4 h-4' />}
-                  </div>
-                </th>
+                {tableHeader('name')}
+                {tableHeader('games')}
+                {tableHeader('goals')}
+                {tableHeader('assists')}
+                {tableHeader('clean_sheets')}
+                {tableHeader('value')}
               </tr>
             </thead>
             <tbody>
