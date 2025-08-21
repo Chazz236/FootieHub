@@ -1,6 +1,6 @@
 import db from '@/db/mysql';
 
-export async function getMatches() { //maybe change query 2?
+export async function getMatches() {
     const query =
         `SELECT * FROM matches;`;
     const query2 =
@@ -20,6 +20,43 @@ export async function getMatches() { //maybe change query 2?
         return { matches, goals };
     } catch (error) {
         console.error('Error getting matches: ', error);
+        throw error;
+    }
+}
+
+export async function getMatchStats(id) {
+    const query =
+        `SELECT * FROM matches WHERE id = ?;`;
+    const query2 =
+        `SELECT
+players.id,
+players.name,
+player_performance.team,
+player_performance.goals,
+player_performance.assists,
+player_performance.value_change
+FROM player_performance
+JOIN players
+ON player_performance.player_id = players.id
+WHERE player_performance.match_id = ?;`;
+    const query3 = 
+    `SELECT 
+goal_contributions.id,
+scorer.name AS goal_scorer,
+assister.name AS assist_player
+FROM goal_contributions 
+JOIN players AS scorer
+ON scorer.id = goal_contributions.goal_scorer_id
+JOIN players AS assister
+ON assister.id = goal_contributions.assist_player_id
+WHERE match_id = ?;`;
+    try {
+        const [match] = await db.query(query, [id]);
+        const [stats] = await db.query(query2, [id]);
+        const [goals] = await db.query(query3, [id]);
+        return { match, stats, goals };
+    } catch (error) {
+        console.error('Error getting match: ', error);
         throw error;
     }
 }
