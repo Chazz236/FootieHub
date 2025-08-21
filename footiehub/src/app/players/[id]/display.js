@@ -143,11 +143,11 @@ const Display = ({ stats, transferChanges }) => {
 
   return (
     <main className='flex-1 p-6'>
-      <h1 className='text-2xl font-bold text-foreground mb-6'>{stats[0].name}</h1>
+      <h2 className='text-2xl font-bold text-foreground mb-6'>{stats[0].name}</h2>
       <div className='grid grid-cols-2 gap-6 items-start'>
         <Card className='p-6'>
           <div className='flex justify-between mb-4 '>
-            <h2 className='text-lg font-bold text-foreground'>Statistics</h2>
+            <h3 className='text-lg font-bold text-foreground'>Statistics</h3>
           </div>
           <table className='table-auto mb-8'>
             <thead>
@@ -187,8 +187,8 @@ const Display = ({ stats, transferChanges }) => {
         </Card>
         <Card className='p-6'>
           <div className='flex justify-between items-center'>
-            <h2 className='text-lg font-bold text-foreground'>Market Value:</h2>
-            <h2 className='text-lg font-bold text-foreground'>{marketValue}</h2>
+            <h3 className='text-lg font-bold text-foreground'>Market Value:</h3>
+            <h3 className='text-lg font-bold text-foreground'>{marketValue}</h3>
           </div>
           <h3 className='text-sm font-bold text-foreground text-right'>{marketDate}</h3>
           <LineChart data={transferData} options={transferOptions} />
