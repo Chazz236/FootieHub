@@ -51,8 +51,13 @@ const Display = ({ matches, goals }) => {
                         </div>
                       </div>
                     </td>
-                    <td className='p-4 text-sm text-foreground text-center align-top'>
-                      <span className={`${homeWins ? 'font-bold' : 'font-medium'}`}>{match.home_score}</span>-<span className={`${awayWins ? 'font-bold' : 'font-medium'}`}>{match.away_score}</span>
+                    <td className='p-4 text-sm text-foreground text-center align-top flex flex-col'>
+                      <div>
+                        <span className={`${homeWins ? 'font-bold' : 'font-medium'}`}>{match.home_score}</span>-<span className={`${awayWins ? 'font-bold' : 'font-medium'}`}>{match.away_score}</span>
+                      </div>
+                      <div >
+                        <Link href={`/matches/${match.id}`} className='text-xs text-primary-accent'>Details</Link>
+                      </div>
                     </td>
                     <td className='p-4 text-sm font-medium text-foreground text-left align-top'>
                       <div className='flex flex-col items-start'>
