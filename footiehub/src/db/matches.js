@@ -45,9 +45,9 @@ goal_contributions.id,
 scorer.name AS goal_scorer,
 assister.name AS assist_player
 FROM goal_contributions 
-JOIN players AS scorer
+LEFT JOIN players AS scorer
 ON scorer.id = goal_contributions.goal_scorer_id
-JOIN players AS assister
+LEFT JOIN players AS assister
 ON assister.id = goal_contributions.assist_player_id
 WHERE match_id = ?;`;
   try {

@@ -15,11 +15,14 @@ const Display = ({ match, stats, goals }) => {
   const homeTeam = stats.filter(player => player.team === 'home');
   const awayTeam = stats.filter(player => player.team === 'away');
 
-  const homeTeamNames = new Set(homeTeam.map(player => player.name));
-  const awayTeamNames = new Set(awayTeam.map(player => player.name));
+  for (let i = 0; i < goals.length; i++) {
+    if (goals[i].goal_scorer === null) {
+      goals[i].goal_scorer = 'Random';
+    }
+  }
 
-  const homeGoals = goals.filter(goal => homeTeamNames.has(goal.goal_scorer));
-  const awayGoals = goals.filter(goal => awayTeamNames.has(goal.goal_scorer));
+  const homeGoals = goals.slice(0, match.home_score);
+  const awayGoals = goals.slice(match.home_score, match.home_score + match.away_score);
 
   const valueChangeColor = valueChange => {
     if (valueChange > 0) {
@@ -47,7 +50,7 @@ const Display = ({ match, stats, goals }) => {
 
   const matchStats = (
     <div className='grid grid-cols-2 gap-6'>
-      <Card className='p-6'>
+      <Card className='p-4'>
         <h3 className='text-lg font-bold text-foreground mb-4'>Home</h3>
         <div className='max-h-80 overflow-y-scroll grid grid-cols-2 gap-6'>
           {homeTeam.map(player => (
@@ -66,7 +69,7 @@ const Display = ({ match, stats, goals }) => {
           ))}
         </div>
       </Card>
-      <Card className='p-6'>
+      <Card className='p-4'>
         <h3 className='text-lg font-bold text-foreground mb-4'>Away</h3>
         <div className='max-h-80 overflow-y-scroll grid grid-cols-2 gap-6'>
           {awayTeam.map(player => (
@@ -89,11 +92,11 @@ const Display = ({ match, stats, goals }) => {
   );
 
   const matchGoals = (
-    <Card className='p-6 border-none'>
+    <Card className='p-4 border-none'>
       <div className='max-h-80 overflow-y-scroll grid grid-cols-2 gap-6 ml-16'>
         <div>
           {homeGoals.map(goal => (
-            <div key={goal.id} className='mb-2 text-right'>
+            <div key={goal.id} className='mb-4 text-right'>
               <div className='flex text-sm justify-end'>
                 <span className='text-sm'>
                   {goal.goal_scorer}
@@ -102,6 +105,7 @@ const Display = ({ match, stats, goals }) => {
                   <img src='/ball.png' alt='Soccer Ball' className='inline-block w-3 h-3' />
                 </span>
               </div>
+              {goal.assist_player !== null &&
               <div className='flex text-sm justify-end'>
                 <span className='text-sm'>
                   {goal.assist_player}
@@ -110,12 +114,13 @@ const Display = ({ match, stats, goals }) => {
                   <img src='/shoe.png' alt='Soccer Shoe' className='inline-block w-3 h-3 transform -scale-x-100' />
                 </span>
               </div>
+              }
             </div>
           ))}
         </div>
         <div>
           {awayGoals.map(goal => (
-            <div key={goal.id} className='mb-2'>
+            <div key={goal.id} className='mb-4'>
               <div className='flex text-sm justify-start'>
                 <span className='text-sm'>
                   <img src='/ball.png' alt='Soccer Ball' className='inline-block w-3 h-3' />
@@ -124,6 +129,7 @@ const Display = ({ match, stats, goals }) => {
                   {goal.goal_scorer}
                 </span>
               </div>
+              {goal.assist_player !== null &&
               <div className='flex text-sm justify-start'>
                 <span className='text-sm'>
                   <img src='/shoe.png' alt='Soccer Shoe' className='inline-block w-3 h-3' />
@@ -132,6 +138,7 @@ const Display = ({ match, stats, goals }) => {
                   {goal.assist_player}
                 </span>
               </div>
+              }
             </div>
           ))}
         </div>
@@ -141,7 +148,7 @@ const Display = ({ match, stats, goals }) => {
 
   return (
     <main className='flex-1 p-6'>
-      <Card className='p-6 mb-6'>
+      <Card className='p-4 mb-4'>
         <div className='grid grid-cols-3'>
           <div className='text-left'>
             {new Date(match.date).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })}
@@ -157,10 +164,10 @@ const Display = ({ match, stats, goals }) => {
       </Card>
       <div>
         <div className='flex gap-2 px-6'>
-          <button onClick={() => setTab('matchStats')} className={`px-4 py-2 bg-white rounded-lg text-foreground ${tab === 'matchStats' ? 'font-semibold' : 'font-normal'}`}>
+          <button onClick={() => setTab('matchStats')} className={`px-2 py-1 bg-white rounded-lg text-foreground ${tab === 'matchStats' ? 'font-semibold' : 'font-normal'}`}>
             Match Facts
           </button>
-          <button onClick={() => setTab('matchGoals')} className={`px-4 py-2 bg-white rounded-lg text-foreground ${tab === 'matchGoals' ? 'font-semibold' : 'font-normal'}`}>
+          <button onClick={() => setTab('matchGoals')} className={`px-2 py-1 bg-white rounded-lg text-foreground ${tab === 'matchGoals' ? 'font-semibold' : 'font-normal'}`}>
             Goal Updates
           </button>
         </div>
