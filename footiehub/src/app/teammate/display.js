@@ -243,37 +243,33 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
                 </tbody>
               </table>
             ) : (
-              <p>Select A Player To View Teammate Data</p>
+              <p className='mt-6'>Player has not played with database players</p>
             )}
           </Card>
         </div>
         <div className='flex flex-col gap-6 my-auto'>
-          <Card className='p-0'>
-            {bestTeammateChartData ? (
-              <div>
-                <ScatterChart
-                  data={bestTeammateChartData}
-                  options={bestTeammateChartOptions}
-                />
-                <p className='text-xs text-gray-500 mx-auto'>Hover over points to view teammate data</p>
-              </div>
-            ) : (
-              <p>Select A Player To View Teammate Data</p>
-            )}
-          </Card>
-          <Card className='p-0'>
-            {teammateGoalsAssistsChartData ? (
-              <div>
-                <ScatterChart
-                  data={teammateGoalsAssistsChartData}
-                  options={teammateGoalsAssistsChartOptions}
-                />
-                <p className='text-xs text-gray-500 mx-auto'>Hover over points to view teammate data</p>
-              </div>
-            ) : (
-              <p>Select A Player To View Teammate Data</p>
-            )}
-          </Card>
+          {bestTeammateChartData ? (
+            <Card className='p-0'>
+              <ScatterChart
+                data={bestTeammateChartData}
+                options={bestTeammateChartOptions}
+              />
+              <p className='text-xs text-gray-500 mx-auto'>Hover over points to view teammate data</p>
+            </Card>
+          ) : (
+            <></>
+          )}
+          {teammateGoalsAssistsChartData ? (
+            <Card className='p-0'>
+              <ScatterChart
+                data={teammateGoalsAssistsChartData}
+                options={teammateGoalsAssistsChartOptions}
+              />
+              <p className='text-xs text-gray-500 mx-auto'>Hover over points to view teammate data</p>
+            </Card>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </main>
