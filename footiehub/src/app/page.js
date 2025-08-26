@@ -1,13 +1,23 @@
 import Link from 'next/link'
 import { getStats } from '@/db/playerStats';
 import Card from '@/app/components/ui/Card';
-import Players from './players/page';
-
 
 export default async function Home() {
 
   const stats = await getStats();
   const allPlayersStats = stats[0];
+
+  if (!allPlayersStats || allPlayersStats.length === 0) {
+    return (
+      <main className='flex-1 p-6'>
+        <div className='flex justify-center items-center h-full'>
+          <h2 className='text-2xl font-medium text-foreground -mt-16'>
+            Add some players and matches to see stats!
+          </h2>
+        </div>
+      </main>
+    );
+  }
 
   const getSortedPlayers = (players, stat) => {
     return [...players].sort((a, b) => b[stat] - a[stat]);
@@ -23,7 +33,7 @@ export default async function Home() {
     const min = Math.min(...values);
 
     if (max === min) {
-      return 0;
+      return () => 0;
     }
     return (value) => (value - min) / (max - min);
   })

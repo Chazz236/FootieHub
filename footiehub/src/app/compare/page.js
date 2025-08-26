@@ -6,6 +6,18 @@ export default async function Compare() {
   try {
     const players = await getPlayers();
 
+    if (!players || players.length === 0) {
+      return (
+        <main className='flex-1 p-6'>
+          <div className='flex justify-center items-center h-full'>
+            <h2 className='text-2xl font-medium text-foreground -mt-16'>
+              Add some players and matches to compare players!
+            </h2>
+          </div>
+        </main>
+      );
+    }
+
     const statsPromises = players.map(player => getStats(player.id));
     const allStatsResults = await Promise.all(statsPromises);
     const allPlayersStats = {};
@@ -13,7 +25,7 @@ export default async function Compare() {
       allPlayersStats[player.id] = allStatsResults[i][0];
     });
 
-  const transferChanges = await getTransferChanges();
+    const transferChanges = await getTransferChanges();
     const playerTransferChanges = transferChanges.reduce(
       (accumulator, currentValue) => {
         const id = currentValue.player_id;
@@ -25,7 +37,6 @@ export default async function Compare() {
       },
       {}
     );
-
 
     return (
       <Display

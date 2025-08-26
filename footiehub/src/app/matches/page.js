@@ -11,7 +11,19 @@ export default async function Matches() {
     const res = await getAllMatches();
     matches = res.matches;
     goals = res.goals;
-    
+
+    if (!matches || matches.length === 0) {
+      return (
+        <main className='flex-1 p-6'>
+          <div className='flex justify-center items-center h-full'>
+            <h2 className='text-2xl font-medium text-foreground -mt-16'>
+              Add some players and matches to see matches!
+            </h2>
+          </div>
+        </main>
+      );
+    }
+
     const sortedMatches = [...matches].sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     })
