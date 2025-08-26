@@ -29,7 +29,7 @@ const Display = ({ players }) => {
       setHomeGoals((goals) => {
         const updatedGoals = [...goals];
         while (homeScore > updatedGoals.length) {
-          updatedGoals.unshift({ goal_scorer_id: 0, assist_player_id: 0 });
+          updatedGoals.unshift({ goal_scorer_id: null, assist_player_id: null });
         }
         return updatedGoals;
       });
@@ -50,7 +50,7 @@ const Display = ({ players }) => {
       setAwayGoals((goals) => {
         const updatedGoals = [...goals];
         while (awayScore > updatedGoals.length) {
-          updatedGoals.unshift({ goal_scorer_id: 0, assist_player_id: 0 });
+          updatedGoals.unshift({ goal_scorer_id: null, assist_player_id: null });
         }
         return updatedGoals;
       });
@@ -63,8 +63,6 @@ const Display = ({ players }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(goalContributions);
 
     if (!Array.isArray(goalContributions)) {
       console.error('goalContributions is not an array:', goalContributions);
@@ -137,13 +135,13 @@ const Display = ({ players }) => {
 
   const handleHomeGoalContributionChange = (i, field, value) => {
     const updatedHomeGoalContributions = [...homeGoals];
-    updatedHomeGoalContributions[i][field] = parseInt(value, 10);
+    updatedHomeGoalContributions[i][field] = value === '' ? null : parseInt(value, 10);
     setHomeGoals(updatedHomeGoalContributions);
   }
 
   const handleAwayGoalContributionChange = (i, field, value) => {
     const updatedAwayGoalContributions = [...awayGoals];
-    updatedAwayGoalContributions[i][field] = parseInt(value, 10);
+    updatedAwayGoalContributions[i][field] = value === '' ? null : parseInt(value, 10);
     setAwayGoals(updatedAwayGoalContributions);
   }
 
@@ -208,7 +206,7 @@ const Display = ({ players }) => {
               <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
                 <div>
                   <label className='block text-xs font-medium text-foreground mb-1'>Goal</label>
-                  <select id={`home-goal-${i}`} value={contribution.goal_scorer_id} onChange={e => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                  <select id={`home-goal-${i}`} value={contribution.goal_scorer_id === null ? '' : contribution.goal_scorer_id} onChange={e => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
                     {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
@@ -217,7 +215,7 @@ const Display = ({ players }) => {
                 </div>
                 <div>
                   <label className='block text-xs font-medium text-foreground mb-1'>Assist</label>
-                  <select id={`home-assist-${i}`} value={contribution.assist_player_id} onChange={e => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                  <select id={`home-assist-${i}`} value={contribution.assist_player_id === null ? '' : contribution.assist_player_id} onChange={e => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
                     {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
@@ -235,7 +233,7 @@ const Display = ({ players }) => {
               <div key={i} className='mb-4 grid grid-cols-2 gap-4 items-center'>
                 <div>
                   <label className='block text-xs font-medium text-foreground mb-1'>Goal</label>
-                  <select id={`away-goal-${i}`} value={contribution.goal_scorer_id} onChange={e => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                  <select id={`away-goal-${i}`} value={contribution.goal_scorer_id === null ? '' : contribution.goal_scorer_id} onChange={e => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
                     {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
@@ -244,7 +242,7 @@ const Display = ({ players }) => {
                 </div>
                 <div>
                   <label className='block text-xs font-medium text-foreground mb-1'>Assist</label>
-                  <select id={`away-assist-${i}`} value={contribution.assist_player_id} onChange={e => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                  <select id={`away-assist-${i}`} value={contribution.assist_player_id === null ? '' : contribution.assist_player_id} onChange={e => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
                     {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
