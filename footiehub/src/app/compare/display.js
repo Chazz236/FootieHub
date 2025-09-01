@@ -116,7 +116,7 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
     maintainAspectRatio: false,
     plugins: {
       tooltip: {
-        mode: 'index',
+        mode: 'nearest',
         intersect: false,
       },
     },
