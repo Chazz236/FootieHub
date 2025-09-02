@@ -141,8 +141,7 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, homeS
       const draw = homeScore === awayScore ? 1 : 0;
       const goalDifference = team === 'home' ? (homeScore - awayScore) : (awayScore - homeScore);
       const cleanSheet = team === 'home' ? (awayScore === 0 ? 1 : 0) : (homeScore === 0 ? 1 : 0);
-      console.log(`${goals} * 1000000 + ${assists} * 500000 + ${win} * 5000000 + ${loss} * -3000000 + ${draw} * 1000000 + ${goalDifference} * 1000000 + ${cleanSheet} * 2000000;`);
-      const valueChange = goals * 1000000 + assists * 500000 + win * 5000000 + loss * -3000000 + draw * 1000000 + goalDifference * 1000000 + cleanSheet * 2000000;
+      const valueChange = goals * 1000000 + assists * 500000 + win * 4000000 + loss * -4000000 + draw * 750000 + goalDifference * 500000 + cleanSheet * 2500000;
       values.push({ id, valueChange });
       return connection.query(query2, [id, matchID, team, goals, assists, valueChange, goals, assists, valueChange]);
     });
