@@ -2,11 +2,14 @@ import db from '@/db/mysql';
 
 export async function getPlayerTransferChanges(id) {
     const query =
-        `SELECT value_change, date 
+        `SELECT
+  player_performance.value_change,
+  matches.date
 FROM player_performance
 LEFT JOIN matches
-ON player_performance.match_id = matches.id
-WHERE player_performance.player_id = ?;`;
+  ON player_performance.match_id = matches.id
+WHERE player_performance.player_id = ?
+ORDER BY matches.date ASC;`;
     try {
         return await db.query(query, [id]);
     } catch (error) {
