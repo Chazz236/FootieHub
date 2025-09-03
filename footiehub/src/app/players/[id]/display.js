@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DoughnutChart from '@/app/components/charts/DoughnutChart';
 import LineChart from '@/app/components/charts/LineChart';
 import Card from '@/app/components/ui/Card'
@@ -9,7 +9,7 @@ const doughnutChartConfig = (games, value, colour, title) => {
   const data = {
     datasets: [
       {
-        data: [value, games - value],
+        data: games > 0 ? [value, games - value] : [0, 1],
         backgroundColor: [colour, 'rgb(252, 252, 252)'],
         borderWidth: 0
       }
@@ -45,31 +45,43 @@ const doughnutChartConfig = (games, value, colour, title) => {
   return { data, options };
 }
 
-
-const Display = ({ stats, transferChanges }) => {
+const Display = ({ transferChanges, yearStats }) => {
 
   const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
 
-  const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(stats[0].value)}`);
-  const [marketDate, setMarketDate] = useState(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`)
+  const [games, setGames] = useState(yearStats.get('All Time').games);
+  const [wins, setWins] = useState(yearStats.get('All Time').wins);
+  const [draws, setDraws] = useState(yearStats.get('All Time').draws);
+  const [losses, setLosses] = useState(yearStats.get('All Time').losses);
+  const [cleanSheets, setCleanSheets] = useState(yearStats.get('All Time').clean_sheets);
+  const [goals, setGoals] = useState(yearStats.get('All Time').goals);
+  const [assists, setAssists] = useState(yearStats.get('All Time').assists);
+  const [value, setValue] = useState(yearStats.get('All Time').value);
 
-  const gamesChart = doughnutChartConfig(stats[0].games, stats[0].games, 'rgb(31, 41, 55)', 'Games');
-  const winsChart = doughnutChartConfig(stats[0].games, stats[0].wins, 'rgb(22, 151, 87)', 'Wins');
-  const drawsChart = doughnutChartConfig(stats[0].games, stats[0].draws, 'rgb(132, 151, 22)', 'Draws');
-  const lossesChart = doughnutChartConfig(stats[0].games, stats[0].losses, 'rgb(151, 37, 22)', 'Losses');
+  const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(yearStats.get('All Time').value)}`);
+  const [marketDate, setMarketDate] = useState(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
+
+  const [selectedYear, setSelectedYear] = useState('All Time');
+
+  const gamesChart = doughnutChartConfig(games, games, 'rgb(31, 41, 55)', 'Games');
+  const winsChart = doughnutChartConfig(games, wins, 'rgb(22, 151, 87)', 'Wins');
+  const drawsChart = doughnutChartConfig(games, draws, 'rgb(132, 151, 22)', 'Draws');
+  const lossesChart = doughnutChartConfig(games, losses, 'rgb(151, 37, 22)', 'Losses');
+
+  const win_percentage = games === 0 ? 0 : (wins / games * 100).toFixed(2);
 
   const sortedTransferChanges = [...transferChanges].sort((a, b) => {
     return new Date(b.date) - new Date(a.date);
   })
-  let value = stats[0].value;
+  let value1 = value;
   const values = [];
 
   const transferData = {
     datasets: [
       {
         data: sortedTransferChanges.map(change => {
-          values.unshift(value);
-          value -= change.value_change;
+          values.unshift(value1);
+          value1 -= change.value_change;
           return {
             x: new Date(change.date),
             y: values[0]
@@ -126,7 +138,7 @@ const Display = ({ stats, transferChanges }) => {
         const value = hoveredPoint.y;
         const lastDate = new Date(transferChanges[transferChanges.length - 1].date);
 
-        if (date.getTime() === lastDate.getTime() && value === stats[0].value ) {
+        if (date.getTime() === lastDate.getTime() && value === value) {
           setMarketDate(`As of ${lastDate.toLocaleDateString('en-US', dateOptions)}`);
         }
         else {
@@ -135,19 +147,43 @@ const Display = ({ stats, transferChanges }) => {
 
         setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
       } else {
-        setMarketValue(`\$${Intl.NumberFormat().format(stats[0].value)}`);
+        setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
         setMarketDate(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
       }
     }
   };
 
+  useEffect(() => {
+    console.log(typeof(selectedYear));
+    setGames(yearStats.get(selectedYear).games);
+    setWins(yearStats.get(selectedYear).wins);
+    setDraws(yearStats.get(selectedYear).draws);
+    setLosses(yearStats.get(selectedYear).losses);
+    setCleanSheets(yearStats.get(selectedYear).clean_sheets);
+    setGoals(yearStats.get(selectedYear).goals);
+    setAssists(yearStats.get(selectedYear).assists);
+    setValue(yearStats.get(selectedYear).value);
+  }, [selectedYear]);
+
+  const handleYearChange = (e) => {
+    const year = e.target.value === 'All Time' ? e.target.value : Number(e.target.value);
+    setSelectedYear(year);
+  };
+
   return (
     <main className='flex-1 p-6'>
-      <h2 className='text-2xl font-bold text-foreground mb-6'>{stats[0].name}</h2>
+      <h2 className='text-2xl font-bold text-foreground mb-6'>{yearStats.get('All Time').name}</h2>
       <div className='grid grid-cols-2 gap-6 items-start'>
         <Card className='p-6'>
-          <div className='flex justify-between mb-4 '>
+          <div className='flex justify-between mb-4'>
             <h3 className='text-lg font-bold text-foreground'>Statistics</h3>
+            <div>
+              <select value={selectedYear} onChange={handleYearChange} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                {[...yearStats.keys()].map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <table className='table-auto mb-8'>
             <thead>
@@ -159,22 +195,21 @@ const Display = ({ stats, transferChanges }) => {
                 <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Assists/Game</th>
                 <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Win Percentage</th>
                 <th className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>Clean Sheets</th>
-
               </tr>
             </thead>
             <tbody>
-              <tr key={stats.name}>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].games}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].goals}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].assists}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].games > 0 ? (stats[0].goals / stats[0].games).toFixed(2) : 0}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].games > 0 ? (stats[0].assists / stats[0].games).toFixed(2) : 0}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].win_percentage.toFixed(2)}%</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{stats[0].clean_sheets}</td>
+              <tr key={yearStats.get('All Time').name}>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{games}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{goals}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{assists}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{games > 0 ? (goals / games).toFixed(2) : 0}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{games > 0 ? (assists / games).toFixed(2) : 0}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{win_percentage}%</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{cleanSheets}</td>
               </tr>
             </tbody>
           </table>
-          {stats && stats.length > 0 ? (
+          {yearStats && yearStats.size > 0 ? (
             <div className='flex mb-14 justify-between'>
               <div className='w-24 h-24'><DoughnutChart data={gamesChart.data} options={gamesChart.options} /></div>
               <div className='w-24 h-24'><DoughnutChart data={winsChart.data} options={winsChart.options} /></div>

@@ -25,13 +25,13 @@ export default async function Player({ params }) {
     }
 
     const statsMap = new Map();
-    statsMap.set('All Time', stats)
+    statsMap.set('All Time', stats[0])
 
     const yearsArray = years.map(y => y.year);
 
     for (const y of yearsArray) {
       let yearStats = await getStats(id, y);
-      statsMap.set(y, yearStats);
+      statsMap.set(y, yearStats[0]);
     }
 
     if (transferChanges && transferChanges.length > 0) {
@@ -49,18 +49,19 @@ export default async function Player({ params }) {
         value += valueChange.value_change;
       }
 
-      yearValues[year] = yearValues['All Time'] = value;
+      yearValues[year] = value;
+      statsMap.get('All Time').value = value;
 
       statsMap.forEach((yearStats, key) => {
-        yearStats[0].value = yearValues[key];
+        if (key !== 'All Time') {
+          yearStats.value = yearValues[key];
+        }
       });
-      console.log(statsMap);
     }
     else {
       statsMap.forEach(yearStats => {
-        yearStats[0].value = 10000000;
+        yearStats.value = 10000000;
       });
-      console.log(statsMap);
     }
 
     const playerTransferChanges = transferChanges && transferChanges.length > 0 ? transferChanges : [{
