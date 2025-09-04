@@ -1,9 +1,13 @@
 import { getAllStats } from '@/lib/data/stats';
+import { getTransferChanges } from '@/lib/data/transfers';
 import Display from './display';
 
 const Players = async () => {
   try {
-    const stats = await getAllStats();
+    const [stats, transferChanges] = await Promise.all([
+      getAllStats(),
+      getTransferChanges(),
+    ]);
 
     if (!stats || stats.length === 0) {
       return (
@@ -15,6 +19,24 @@ const Players = async () => {
           </div>
         </main>
       );
+    }
+
+    let i = 0;
+    for (let j = 0; j < stats.length; j++) {
+      if (j > 0 && stats[j].id === stats[j - 1].id) {
+        stats[j].value = stats[j - 1].value;
+      }
+      else {
+        stats[j].value = 10000000;
+      }
+
+      if (stats[j].year === null) {
+        continue;
+      }
+      while (i < transferChanges.length && transferChanges[i].player_id === stats[j].id && new Date(transferChanges[i].date).getFullYear() === stats[j].year) {
+        stats[j].value += transferChanges[i].value_change;
+        i++;
+      }
     }
 
     return (
