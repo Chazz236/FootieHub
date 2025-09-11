@@ -7,44 +7,69 @@ import { XCircleIcon } from '@heroicons/react/20/solid';
 import LineChart from '../components/charts/LineChart';
 import Card from '@/app/components/ui/Card';
 
-const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPlayerId, allChanges }) => {
-  const [players, setPlayers] = useState([firstPlayerId, secondPlayerId, thirdPlayerId]);
+const Display = ({ players, stats }) => {
+  const [comparePlayers, setComparePlayers] = useState(players.slice(0, 3));
+  const [compareStats, setCompareStats] = useState(stats.slice(0, 3));
 
   const maxCompares = 3;
 
-  const handlePlayerChange = async (e, player) => {
+  const handlePlayerChange = async (e, i) => {
     const id = parseInt(e.target.value);
-    setPlayers(prevPlayers => {
+    setComparePlayers(prevPlayers => {
       const newPlayers = [...prevPlayers];
-      newPlayers[player] = id;
+      newPlayers[i] = players.find(player => player.id === id);
       return newPlayers;
-    })
+    });
+    setCompareStats(prevStats => {
+      const newStats = [...prevStats];
+      newStats[i] = stats.find(player => player.id === id);
+      return newStats;
+    });
+  };
+
+  const handleYearChange = async (e, i) => {
+    const year = e.target.value === 'All Time' ? e.target.value : Number(e.target.value);
+    const comparePlayer = { ...comparePlayers[i], compareYear: year };
+    setComparePlayers(prevPlayers => {
+      const newPlayers = [...prevPlayers];
+      newPlayers[i] = comparePlayer;
+      return newPlayers;
+    });
+    setCompareStats(prevStats => {
+      const newStats = [...prevStats];
+      if (year === 'All Time') {
+        newStats[i] = stats.find(player => player.id === comparePlayer.id);
+      }
+      else {
+        newStats[i] = stats.find(player => player.id === comparePlayer.id && player.year === year);
+      }
+      return newStats;
+    });
   };
 
   const addPlayer = () => {
-    if (players.length < maxCompares) {
-      const player = allPlayers.find(player => !players.includes(player.id));
-      setPlayers(prevPlayers => [...prevPlayers, player.id]);
+    if (comparePlayers.length < maxCompares) {
+      const player = players[0];
+      const playerStats = stats[0];
+      setComparePlayers(prevPlayers => [...prevPlayers, player]);
+      setCompareStats(prevStats => [...prevStats, playerStats]);
     }
   };
 
   const removePlayer = (index) => {
-    setPlayers(prevPlayers => prevPlayers.filter((_, i) => i !== index));
+    setComparePlayers(prevPlayers => prevPlayers.filter((_, i) => i !== index));
+    setCompareStats(prevStats => prevStats.filter((_, i) => i !== index));
   };
 
   const getMaxStat = (stat) => {
     let max = -Infinity;
-    players.forEach(id => {
-      const stats = allStats[id];
-      if (!stats) {
-        return;
-      }
+    compareStats.forEach(compareStat => {
       if (stat === 'win_percentage') {
-        const winPercentage = stats.games > 0 ? stats.wins / stats.games * 100 : 0;
+        const winPercentage = compareStat.games > 0 ? compareStat.wins / compareStat.games * 100 : 0;
         max = Math.max(max, winPercentage);
       }
       else {
-        max = Math.max(max, stats[stat]);
+        max = Math.max(max, compareStat[stat]);
       }
     });
     return max;
@@ -54,22 +79,16 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
     return (
       <tr>
         <td className='px-2 py-2 text-sm font-bold text-foreground text-left'>{statName}</td>
-        {players.map(id => {
-          const stats = allStats[id];
-          if (!stats) {
-            return (
-              <td key={id} className='px-2 py-2 text-sm font-medium text-foreground text-center'>N/A</td>
-            );
-          }
+        {compareStats.map((compareStat, i) => {
           const max = getMaxStat(stat);
-          let statValue = stats[stat];
+          let statValue = compareStat[stat];
           let isMax = false;
           if (statName === 'Value') {
             isMax = statValue === max;
             statValue = `$${Intl.NumberFormat().format(statValue)}`;
           }
           else if (statName === 'Win Percentage') {
-            statValue = stats.games > 0 ? stats.wins / stats.games * 100 : 0;
+            statValue = compareStat.games > 0 ? compareStat.wins / compareStat.games * 100 : 0;
             isMax = statValue.toFixed(2) === max.toFixed(2);
             statValue = `${statValue.toFixed(2)}%`;
           }
@@ -77,19 +96,18 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
             isMax = statValue === max;
           }
           return (
-            <td key={id} className={`px-2 py-2 text-sm font-medium text-foreground text-center  ${isMax ? 'bg-green-100 rounded-lg font-bold' : ''}`}>{statValue}</td>
+            <td key={`${statName}-${i}`} className={`px-2 py-2 text-sm font-medium text-foreground text-center  ${isMax ? 'bg-green-100 rounded-lg font-bold' : ''}`}>{statValue}</td>
           );
         })}
       </tr>
     );
   };
 
-  const datasets = players.map(player => {
-    const changes = allChanges[player] || [];
-    const sortedTransferChanges = [...changes].sort((a, b) => {
+  const datasets = compareStats.map(stats => {
+    const sortedTransferChanges = stats.transferChanges.sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
-    })
-    let value = allPlayers[player - 1].value;
+    });
+    let value = stats.value;
     const values = [];
     const points = sortedTransferChanges.map(change => {
       values.unshift(value);
@@ -100,11 +118,11 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
       };
     });
     return {
-      label: allPlayers[player - 1].name,
+      label: stats.name,
       data: points,
       tension: 0.1,
       fill: false
-    }
+    };
   });
 
   const transferData = {
@@ -117,8 +135,11 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
     plugins: {
       tooltip: {
         mode: 'nearest',
-        intersect: false,
+        intersect: false
       },
+      colors: {
+        forceOverride: true
+      }
     },
     scales: {
       x: {
@@ -126,24 +147,24 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
         time: {
           unit: 'month',
           displayFormats: {
-            month: 'MMM',
-          },
+            month: 'MMM'
+          }
         },
         ticks: {
-          autoSkip: true,
+          autoSkip: true
         },
         title: {
           display: true,
-          text: 'Month',
-        },
+          text: 'Month'
+        }
       },
       y: {
         title: {
           display: true,
-          text: 'Value',
-        },
-      },
-    },
+          text: 'Value'
+        }
+      }
+    }
   };
 
   return (
@@ -152,34 +173,42 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
       <div className='grid grid-cols-2 gap-6'>
         <div>
           <Card className='flex flex-wrap justify-center items-center gap-4 p-4 mb-6'>
-            {players.map((selectedPlayer, i) => {
-              return (
-                <div key={`player-${i}`} className='relative flex flex-col items-center gap-2'>
-                  <select id={`player-${i}`} onChange={e => handlePlayerChange(e, i)} value={selectedPlayer}
-                    className='p-2 bg-white rounded-lg shadow-md border border-gray-200'>
-                    {allPlayers.filter(player => player.id === selectedPlayer || !players.includes(player.id)).map(player => (
-                      <option key={player.id} value={player.id}>
-                        {player.name}
+            {comparePlayers.map((selectedPlayer, i) => (
+              <div key={`${i}-name`} className='relative flex flex-col items-center gap-2'>
+                <select id={selectedPlayer.id} onChange={e => handlePlayerChange(e, i)} value={selectedPlayer.id}
+                  className='p-2 bg-white rounded-lg shadow-md border border-gray-200'>
+                  {players.map(player => (
+                    <option key={player.id} value={player.id}>
+                      {player.name}
+                    </option>
+                  ))}
+                </select>
+                <select id={`${i}-years`} onChange={e => handleYearChange(e, i)} value={selectedPlayer.compareYear}
+                  className='p-2 bg-white rounded-lg shadow-md border border-gray-200'>
+                  {players.filter(player => player.id === selectedPlayer.id).map(player => (
+                    player.years.map(year => (
+                      <option key={`${player.id}-${year}`} value={year}>
+                        {year}
                       </option>
-                    ))}
-                  </select>
-                  {players.length > 2 &&
-                    <button onClick={() => removePlayer(i)} className='text-danger-color p-1 absolute -top-2 -right-2 z-10'>
-                      <XCircleIcon className='h-5 w-5'></XCircleIcon>
-                    </button>
-                  }
-                </div>
-              );
-            })}
+                    ))
+                  ))}
+                </select>
+                {comparePlayers.length > 2 &&
+                  <button onClick={() => removePlayer(i)} className='text-danger-color p-1 absolute -top-2 -right-2 z-10'>
+                    <XCircleIcon className='h-5 w-5'></XCircleIcon>
+                  </button>
+                }
+              </div>
+            ))}
             <button
               onClick={addPlayer}
-              disabled={players.length >= maxCompares}
+              disabled={comparePlayers.length >= maxCompares}
               className={`flex items-center block p-2 bg-white rounded-lg shadow-md border border-gray-200 
-              ${players.length >= maxCompares
+              ${comparePlayers.length >= maxCompares
                   ? 'text-disable-text'
                   : 'text-foreground'}
             `}>
-              <PlusCircleIcon className={`h-5 w-5 ${players.length >= maxCompares ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
+              <PlusCircleIcon className={`h-5 w-5 ${comparePlayers.length >= maxCompares ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
               Add Player
             </button>
           </Card>
@@ -189,11 +218,10 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
               <thead>
                 <tr>
                   <th></th>
-                  {players.map(id => {
-                    const playerStats = allStats[id];
+                  {compareStats.map((stat, i) => {
                     return (
-                      <th key={id} className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>
-                        <Link href={`/players/${id}`}>{playerStats.name}</Link>
+                      <th key={`${i}-${stat.year}`} className='px-2 py-2 text-center text-xs font-bold text-foreground uppercase'>
+                        <Link href={`/players/${stat.id}`}>{stat.name}</Link>
                       </th>
                     );
                   })}
@@ -215,7 +243,7 @@ const Display = ({ allPlayers, allStats, firstPlayerId, secondPlayerId, thirdPla
           <Card className='p-6'>
             <h3 className='text-lg font-bold text-foreground mb-6'>Market Value Over Time</h3>
             <div className='h-96'>
-              <LineChart key={players.join('-')} data={transferData} options={transferOptions} />
+              <LineChart data={transferData} options={transferOptions} />
             </div>
           </Card>
         </div>

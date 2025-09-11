@@ -1,12 +1,17 @@
-import { getPlayers, getStats } from '@/lib/data/players';
+import { getPlayers } from '@/lib/data/players';
+import { getAllStats } from '@/lib/data/stats';
 import { getTransferChanges } from '@/lib/data/transfers';
 import Display from './display'
 
 export default async function Compare() {
   try {
-    const players = await getPlayers();
+    const [stats, players, transferChanges] = await Promise.all([
+      getAllStats(),
+      getPlayers(),
+      getTransferChanges()
+    ]);
 
-    if (!players || players.length === 0) {
+    if (!players || players.length === 0 || !stats || stats.length === 0) {
       return (
         <main className='flex-1 p-6'>
           <div className='flex justify-center items-center h-full'>
@@ -18,34 +23,68 @@ export default async function Compare() {
       );
     }
 
-    const statsPromises = players.map(player => getStats(player.id));
-    const allStatsResults = await Promise.all(statsPromises);
-    const allPlayersStats = {};
-    players.forEach((player, i) => {
-      allPlayersStats[player.id] = allStatsResults[i][0];
+    let i = 0;
+    for (let j = 0; j < stats.length; j++) {
+      if (j > 0 && stats[j].id === stats[j - 1].id) {
+        stats[j].value = stats[j - 1].value;
+      }
+      else {
+        stats[j].value = 10000000;
+      }
+      stats[j].transferChanges = [];
+      if (stats[j].year === null) {
+        continue;
+      }
+      while (i < transferChanges.length && transferChanges[i].player_id === stats[j].id && new Date(transferChanges[i].date).getFullYear() === stats[j].year) {
+        stats[j].value += transferChanges[i].value_change;
+        stats[j].transferChanges.push(transferChanges[i]);
+        i++;
+      }
+    }
+
+    const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
+      const { id, name, games, wins, clean_sheets, goals, assists, value, transferChanges } = currentStats;
+      if (!accumulator[name]) {
+        accumulator[name] = { id, name, games, wins, clean_sheets, goals, assists, value, transferChanges, year: 'All Time' };
+      }
+      else {
+        accumulator[name].games += games;
+        accumulator[name].wins += wins;
+        accumulator[name].clean_sheets += clean_sheets;
+        accumulator[name].goals += goals;
+        accumulator[name].assists += assists;
+        accumulator[name].value = value;
+        accumulator[name].transferChanges = [...accumulator[name].transferChanges, transferChanges].flat();
+      }
+      return accumulator;
+    }, {}));
+
+    const yearsMap = new Map();
+
+    stats.forEach(stat => {
+      if (!yearsMap.has(stat.id)) {
+        yearsMap.set(stat.id, []);
+      }
+      let years = yearsMap.get(stat.id);
+      if (!years.includes('All Time')) {
+        yearsMap.get(stat.id).push('All Time');
+      }
+      if (stat.year !== null) {
+        yearsMap.get(stat.id).push(stat.year);
+      }
     });
 
-    const transferChanges = await getTransferChanges();
-    const playerTransferChanges = transferChanges.reduce(
-      (accumulator, currentValue) => {
-        const id = currentValue.player_id;
-        if (!accumulator[id]) {
-          accumulator[id] = []
-        }
-        accumulator[id].push(currentValue);
-        return accumulator;
-      },
-      {}
-    );
+    players.forEach(player => {
+      player.years = yearsMap.get(player.id);
+      player.compareYear = player.years[0];
+    });
+
+    const allStats = [...allTimeStats, ...stats];
 
     return (
       <Display
-        allPlayers={players}
-        allStats={allPlayersStats}
-        firstPlayerId={players[0].id}
-        secondPlayerId={players[1].id}
-        thirdPlayerId={players[2].id}
-        allChanges={playerTransferChanges}
+        players={players}
+        stats={allStats}
       />
     )
   } catch (error) {
