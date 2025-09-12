@@ -1,5 +1,9 @@
+'use client'
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Card from '@/app/components/ui/Card';
+import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 
 const DisplayGoals = ({ goals }) => (
   <>
@@ -20,6 +24,11 @@ const DisplayGoals = ({ goals }) => (
 
 const Display = ({ matches, goals }) => {
 
+  const years = ['All Time', ...new Set(matches.map(match => new Date(match.date).getFullYear()).filter(year => year !== null).sort())];
+  const [year, setYear] = useState(years[0]);
+  const [yearMatches, setYearMatches] = useState(matches);
+  
+
   const getGoals = (match, team) => {
     const teamGoals = goals.filter((goal) => goal.team === team && goal.match_id === match.id && goal.goals > 0);
     const totalGoals = teamGoals.reduce((sum, goal) => sum + goal.goals, 0);
@@ -38,9 +47,34 @@ const Display = ({ matches, goals }) => {
     return allGoals;
   }
 
+  const handleYearChange = (dir) => {
+    let i = years.indexOf(year);
+    if (dir === 'next') {
+      i = (i + 1) % years.length;
+    }
+    else {
+      i = (i - 1 + years.length) % years.length;
+    }
+    const newYear = years[i];
+    setYear(newYear);
+    if (newYear !== 'All Time') {
+      setYearMatches(matches.filter(match => new Date(match.date).getFullYear() === newYear));
+    }
+    else {
+      setYearMatches(matches);
+    }
+  };
+
   return (
     <main className='flex-1 p-6'>
-      <h2 className='text-2xl font-bold text-foreground mb-6'>Matches</h2>
+      <div className='flex justify-between'>
+        <h2 className='text-2xl font-bold text-foreground mb-6'>Matches</h2>
+        <div className='flex items-start'>
+          <ChevronLeftIcon className='w-8 h-8 p-1 cursor-pointer' onClick={() => handleYearChange('prev')} />
+          <h3 className='text-lg font-bold text-foreground w-24 text-center'>{year}</h3>
+          <ChevronRightIcon className='w-8 h-8 p-1 cursor-pointer' onClick={() => handleYearChange('next')} />
+        </div>
+      </div>
       <Card className='p-6'>
         <div className='h-[calc(100vh-10rem)] overflow-y-scroll'>
           <table className='table-fixed w-full mx-auto'>
@@ -53,7 +87,7 @@ const Display = ({ matches, goals }) => {
               </tr>
             </thead>
             <tbody>
-              {matches.map(match => {
+              {yearMatches.map(match => {
 
                 const homeWins = match.home_score > match.away_score;
                 const awayWins = match.away_score > match.home_score;
