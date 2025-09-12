@@ -23,69 +23,47 @@ export async function addPlayer(name) {
   }
 }
 
-export async function getPlayerStats(id, year = null) {
-
-  let yearCondition = '';
-  const params = [id];
-
-  if (year !== null) {
-    yearCondition = 'AND YEAR(matches.date) = ?';
-    params.push(year);
-  }
-
+export async function getPlayerStats(id) {
   const query =
     `SELECT
-      players.name AS name,
-      COALESCE(COUNT(player_performance.match_id), 0) AS games,
-      COALESCE(SUM(CASE
+    players.id AS id,
+    players.name AS name,
+    YEAR(matches.date) AS year,
+    COUNT(player_performance.match_id) AS games,
+      CAST(COALESCE(SUM(CASE
         WHEN (player_performance.team = 'home' AND matches.home_score > matches.away_score) OR (player_performance.team = 'away' AND matches.away_score > matches.home_score)
         THEN 1
         ELSE 0
-      END), 0) AS wins,
-      COALESCE(SUM(CASE
-        WHEN (matches.home_score = matches.away_score)
+      END), 0) AS UNSIGNED) AS wins,
+      CAST(COALESCE(SUM(CASE
+        WHEN (matches.away_score = matches.home_score)
         THEN 1
         ELSE 0
-      END), 0) AS draws,
-      COALESCE(SUM(CASE
+      END), 0) AS UNSIGNED) AS draws,
+      CAST(COALESCE(SUM(CASE
         WHEN (player_performance.team = 'home' AND matches.home_score < matches.away_score) OR (player_performance.team = 'away' AND matches.away_score < matches.home_score)
         THEN 1
         ELSE 0
-      END), 0) AS losses,
-      COALESCE(SUM(CASE
+      END), 0) AS UNSIGNED) AS losses,
+      CAST(COALESCE(SUM(CASE
         WHEN (player_performance.team = 'home' AND matches.away_score = 0) OR (player_performance.team = 'away' AND matches.home_score = 0)
         THEN 1
         ELSE 0
-      END), 0) AS clean_sheets,
-      CAST(COALESCE(SUM(player_performance.goals), 0) AS UNSIGNED) AS goals,
-      CAST(COALESCE(SUM(player_performance.assists), 0) AS UNSIGNED) AS assists
-    FROM players
-    LEFT JOIN player_performance 
-      ON players.id = player_performance.player_id
-    LEFT JOIN matches
-      ON matches.id = player_performance.match_id
-    WHERE players.id = ? ${yearCondition}
-    GROUP BY players.id;`;
+      END), 0) AS UNSIGNED) AS clean_sheets,
+    CAST(COALESCE(SUM(player_performance.goals), 0) AS UNSIGNED) AS goals,
+    CAST(COALESCE(SUM(player_performance.assists), 0) AS UNSIGNED) AS assists
+FROM players
+LEFT JOIN player_performance 
+    ON players.id = player_performance.player_id
+LEFT JOIN matches
+    ON matches.id = player_performance.match_id
+WHERE players.id = ?
+GROUP BY year
+ORDER BY year DESC;`;
   try {
-    return await db.query(query, params);
+    return await db.query(query, [id]);
   } catch (error) {
     console.error('Error getting stats: ', error);
-    throw error;
-  }
-}
-
-export async function getPlayedYears(id) {
-  const query =
-    `SELECT DISTINCT YEAR(matches.date) AS year
-FROM matches
-JOIN player_performance
-	ON matches.id = player_performance.match_id
-WHERE player_performance.player_id = ?`;
-  try {
-    const [years] = await db.query(query, [id]);
-    return { years };
-  } catch (error) {
-    console.error('Error getting matches: ', error);
     throw error;
   }
 }

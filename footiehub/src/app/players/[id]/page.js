@@ -6,10 +6,9 @@ export default async function Player({ params }) {
 
   try {
     const id = (await params).id;
-    const [stats, transferChanges, years] = await Promise.all([
+    const [stats, transferChanges] = await Promise.all([
       getStats(id),
       getPlayerChanges(id),
-      getYears(id)
     ]);
 
     if (!stats || stats.length === 0 || !stats[0].name) {
@@ -24,53 +23,63 @@ export default async function Player({ params }) {
       );
     }
 
-    const statsMap = new Map();
-    statsMap.set('All Time', stats[0])
+    //fix value, its always 10 mil
+    // let i = 0;
+    // for (let j = 0; j < stats.length; j++) {
+    //   if (j > 0 && stats[j].id === stats[j - 1].id) {
+    //     stats[j].value = stats[j - 1].value;
+    //   }
+    //   else {
+    //     stats[j].value = 10000000;
+    //   }
+    //   stats[j].transferChanges = [];
+    //   if (stats[j].year === null) {
+    //     continue;
+    //   }
+    //   while (i < transferChanges.length && transferChanges[i].player_id === stats[j].id && new Date(transferChanges[i].date).getFullYear() === stats[j].year) {
+    //     stats[j].value += transferChanges[i].value_change;
+    //     stats[j].transferChanges.push(transferChanges[i]);
+    //     i++;
+    //   }
+    // }
 
-    const yearsArray = years.map(y => y.year);
+    // const playerTransferChanges = transferChanges && transferChanges.length > 0 ? transferChanges : [{
+    //   value_change: stats[0].value,
+    //   date: new Date().toISOString()
+    // }];
 
-    for (const y of yearsArray) {
-      let yearStats = await getStats(id, y);
-      statsMap.set(y, yearStats[0]);
-    }
+    let playerTransferChanges = 0;
 
-    if (transferChanges && transferChanges.length > 0) {
-      let value = 10000000;
-      const yearValues = {};
-
-      let year = new Date(transferChanges[0].date).getFullYear();
-
-      for (const valueChange of transferChanges) {
-        const valueChangeYear = new Date(valueChange.date).getFullYear();
-        if (valueChangeYear !== year) {
-          yearValues[year] = value;
-          year = valueChangeYear;
+    if (stats[0].year !== null) {
+      const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
+        const { id, name, games, wins, draws, losses, clean_sheets, goals, assists, value } = currentStats;
+        if (!accumulator[name]) {
+          accumulator[name] = { id, name, games, wins, draws, losses, clean_sheets, goals, assists, value, year: 'All Time' };
         }
-        value += valueChange.value_change;
-      }
-
-      yearValues[year] = value;
-      statsMap.get('All Time').value = value;
-
-      statsMap.forEach((yearStats, key) => {
-        if (key !== 'All Time') {
-          yearStats.value = yearValues[key];
+        else {
+          accumulator[name].games += games;
+          accumulator[name].wins += wins;
+          accumulator[name].draws += draws;
+          accumulator[name].losses += losses;
+          accumulator[name].clean_sheets += clean_sheets;
+          accumulator[name].goals += goals;
+          accumulator[name].assists += assists;
+          accumulator[name].value = value;
         }
-      });
-    }
-    else {
-      statsMap.forEach(yearStats => {
-        yearStats.value = 10000000;
-      });
+        return accumulator;
+      }, {}));
+
+      const allStats = [...allTimeStats, ...stats];
+
+      return (
+        <Display transferChanges={playerTransferChanges} stats={allStats} />
+      )
     }
 
-    const playerTransferChanges = transferChanges && transferChanges.length > 0 ? transferChanges : [{
-      value_change: stats[0].value,
-      date: new Date().toISOString()
-    }];
+    stats[0].year = 'All Time';
 
     return (
-      <Display transferChanges={playerTransferChanges} yearStats={statsMap} />
+      <Display transferChanges={playerTransferChanges} stats={stats} />
     )
   } catch (error) {
     console.error('error getting player stuff:', error);

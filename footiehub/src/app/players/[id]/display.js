@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import DoughnutChart from '@/app/components/charts/DoughnutChart';
 import LineChart from '@/app/components/charts/LineChart';
 import Card from '@/app/components/ui/Card'
@@ -45,125 +45,103 @@ const doughnutChartConfig = (games, value, colour, title) => {
   return { data, options };
 }
 
-const Display = ({ transferChanges, yearStats }) => {
+const Display = ({ transferChanges, stats }) => {
 
   const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
 
-  const [games, setGames] = useState(yearStats.get('All Time').games);
-  const [wins, setWins] = useState(yearStats.get('All Time').wins);
-  const [draws, setDraws] = useState(yearStats.get('All Time').draws);
-  const [losses, setLosses] = useState(yearStats.get('All Time').losses);
-  const [cleanSheets, setCleanSheets] = useState(yearStats.get('All Time').clean_sheets);
-  const [goals, setGoals] = useState(yearStats.get('All Time').goals);
-  const [assists, setAssists] = useState(yearStats.get('All Time').assists);
-  const [value, setValue] = useState(yearStats.get('All Time').value);
+  // const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(stats[0].value)}`);
+  // const [marketDate, setMarketDate] = useState(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
 
-  const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(yearStats.get('All Time').value)}`);
-  const [marketDate, setMarketDate] = useState(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
+  const [selectedYear, setSelectedYear] = useState(stats[0].year);
+  const yearStats = stats.find(stat => stat.year === selectedYear);
 
-  const [selectedYear, setSelectedYear] = useState('All Time');
+  const gamesChart = doughnutChartConfig(yearStats.games, yearStats.games, 'rgb(31, 41, 55)', 'Games');
+  const winsChart = doughnutChartConfig(yearStats.games, yearStats.wins, 'rgb(22, 151, 87)', 'Wins');
+  const drawsChart = doughnutChartConfig(yearStats.games, yearStats.draws, 'rgb(132, 151, 22)', 'Draws');
+  const lossesChart = doughnutChartConfig(yearStats.games, yearStats.losses, 'rgb(151, 37, 22)', 'Losses');
 
-  const gamesChart = doughnutChartConfig(games, games, 'rgb(31, 41, 55)', 'Games');
-  const winsChart = doughnutChartConfig(games, wins, 'rgb(22, 151, 87)', 'Wins');
-  const drawsChart = doughnutChartConfig(games, draws, 'rgb(132, 151, 22)', 'Draws');
-  const lossesChart = doughnutChartConfig(games, losses, 'rgb(151, 37, 22)', 'Losses');
+  // const sortedTransferChanges = [...transferChanges].sort((a, b) => {
+  //   return new Date(b.date) - new Date(a.date);
+  // })
+  // let value1 = yearStats.value;
+  // const values = [];
 
-  const win_percentage = games === 0 ? 0 : (wins / games * 100).toFixed(2);
+  // const transferData = {
+  //   datasets: [
+  //     {
+  //       data: sortedTransferChanges.map(change => {
+  //         values.unshift(value1);
+  //         value1 -= change.value_change;
+  //         return {
+  //           x: new Date(change.date),
+  //           y: values[0]
+  //         };
+  //       }),
+  //       borderColor: 'rgb(75, 192, 192)',
+  //       tension: 0.1,
+  //       fill: false
+  //     }
+  //   ]
+  // };
 
-  const sortedTransferChanges = [...transferChanges].sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  })
-  let value1 = value;
-  const values = [];
+  // const transferOptions = {
+  //   responsive: true,
+  //   hoverRadius: 20,
+  //   plugins: {
+  //     tooltip: {
+  //       enabled: false
+  //     },
+  //     legend: {
+  //       display: false
+  //     },
+  //   },
+  //   scales: {
+  //     x: {
+  //       type: 'time',
+  //       time: {
+  //         unit: 'month',
+  //         displayFormats: {
+  //           month: 'MMM',
+  //         },
+  //       },
+  //       ticks: {
+  //         display: false
+  //       },
+  //       grid: {
+  //         display: false
+  //       },
+  //       border: {
+  //         display: false
+  //       }
+  //     },
+  //     y: {
+  //       display: false,
+  //     },
+  //   },
+  //   onHover: (e, elements, chart) => {
+  //     if (elements.length > 0) {
+  //       const dataIndex = elements[0].index;
+  //       const datasetIndex = elements[0].datasetIndex;
+  //       const hoveredPoint = chart.data.datasets[datasetIndex].data[dataIndex];
 
-  const transferData = {
-    datasets: [
-      {
-        data: sortedTransferChanges.map(change => {
-          values.unshift(value1);
-          value1 -= change.value_change;
-          return {
-            x: new Date(change.date),
-            y: values[0]
-          };
-        }),
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-        fill: false
-      }
-    ]
-  };
+  //       const date = new Date(hoveredPoint.x);
+  //       const value = hoveredPoint.y;
+  //       const lastDate = new Date(transferChanges[transferChanges.length - 1].date);
 
-  const transferOptions = {
-    responsive: true,
-    hoverRadius: 20,
-    plugins: {
-      tooltip: {
-        enabled: false
-      },
-      legend: {
-        display: false
-      },
-    },
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'month',
-          displayFormats: {
-            month: 'MMM',
-          },
-        },
-        ticks: {
-          display: false
-        },
-        grid: {
-          display: false
-        },
-        border: {
-          display: false
-        }
-      },
-      y: {
-        display: false,
-      },
-    },
-    onHover: (e, elements, chart) => {
-      if (elements.length > 0) {
-        const dataIndex = elements[0].index;
-        const datasetIndex = elements[0].datasetIndex;
-        const hoveredPoint = chart.data.datasets[datasetIndex].data[dataIndex];
+  //       if (date.getTime() === lastDate.getTime() && value === value) {
+  //         setMarketDate(`As of ${lastDate.toLocaleDateString('en-US', dateOptions)}`);
+  //       }
+  //       else {
+  //         setMarketDate(`${date.toLocaleDateString('en-US', dateOptions)}`);
+  //       }
 
-        const date = new Date(hoveredPoint.x);
-        const value = hoveredPoint.y;
-        const lastDate = new Date(transferChanges[transferChanges.length - 1].date);
-
-        if (date.getTime() === lastDate.getTime() && value === value) {
-          setMarketDate(`As of ${lastDate.toLocaleDateString('en-US', dateOptions)}`);
-        }
-        else {
-          setMarketDate(`${date.toLocaleDateString('en-US', dateOptions)}`);
-        }
-
-        setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
-      } else {
-        setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
-        setMarketDate(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
-      }
-    }
-  };
-
-  useEffect(() => {
-    console.log(typeof(selectedYear));
-    setGames(yearStats.get(selectedYear).games);
-    setWins(yearStats.get(selectedYear).wins);
-    setDraws(yearStats.get(selectedYear).draws);
-    setLosses(yearStats.get(selectedYear).losses);
-    setCleanSheets(yearStats.get(selectedYear).clean_sheets);
-    setGoals(yearStats.get(selectedYear).goals);
-    setAssists(yearStats.get(selectedYear).assists);
-    setValue(yearStats.get(selectedYear).value);
-  }, [selectedYear]);
+  //       setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
+  //     } else {
+  //       setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
+  //       setMarketDate(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
+  //     }
+  //   }
+  // };
 
   const handleYearChange = (e) => {
     const year = e.target.value === 'All Time' ? e.target.value : Number(e.target.value);
@@ -172,15 +150,15 @@ const Display = ({ transferChanges, yearStats }) => {
 
   return (
     <main className='flex-1 p-6'>
-      <h2 className='text-2xl font-bold text-foreground mb-6'>{yearStats.get('All Time').name}</h2>
+      <h2 className='text-2xl font-bold text-foreground mb-6'>{stats[0].name}</h2>
       <div className='grid grid-cols-2 gap-6 items-start'>
         <Card className='p-6'>
           <div className='flex justify-between mb-4'>
             <h3 className='text-lg font-bold text-foreground'>Statistics</h3>
             <div>
               <select value={selectedYear} onChange={handleYearChange} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
-                {[...yearStats.keys()].map(year => (
-                  <option key={year} value={year}>{year}</option>
+                {stats.map(stat => (
+                  <option key={`${stat.id}-${stat.year}`} value={stat.year}>{stat.year}</option>
                 ))}
               </select>
             </div>
@@ -198,18 +176,18 @@ const Display = ({ transferChanges, yearStats }) => {
               </tr>
             </thead>
             <tbody>
-              <tr key={yearStats.get('All Time').name}>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{games}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{goals}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{assists}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{games > 0 ? (goals / games).toFixed(2) : 0}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{games > 0 ? (assists / games).toFixed(2) : 0}</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{win_percentage}%</td>
-                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{cleanSheets}</td>
+              <tr key={stats[0].name}>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.games}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.goals}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.assists}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.games > 0 ? (yearStats.goals / yearStats.games).toFixed(2) : 0}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.games > 0 ? (yearStats.assists / yearStats.games).toFixed(2) : 0}</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.games > 0 ? (yearStats.wins / yearStats.games * 100).toFixed(2) : 0}%</td>
+                <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.clean_sheets}</td>
               </tr>
             </tbody>
           </table>
-          {yearStats && yearStats.size > 0 ? (
+          {yearStats.games > 0 ? (
             <div className='flex mb-14 justify-between'>
               <div className='w-24 h-24'><DoughnutChart data={gamesChart.data} options={gamesChart.options} /></div>
               <div className='w-24 h-24'><DoughnutChart data={winsChart.data} options={winsChart.options} /></div>
@@ -220,7 +198,7 @@ const Display = ({ transferChanges, yearStats }) => {
             <div></div>
           )}
         </Card>
-        <Card className='p-6'>
+        {/* <Card className='p-6'>
           <div className='flex justify-between items-center'>
             <h3 className='text-lg font-bold text-foreground'>Market Value:</h3>
             <h3 className='text-lg font-bold text-foreground'>{marketValue}</h3>
@@ -228,7 +206,7 @@ const Display = ({ transferChanges, yearStats }) => {
           <h3 className='text-sm font-bold text-foreground text-right'>{marketDate}</h3>
           <LineChart data={transferData} options={transferOptions} />
           <p className='text-xs text-gray-500'>Hover over points to see past market values</p>
-        </Card>
+        </Card> */}
       </div>
     </main>
   )
