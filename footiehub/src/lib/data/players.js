@@ -10,12 +10,12 @@ export async function getPlayers() {
   }
 }
 
-export async function getStats(id, year = null) {
+export async function getStats(id) {
   if (!id) {
     throw new Error('need player id');
   }
   try {
-    const [stats] = await getPlayerStats(id, year);
+    const [stats] = await getPlayerStats(id);
     return stats;
   } catch (error) {
     console.error(`error getting player stats for player ${id}:`, error);

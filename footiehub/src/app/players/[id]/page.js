@@ -23,38 +23,20 @@ export default async function Player({ params }) {
       );
     }
 
-    //fix value, its always 10 mil
-    // let i = 0;
-    // for (let j = 0; j < stats.length; j++) {
-    //   if (j > 0 && stats[j].id === stats[j - 1].id) {
-    //     stats[j].value = stats[j - 1].value;
-    //   }
-    //   else {
-    //     stats[j].value = 10000000;
-    //   }
-    //   stats[j].transferChanges = [];
-    //   if (stats[j].year === null) {
-    //     continue;
-    //   }
-    //   while (i < transferChanges.length && transferChanges[i].player_id === stats[j].id && new Date(transferChanges[i].date).getFullYear() === stats[j].year) {
-    //     stats[j].value += transferChanges[i].value_change;
-    //     stats[j].transferChanges.push(transferChanges[i]);
-    //     i++;
-    //   }
-    // }
+    let value = 0;
+    const firstValue = {value_change:10000000, date: stats[0].createdAt};
+    const playerTransferChanges = [firstValue, ...transferChanges];
 
-    // const playerTransferChanges = transferChanges && transferChanges.length > 0 ? transferChanges : [{
-    //   value_change: stats[0].value,
-    //   date: new Date().toISOString()
-    // }];
-
-    let playerTransferChanges = 0;
+    for (const change of playerTransferChanges) {
+        change.date = new Date(change.date).toLocaleDateString();
+        value += change.value_change;
+    }
 
     if (stats[0].year !== null) {
       const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
-        const { id, name, games, wins, draws, losses, clean_sheets, goals, assists, value } = currentStats;
+        const { id, name, games, wins, draws, losses, clean_sheets, goals, assists } = currentStats;
         if (!accumulator[name]) {
-          accumulator[name] = { id, name, games, wins, draws, losses, clean_sheets, goals, assists, value, year: 'All Time' };
+          accumulator[name] = { id, name, games, wins, draws, losses, clean_sheets, goals, assists, year: 'All Time', value: value};
         }
         else {
           accumulator[name].games += games;
@@ -64,7 +46,6 @@ export default async function Player({ params }) {
           accumulator[name].clean_sheets += clean_sheets;
           accumulator[name].goals += goals;
           accumulator[name].assists += assists;
-          accumulator[name].value = value;
         }
         return accumulator;
       }, {}));

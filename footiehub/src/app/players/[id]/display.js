@@ -49,8 +49,8 @@ const Display = ({ transferChanges, stats }) => {
 
   const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
 
-  // const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(stats[0].value)}`);
-  // const [marketDate, setMarketDate] = useState(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
+  const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(stats[0].value)}`);
+  const [marketDate, setMarketDate] = useState(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
 
   const [selectedYear, setSelectedYear] = useState(stats[0].year);
   const yearStats = stats.find(stat => stat.year === selectedYear);
@@ -60,88 +60,83 @@ const Display = ({ transferChanges, stats }) => {
   const drawsChart = doughnutChartConfig(yearStats.games, yearStats.draws, 'rgb(132, 151, 22)', 'Draws');
   const lossesChart = doughnutChartConfig(yearStats.games, yearStats.losses, 'rgb(151, 37, 22)', 'Losses');
 
-  // const sortedTransferChanges = [...transferChanges].sort((a, b) => {
-  //   return new Date(b.date) - new Date(a.date);
-  // })
-  // let value1 = yearStats.value;
-  // const values = [];
+  let sum = 0;
 
-  // const transferData = {
-  //   datasets: [
-  //     {
-  //       data: sortedTransferChanges.map(change => {
-  //         values.unshift(value1);
-  //         value1 -= change.value_change;
-  //         return {
-  //           x: new Date(change.date),
-  //           y: values[0]
-  //         };
-  //       }),
-  //       borderColor: 'rgb(75, 192, 192)',
-  //       tension: 0.1,
-  //       fill: false
-  //     }
-  //   ]
-  // };
+  const transferData = {
+    datasets: [
+      {
+        data: transferChanges.map(change => {
+          sum += change.value_change;
+          return {
+            x: new Date(change.date),
+            y: sum
+          };
+        }),
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+        fill: false
+      }
+    ]
+  };
 
-  // const transferOptions = {
-  //   responsive: true,
-  //   hoverRadius: 20,
-  //   plugins: {
-  //     tooltip: {
-  //       enabled: false
-  //     },
-  //     legend: {
-  //       display: false
-  //     },
-  //   },
-  //   scales: {
-  //     x: {
-  //       type: 'time',
-  //       time: {
-  //         unit: 'month',
-  //         displayFormats: {
-  //           month: 'MMM',
-  //         },
-  //       },
-  //       ticks: {
-  //         display: false
-  //       },
-  //       grid: {
-  //         display: false
-  //       },
-  //       border: {
-  //         display: false
-  //       }
-  //     },
-  //     y: {
-  //       display: false,
-  //     },
-  //   },
-  //   onHover: (e, elements, chart) => {
-  //     if (elements.length > 0) {
-  //       const dataIndex = elements[0].index;
-  //       const datasetIndex = elements[0].datasetIndex;
-  //       const hoveredPoint = chart.data.datasets[datasetIndex].data[dataIndex];
+  const transferOptions = {
+    responsive: true,
+    hoverRadius: 20,
+    plugins: {
+      tooltip: {
+        enabled: false
+      },
+      legend: {
+        display: false
+      },
+    },
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'month',
+          displayFormats: {
+            month: 'MMM',
+          },
+        },
+        ticks: {
+          display: false
+        },
+        grid: {
+          display: false
+        },
+        border: {
+          display: false
+        }
+      },
+      y: {
+        display: false,
+      },
+    },
+    onHover: (e, elements, chart) => {
+      if (elements.length > 0) {
+        const dataIndex = elements[0].index;
+        const datasetIndex = elements[0].datasetIndex;
+        const hoveredPoint = chart.data.datasets[datasetIndex].data[dataIndex];
 
-  //       const date = new Date(hoveredPoint.x);
-  //       const value = hoveredPoint.y;
-  //       const lastDate = new Date(transferChanges[transferChanges.length - 1].date);
+        const date = new Date(hoveredPoint.x);
+        const value = hoveredPoint.y;
+        const lastDate = new Date(transferChanges[transferChanges.length - 1].date);
 
-  //       if (date.getTime() === lastDate.getTime() && value === value) {
-  //         setMarketDate(`As of ${lastDate.toLocaleDateString('en-US', dateOptions)}`);
-  //       }
-  //       else {
-  //         setMarketDate(`${date.toLocaleDateString('en-US', dateOptions)}`);
-  //       }
+        if (date.getTime() === lastDate.getTime() && value === value) {
+          setMarketDate(`As of ${lastDate.toLocaleDateString('en-US', dateOptions)}`);
+        }
+        else {
+          setMarketDate(`${date.toLocaleDateString('en-US', dateOptions)}`);
+        }
 
-  //       setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
-  //     } else {
-  //       setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
-  //       setMarketDate(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
-  //     }
-  //   }
-  // };
+        setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
+      } else {
+        setMarketValue(`\$${Intl.NumberFormat().format(stats[0].value)}`);
+        setMarketDate(`As of ${new Date(transferChanges[transferChanges.length - 1].date).toLocaleDateString('en-US', dateOptions)}`);
+      }
+    }
+  };
 
   const handleYearChange = (e) => {
     const year = e.target.value === 'All Time' ? e.target.value : Number(e.target.value);
@@ -198,7 +193,7 @@ const Display = ({ transferChanges, stats }) => {
             <div></div>
           )}
         </Card>
-        {/* <Card className='p-6'>
+        <Card className='p-6'>
           <div className='flex justify-between items-center'>
             <h3 className='text-lg font-bold text-foreground'>Market Value:</h3>
             <h3 className='text-lg font-bold text-foreground'>{marketValue}</h3>
@@ -206,7 +201,7 @@ const Display = ({ transferChanges, stats }) => {
           <h3 className='text-sm font-bold text-foreground text-right'>{marketDate}</h3>
           <LineChart data={transferData} options={transferOptions} />
           <p className='text-xs text-gray-500'>Hover over points to see past market values</p>
-        </Card> */}
+        </Card>
       </div>
     </main>
   )
