@@ -28,6 +28,7 @@ export async function getPlayerStats(id) {
     `SELECT
     players.id AS id,
     players.name AS name,
+    players.createdAt AS createdAt,
     YEAR(matches.date) AS year,
     COUNT(player_performance.match_id) AS games,
       CAST(COALESCE(SUM(CASE
