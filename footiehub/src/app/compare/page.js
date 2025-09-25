@@ -23,29 +23,37 @@ export default async function Compare() {
       );
     }
 
-    let i = 0;
-    for (let j = 0; j < stats.length; j++) {
-      if (j > 0 && stats[j].id === stats[j - 1].id) {
-        stats[j].value = stats[j - 1].value;
+    let t = 0;
+    for (let i = 0; i < stats.length; i++) {
+      stats[i].transferChanges = [];
+      if (i > 0 && stats[i].id === stats[i - 1].id) {
+        stats[i].value = stats[i - 1].value;
+        stats[i].transferChanges.push({ player_id: stats[i].id, value_change: stats[i].value, date: transferChanges[t-1].date })
       }
       else {
-        stats[j].value = 10000000;
+        stats[i].value = 10000000;
+        stats[i].transferChanges.push({ player_id: stats[i].id, value_change: 10000000, date: stats[i].createdAt })
       }
-      stats[j].transferChanges = [];
-      if (stats[j].year === null) {
-        continue;
-      }
-      while (i < transferChanges.length && transferChanges[i].player_id === stats[j].id && new Date(transferChanges[i].date).getFullYear() === stats[j].year) {
-        stats[j].value += transferChanges[i].value_change;
-        stats[j].transferChanges.push(transferChanges[i]);
-        i++;
+      while (t < transferChanges.length && transferChanges[t].player_id === stats[i].id && new Date(transferChanges[t].date).getFullYear() === stats[i].year) {
+        stats[i].value += transferChanges[t].value_change;
+        stats[i].transferChanges.push(transferChanges[t]);
+        t++;
       }
     }
 
+    const allTransferChanges = {};
+    for (const player of players) {
+      allTransferChanges[player.id] = [{ player_id: player.id, value_change: 10000000, date: player.createdAt }]
+    }
+
+    for (const change of transferChanges) {
+      allTransferChanges[change.player_id].push(change);
+    }
+
     const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
-      const { id, name, games, wins, clean_sheets, goals, assists, value, transferChanges } = currentStats;
+      const { id, name, games, wins, clean_sheets, goals, assists, value } = currentStats;
       if (!accumulator[name]) {
-        accumulator[name] = { id, name, games, wins, clean_sheets, goals, assists, value, transferChanges, year: 'All Time' };
+        accumulator[name] = { id, name, games, wins, clean_sheets, goals, assists, value, transferChanges: allTransferChanges[id], year: 'All Time' };
       }
       else {
         accumulator[name].games += games;
@@ -54,7 +62,6 @@ export default async function Compare() {
         accumulator[name].goals += goals;
         accumulator[name].assists += assists;
         accumulator[name].value = value;
-        accumulator[name].transferChanges = [...accumulator[name].transferChanges, transferChanges].flat();
       }
       return accumulator;
     }, {}));
@@ -65,14 +72,15 @@ export default async function Compare() {
       if (!yearsMap.has(stat.id)) {
         yearsMap.set(stat.id, []);
       }
-      let years = yearsMap.get(stat.id);
-      if (!years.includes('All Time')) {
-        yearsMap.get(stat.id).push('All Time');
-      }
       if (stat.year !== null) {
         yearsMap.get(stat.id).push(stat.year);
       }
     });
+
+    for (const [id, years] of yearsMap.entries()) {
+      years.sort((a, b) => b - a);
+      yearsMap.set(id, ['All Time', ...years])
+    }
 
     players.forEach(player => {
       player.years = yearsMap.get(player.id);
@@ -82,10 +90,7 @@ export default async function Compare() {
     const allStats = [...allTimeStats, ...stats];
 
     return (
-      <Display
-        players={players}
-        stats={allStats}
-      />
+      <Display players={players} stats={allStats} />
     )
   } catch (error) {
     console.error('error getting stats to compare:', error);

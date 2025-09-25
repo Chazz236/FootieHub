@@ -113,7 +113,7 @@ const Display = ({ players, stats }) => {
       values.unshift(value);
       value -= change.value_change;
       return {
-        x: new Date(change.date),
+        x: change.date,
         y: values[0]
       };
     });
@@ -147,8 +147,9 @@ const Display = ({ players, stats }) => {
         time: {
           unit: 'month',
           displayFormats: {
-            month: 'MMM'
-          }
+            month: 'MMM yy'
+          },
+          tooltipFormat: 'MMM dd, yyyy'
         },
         ticks: {
           autoSkip: true
