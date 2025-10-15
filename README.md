@@ -19,7 +19,8 @@ A Next.js application designed to track and analyze player performance data from
 * **Player-Centric Analytics**: Explore individual player pages that display detailed statistics, charts, and graphs
 * **Comprehensive Teammate Performance Analysis**: A unique feature that includes a chart displaying assists received vs. assists provided, and a sortable table highlighting the best teammates based on win percentage or goal contributions
 * **Player Comparison Tool**: Compare detailed statistics and trends for 2-3 players side-by-side on a dedicated page
-
+* **Historical Analytics**: Gain deep insights by filtering and viewing all matches, team statistics, and individual player performance by all-time totals or by specific year, allowing for detailed period-over-period comparisons
+  
 ## 🛠️ Installation & Setup
 
 To get a local copy of this project up and running, follow these steps.
@@ -34,37 +35,39 @@ To get a local copy of this project up and running, follow these steps.
 You must first create the following tables with the exact schemas in your MySQL database.
 
 #### `players`
-| Field      | Type         | Null | Key | Extra          |
-| :--------- | :----------- | :--- | :-- | :------------- |
-| `id`       | `INT`        | NO   | PRI | auto_increment |
-| `name`     | `VARCHAR(100)` | NO   |     |                |
-| `value`    | `BIGINT`     | NO   |     |                |
+| Field             | Type                | Null | Key | Default           | Extra                     |
+| :---------------- | :------------------ | :--- | :-- | :---------------- | :------------------------ |
+| `id`              | `INT`               | NO   | PRI | NULL              | `auto_increment`          |
+| `name`            | `VARCHAR(100)`      | NO   |     |                   |                           |
+| `value`           | `BIGINT`            | NO   |     |                   |                           |
+| `createdAt`       | `TIMESTAMP`         | NO   |     | `CURRENT_TIMESTAMP` |                           |
+| `updatedAt`       | `TIMESTAMP`         | NO   |     | `CURRENT_TIMESTAMP` | `ON UPDATE CURRENT_TIMESTAMP` |
 
 #### `matches`
-| Field        | Type     | Null | Key | Extra          |
-| :----------- | :------- | :--- | :-- | :------------- |
-| `id`         | `INT`    | NO   | PRI | auto_increment |
-| `date`       | `DATE`   | NO   |     |                |
-| `home_score` | `INT`    | NO   |     |                |
-| `away_score` | `INT`    | NO   |     |                |
+| Field        | Type     | Null | Key | Default | Extra          |
+| :----------- | :------- | :--- | :-- | :------ | :------------- |
+| `id`         | `INT`    | NO   | PRI | NULL    | auto_increment |
+| `date`       | `DATE`   | NO   |     |        |                |
+| `home_score` | `INT`    | NO   |     |        |                |
+| `away_score` | `INT`    | NO   |     |        |                |
 
 #### `player_performance`
-| Field        | Type                  | Null | Key | Extra |
-| :----------- | :-------------------- | :--- | :-- | :---- |
-| `player_id`  | `INT`                 | NO   | PRI |       |
-| `match_id`   | `INT`                 | NO   | PRI |       |
-| `team`       | `ENUM('home','away')` | NO   |     |       |
-| `goals`      | `INT`                 | NO   |     |       |
-| `assists`    | `INT`                 | NO   |     |       |
-| `value_change` | `BIGINT`            | NO   |     |       |
+| Field        | Type                  | Null | Key | Default | Extra |
+| :----------- | :-------------------- | :--- | :-- | :------ | :---- |
+| `player_id`  | `INT`                 | NO   | PRI |        |       |
+| `match_id`   | `INT`                 | NO   | PRI |        |       |
+| `team`       | `ENUM('home','away')` | NO   |     |        |       |
+| `goals`      | `INT`                 | NO   |     |        |       |
+| `assists`    | `INT`                 | NO   |     |        |       |
+| `value_change` | `BIGINT`            | NO   |     |        |       |
 
 #### `goal_contributions`
-| Field            | Type         | Null | Key | Extra          |
-| :--------------- | :----------- | :--- | :-- | :------------- |
-| `id`             | `INT`        | NO   | PRI | auto_increment |
-| `match_id`       | `INT`        | NO   | MUL |                |
-| `goal_scorer_id` | `INT`        | YES  | MUL |                |
-| `assist_player_id` | `INT`      | YES  | MUL |                |
+| Field            | Type         | Null | Key | Default | Extra          |
+| :--------------- | :----------- | :--- | :-- | :------ | :------------- |
+| `id`             | `INT`        | NO   | PRI | NULL    | auto_increment |
+| `match_id`       | `INT`        | NO   | MUL |        |                |
+| `goal_scorer_id` | `INT`        | YES  | MUL | NULL    |                |
+| `assist_player_id` | `INT`      | YES  | MUL | NULL    |                |
 
 ### Steps
 
@@ -103,7 +106,11 @@ Here are a few screenshots showcasing the main pages and functionalities of the 
 
 * **Players Table**
     ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Players.PNG)
-    _An interactive table displaying players and basic statistics, with sorting functionality_
+    _An interactive table displaying players and basic statistics, with sorting functionality and historical filtering_
+
+* **Individual Players Page**
+    ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Individual%20Player.png)
+    _A dedicated page displaying detailed statistics, historical trend filtering, and a line chart tracking the player's market value over time_
 
 * **Teammate Performance**
     ![Screenshot of the Teammate Performance Page](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Teammate%20Dynamics.PNG)
@@ -111,4 +118,4 @@ Here are a few screenshots showcasing the main pages and functionalities of the 
 
 * **Player Comparison Tool**
     ![Screenshot of the Player Comparison Tool](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Compare.PNG)
-    _A dedicated page for comparing up to three players side-by-side with charts and data_
+    _A dedicated page for comparing up to three players side-by-side by year with a market value chart and data_
