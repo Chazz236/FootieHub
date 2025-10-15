@@ -173,7 +173,7 @@ const Display = ({ players, stats }) => {
       <h2 className='text-2xl font-bold text-foreground mb-6'>Compare</h2>
       <div className='grid grid-cols-2 gap-6'>
         <div>
-          <Card className='flex flex-wrap justify-center items-center gap-4 p-4 mb-6'>
+          <Card className='flex flex-wrap justify-center items-center gap-4 p-4 mb-4'>
             {comparePlayers.map((selectedPlayer, i) => (
               <div key={`${i}-name`} className='relative flex flex-col items-center gap-2'>
                 <select id={selectedPlayer.id} onChange={e => handlePlayerChange(e, i)} value={selectedPlayer.id}
@@ -213,8 +213,8 @@ const Display = ({ players, stats }) => {
               Add Player
             </button>
           </Card>
-          <Card className='p-6'>
-            <h3 className='text-lg font-bold text-foreground mb-6'>Stats</h3>
+          <Card className='p-4'>
+            <h3 className='text-lg font-bold text-foreground'>Stats</h3>
             <table className='table-auto mt-4 mx-auto'>
               <thead>
                 <tr>

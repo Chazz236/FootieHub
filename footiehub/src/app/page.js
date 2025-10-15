@@ -141,7 +141,7 @@ export default async function Home() {
       <div className='grid grid-cols-4 gap-6'>
         <div className='col-span-3'>
           <h2 className='text-2xl font-bold text-foreground mb-6'>{currentYear} Home Page</h2>
-          <Card className='mb-6 p-6'>
+          <Card className='mb-4 p-6'>
             <h3 className='text-lg font-bold text-foreground mb-4'>Team Of The Year</h3>
             <div className='flex flex-col gap-4'>
               {teams(true, true, scoredPlayers.slice(0, 3))}

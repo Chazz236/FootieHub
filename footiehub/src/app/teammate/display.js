@@ -195,7 +195,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
         <div className='flex flex-col gap-6'>
           <h2 className='text-2xl font-bold text-foreground'>Teammate Dynamics</h2>
           <Card className='w-full p-6'>
-            <div className='mb-6'>
+            <div className='mb-2'>
               <label className='block text-xs font-medium text-foreground mb-1'>Player</label>
               {allPlayers.length > 0 ? (
                 <select onChange={handlePlayerChange} value={playerId} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
@@ -247,7 +247,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
             )}
           </Card>
         </div>
-        <div className='flex flex-col gap-6 my-auto'>
+        <div className='flex flex-col gap-4 my-auto'>
           {bestTeammateChartData ? (
             <Card className='p-0'>
               <ScatterChart
