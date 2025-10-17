@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { createMatch } from '@/lib/actions/matches';
 import Card from '@/app/components/ui/Card';
 
+//client component for adding a new match
 const Display = ({ players }) => {
 
+  //states for form data
   const [date, setDate] = useState('');
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
@@ -15,6 +17,7 @@ const Display = ({ players }) => {
   const [homeGoals, setHomeGoals] = useState([]);
   const [awayGoals, setAwayGoals] = useState([]);
 
+  //adds or removes goal contributions for home team based on home score
   useEffect(() => {
     if (homeScore < homeGoals.length) {
       setHomeGoals((goals) => {
@@ -36,6 +39,7 @@ const Display = ({ players }) => {
     }
   }, [homeScore]);
 
+  //adds or removes goal contributions for away team based on away score
   useEffect(() => {
     if (awayScore < awayGoals.length) {
       setAwayGoals((goals) => {
@@ -57,27 +61,26 @@ const Display = ({ players }) => {
     }
   }, [awayScore]);
 
+  //combine home and away goal contributions into one array
   useEffect(() => {
     setGoalContributions([...homeGoals, ...awayGoals]);
   }, [homeGoals, awayGoals])
 
+
+  //submit form data to add match to database, then reset states
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!Array.isArray(goalContributions)) {
-      console.error('goalContributions is not an array:', goalContributions);
-      return;
-    }
-
+    //validate the data
     if (!date) {
       alert('Please fill date');
       return;
     }
-    if (homeScore === null || homeScore === undefined || homeScore === '') {
+    if (Number.isNaN(homeScore)) {
       alert('Please fill homeScore');
       return;
     }
-    if (awayScore === null || awayScore === undefined || awayScore === '') {
+    if (Number.isNaN(awayScore)) {
       alert('Please fill awayScore');
       return;
     }
@@ -110,13 +113,14 @@ const Display = ({ players }) => {
       setHomeGoals([]);
       setAwayGoals([]);
     } catch (error) {
-      console.error('Failed to submit match:', err.message);
-      alert(`Error: ${err.message}`);
+      console.error('Failed to submit match:', error.message);
+      alert(`Error: ${error.message}`);
     }
 
 
   };
 
+  //toggles player selection for home team and remove from away team
   const handleHomeTeamChange = (playerID) => {
     setHomeTeam((oldTeam) => {
       const newTeam = oldTeam.includes(playerID) ? oldTeam.filter(id => id != playerID) : [...oldTeam, playerID];
@@ -125,6 +129,7 @@ const Display = ({ players }) => {
     });
   }
 
+  //toggles player selection for away team and remove from home team
   const handleAwayTeamChange = (playerID) => {
     setAwayTeam((oldTeam) => {
       const newTeam = oldTeam.includes(playerID) ? oldTeam.filter(id => id != playerID) : [...oldTeam, playerID];
@@ -133,12 +138,14 @@ const Display = ({ players }) => {
     });
   }
 
+  //update goal contribution players for home team
   const handleHomeGoalContributionChange = (i, field, value) => {
     const updatedHomeGoalContributions = [...homeGoals];
     updatedHomeGoalContributions[i][field] = value === '' ? null : parseInt(value, 10);
     setHomeGoals(updatedHomeGoalContributions);
   }
 
+  //update goal contribution players for away team
   const handleAwayGoalContributionChange = (i, field, value) => {
     const updatedAwayGoalContributions = [...awayGoals];
     updatedAwayGoalContributions[i][field] = value === '' ? null : parseInt(value, 10);

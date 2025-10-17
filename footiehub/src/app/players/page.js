@@ -2,13 +2,18 @@ import { getAllStats } from '@/lib/data/stats';
 import { getTransferChanges } from '@/lib/data/transfers';
 import Display from './display';
 
+//server component to get players and transfer values
 const Players = async () => {
+
   try {
+
+    //get the stats and transfer changes of players
     const [stats, transferChanges] = await Promise.all([
       getAllStats(),
       getTransferChanges(),
     ]);
 
+    //handle if there are no stats
     if (!stats || stats.length === 0) {
       return (
         <main className='flex-1 p-6'>
@@ -21,6 +26,7 @@ const Players = async () => {
       );
     }
 
+    //go through stats and transfer changes to get market value for each year
     let i = 0;
     for (let j = 0; j < stats.length; j++) {
       if (j > 0 && stats[j].id === stats[j - 1].id) {
@@ -29,7 +35,6 @@ const Players = async () => {
       else {
         stats[j].value = 10000000;
       }
-
       if (stats[j].year === null) {
         continue;
       }

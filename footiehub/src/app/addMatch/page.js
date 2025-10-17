@@ -1,11 +1,15 @@
 import { getPlayers } from '@/lib/data/players';
 import Display from './display';
 
+//server component to get players
 export default async function AddMatch() {
 
   try {
+
+    //get all players
     const players = await getPlayers();
 
+    //handle if there are no players
     if (!players || players.length === 0) {
       return (
         <main className='flex-1 p-6'>
@@ -17,7 +21,7 @@ export default async function AddMatch() {
         </main>
       );
     }
-    
+
     return (
       <Display players={players} />
     )

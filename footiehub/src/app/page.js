@@ -3,16 +3,20 @@ import { getAllStats } from '@/lib/data/stats';
 import { getPlayers } from '@/lib/data/players';
 import Card from '@/app/components/ui/Card';
 
+//home page to display leaders in stats and best/worst team of the year
 export default async function Home() {
 
+  //get players and stats of players
   const [stats, players] = await Promise.all([
     getAllStats(),
     getPlayers(),
   ]);
 
+  //stats should only be for current year
   const currentYear = new Date().getFullYear();
   const currentYearStats = stats.filter(stat => stat.year === currentYear);
 
+  //handle if there are no stats for the year
   if (!currentYearStats || currentYearStats.length === 0) {
     return (
       <main className='flex-1 p-6'>
@@ -25,6 +29,7 @@ export default async function Home() {
     );
   }
 
+  //sort players by stat, sort by games for ties
   const getSortedPlayers = (players, stat) => {
     if (stat !== 'win_percentage') {
       return [...players].sort((a, b) => {
@@ -53,6 +58,7 @@ export default async function Home() {
   const assists = getSortedPlayers(currentYearStats, 'assists');
   const winPercentages = getSortedPlayers(currentYearStats, 'win_percentage');
 
+  //create a normalization function for stat
   const createNormalizer = ((players, stat) => {
     let values;
     if (stat !== 'win_percentage') {
@@ -81,6 +87,7 @@ export default async function Home() {
     valueMap.set(player.id, player.value);
   })
 
+  //give a weighed score to players to determine team/flops of the year
   const scoredPlayers = currentYearStats.map(player => {
     const score =
       (normalizeGoals(player.goals) * 0.3) +
@@ -92,6 +99,7 @@ export default async function Home() {
     return { ...player, score, value };
   }).sort((a, b) => b.score - a.score);
 
+  //for rendering the stat leaders table
   const leaderTable = (stat, players) => {
     return (
       <Card className='p-6'>
@@ -114,6 +122,7 @@ export default async function Home() {
     );
   };
 
+  //for rendering the team/flops of the year
   const teams = (toty, top, row) => {
     return (
       <div className={top ? 'grid grid-cols-3 gap-2 text-center' : 'grid grid-cols-2 gap-2 text-center w-2/3 mx-auto'}>

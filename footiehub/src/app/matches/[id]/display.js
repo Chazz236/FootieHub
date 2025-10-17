@@ -5,25 +5,31 @@ import Card from '@/app/components/ui/Card';
 import Link from 'next/link';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 
+//client component to display match details split in tabs
 const Display = ({ match, stats, goals }) => {
 
   const [tab, setTab] = useState('matchStats');
 
+  //figure out winning team for styling
   const homeWin = match.home_score > match.away_score;
   const awayWin = match.away_score > match.home_score;
 
+  //filter players into their teams
   const homeTeam = stats.filter(player => player.team === 'home');
   const awayTeam = stats.filter(player => player.team === 'away');
 
+  //handle missing goal scorers by assigning them to random
   for (let i = 0; i < goals.length; i++) {
     if (goals[i].goal_scorer === null) {
       goals[i].goal_scorer = 'Random';
     }
   }
 
+  //split goals into home and away goals
   const homeGoals = goals.slice(0, match.home_score);
   const awayGoals = goals.slice(match.home_score, match.home_score + match.away_score);
 
+  //set text colour depending on value change
   const valueChangeColor = valueChange => {
     if (valueChange > 0) {
       return 'text-success-color';
@@ -36,6 +42,7 @@ const Display = ({ match, stats, goals }) => {
     }
   }
 
+  //set icon depending on value change
   const valueChangeIcon = valueChange => {
     if (valueChange > 0) {
       return <ChevronUpIcon className='w-4 h-4' />;
@@ -48,6 +55,7 @@ const Display = ({ match, stats, goals }) => {
     }
   }
 
+  //for displaying player match stats
   const matchStats = (
     <div className='grid grid-cols-2 gap-6'>
       <Card className='p-4'>
@@ -91,6 +99,7 @@ const Display = ({ match, stats, goals }) => {
     </div>
   );
 
+  //for displaying goals in match
   const matchGoals = (
     <Card className='p-4 border-none'>
       <div className='max-h-80 overflow-y-scroll grid grid-cols-2 gap-6 ml-16'>

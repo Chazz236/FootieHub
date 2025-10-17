@@ -3,25 +3,25 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, ArcElement } from 'chart.js';
 
+//custom plugin to display text in the center of the doughnut chart
 const centerTextPlugin = {
   id: 'centerText',
   afterDraw(chart) {
     const ctx = chart.ctx;
     const { width, height } = chart;
-    const fontSize = 24;  // Define font size (adjust this as necessary)
-    const font = `bold ${fontSize}px Arial`;  // Use font size in the font string
-    const text = chart.options.plugins.centerText.text || 'No Data';  // Get the text dynamically
+    const fontSize = 24;
+    const font = `bold ${fontSize}px Arial`;
+    const text = chart.options.plugins.centerText.text || 'No Data';
 
     ctx.save();
     ctx.font = font;
     ctx.fillStyle = chart.options.plugins.centerText.color || 'rgba(0, 0, 0, 0.6)';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';  // Ensure text is vertically centered
+    ctx.textBaseline = 'middle';
 
-    // Adjust the vertical alignment based on font size if needed
-    const yPosition = height / 2 + fontSize / 1;  // Adjust for better vertical centering
+    //adjust vertical position using height and fontsize
+    const yPosition = height / 2 + fontSize / 1;
 
-    // Draw the text at the center of the doughnut chart
     ctx.fillText(text, width / 2, yPosition);
     ctx.restore();
   }
@@ -29,18 +29,18 @@ const centerTextPlugin = {
 
 ChartJS.register(Title, ArcElement);
 
+//component that creates a doughnut chart
 const DoughnutChart = ({ data, options }) => {
 
- const chartOptions = {
-  ...options,
-  plugins: {
-    ...options?.plugins,
-    centerText: {
-      ...options?.plugins?.centerText
-    },
-    centerTextPlugin: centerTextPlugin
-  }
- };
+  const chartOptions = {
+    ...options,
+    plugins: {
+      ...options?.plugins,
+      centerText: {
+        ...options?.plugins?.centerText
+      }
+    }
+  };
 
   return (
     <div>

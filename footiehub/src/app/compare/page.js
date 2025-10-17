@@ -3,14 +3,19 @@ import { getAllStats } from '@/lib/data/stats';
 import { getTransferChanges } from '@/lib/data/transfers';
 import Display from './display'
 
+//server component to get players, stats, and transfer changes
 export default async function Compare() {
+
   try {
+
+    //get all players, their stats, and their transfer changes
     const [stats, players, transferChanges] = await Promise.all([
       getAllStats(),
       getPlayers(),
       getTransferChanges()
     ]);
 
+    //handle if there are no stats or players
     if (!players || players.length === 0 || !stats || stats.length === 0) {
       return (
         <main className='flex-1 p-6'>
@@ -23,12 +28,13 @@ export default async function Compare() {
       );
     }
 
+    //calculate each player's market value per year and add transfer changes by year
     let t = 0;
     for (let i = 0; i < stats.length; i++) {
       stats[i].transferChanges = [];
       if (i > 0 && stats[i].id === stats[i - 1].id) {
         stats[i].value = stats[i - 1].value;
-        stats[i].transferChanges.push({ player_id: stats[i].id, value_change: stats[i].value, date: transferChanges[t-1].date })
+        stats[i].transferChanges.push({ player_id: stats[i].id, value_change: stats[i].value, date: transferChanges[t - 1].date })
       }
       else {
         stats[i].value = 10000000;
@@ -41,15 +47,18 @@ export default async function Compare() {
       }
     }
 
+    //for every player, start with a value of $10,000,000
     const allTransferChanges = {};
     for (const player of players) {
       allTransferChanges[player.id] = [{ player_id: player.id, value_change: 10000000, date: player.createdAt }]
     }
 
+    //push all the transfer changes by player
     for (const change of transferChanges) {
       allTransferChanges[change.player_id].push(change);
     }
 
+    //reduce yearly stats into a single 'all time' stats object for each player
     const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
       const { id, name, games, wins, clean_sheets, goals, assists, value } = currentStats;
       if (!accumulator[name]) {
@@ -68,6 +77,7 @@ export default async function Compare() {
 
     const yearsMap = new Map();
 
+    //put all the years a player has played into the map
     stats.forEach(stat => {
       if (!yearsMap.has(stat.id)) {
         yearsMap.set(stat.id, []);
@@ -77,16 +87,19 @@ export default async function Compare() {
       }
     });
 
+    //set up the options for players to select what years to compare
     for (const [id, years] of yearsMap.entries()) {
       years.sort((a, b) => b - a);
       yearsMap.set(id, ['All Time', ...years])
     }
 
+    //add years to each player and make 'all time' the default
     players.forEach(player => {
       player.years = yearsMap.get(player.id);
       player.compareYear = player.years[0];
     });
 
+    //combine all time stats and yearly stats
     const allStats = [...allTimeStats, ...stats];
 
     return (

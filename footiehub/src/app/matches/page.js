@@ -2,16 +2,15 @@ import React from 'react';
 import { getAllMatches } from '@/lib/data/matches';
 import Display from './display';
 
+//server component to get matches and match stats
 export default async function Matches() {
 
-  let matches = [];
-  let goals = [];
-
   try {
-    const res = await getAllMatches();
-    matches = res.matches;
-    goals = res.goals;
 
+    //get all matches and their stats
+    const { matches, stats } = await getAllMatches();
+
+    //handle if there are no matches
     if (!matches || matches.length === 0) {
       return (
         <main className='flex-1 p-6'>
@@ -24,12 +23,13 @@ export default async function Matches() {
       );
     }
 
+    //sort matches by ascending date
     const sortedMatches = [...matches].sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     })
 
     return (
-      <Display matches={sortedMatches} goals={goals} />
+      <Display matches={sortedMatches} stats={stats} />
     )
   } catch (error) {
     console.log('error getting matches:', error)

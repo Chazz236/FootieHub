@@ -1,7 +1,10 @@
 import db from '@/db/mysql';
 
+//get stats of all teammates that have played with player with id
 export async function getAllTeammates(id) {
-    const query = 
+
+  //getting assists provided and received and win percentage with each teammate
+  const query =
     `SELECT pp2.player_id AS id,
        players.name AS name,
        COALESCE(gc1.assistedOnGoals, 0) AS assists_provided,
@@ -44,10 +47,11 @@ WHERE pp1.player_id = ?
   AND pp1.team = pp2.team
 GROUP BY pp2.player_id
 ORDER BY id ASC;`;
-    try {
-        return await db.query(query, [id, id, id]);
-    } catch (error) {
-        console.error('Error getting teammates: ', error);
-        throw error;
-    }
+
+  try {
+    return await db.query(query, [id, id, id]);
+  } catch (error) {
+    console.error('Error getting teammates: ', error);
+    throw error;
+  }
 }

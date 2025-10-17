@@ -1,6 +1,8 @@
 import db from '@/db/mysql';
 
+//get all match data and get player match stats
 export async function getMatches() {
+  
   const query =
     `SELECT * FROM matches;`;
   const query2 =
@@ -14,17 +16,20 @@ export async function getMatches() {
          FROM players
          JOIN player_performance
             ON players.id = player_performance.player_id;`;
+  
   try {
     const [matches] = await db.query(query);
-    const [goals] = await db.query(query2);
-    return { matches, goals };
+    const [stats] = await db.query(query2);
+    return { matches, stats };
   } catch (error) {
     console.error('Error getting matches: ', error);
     throw error;
   }
 }
 
+//get data, player stats, and goal stats for match with id
 export async function getMatchStats(id) {
+  
   const query =
     `SELECT * FROM matches WHERE id = ?;`;
   const query2 =
@@ -50,6 +55,7 @@ ON scorer.id = goal_contributions.goal_scorer_id
 LEFT JOIN players AS assister
 ON assister.id = goal_contributions.assist_player_id
 WHERE match_id = ?;`;
+  
   try {
     const [match] = await db.query(query, [id]);
     const [stats] = await db.query(query2, [id]);
@@ -61,13 +67,15 @@ WHERE match_id = ?;`;
   }
 }
 
+//add match data to matches table
 export async function addMatch(date, home_score, away_score, connection) {
+  
   const query =
     `INSERT INTO matches (date, home_score, away_score)
 	 VALUES (?, ?, ?)`;
+  
   try {
     const [data] = await connection.query(query, [date, home_score, away_score]);
-    console.log('added match');
     return data.insertId;
   } catch (error) {
     console.error('Error adding match: ', error);
@@ -75,12 +83,14 @@ export async function addMatch(date, home_score, away_score, connection) {
   }
 }
 
+//add goal contributions of the match to the goal_contributions table
 export async function addGoalContributions(matchID, goalContributions, connection) {
+  
+  //if there are no goals in the match, nothing to add
   if (goalContributions.length === 0) {
-    console.log('no goal contributions for this match');
     return;
   }
-
+  
   const query =
     `INSERT INTO goal_contributions (match_id, goal_scorer_id, assist_player_id)
 	 VALUES ?`;
@@ -89,6 +99,7 @@ export async function addGoalContributions(matchID, goalContributions, connectio
     contribution.goal_scorer_id,
     contribution.assist_player_id
   ]);
+
   try {
     await connection.query(query, [contributions]);
   } catch (error) {
@@ -97,7 +108,10 @@ export async function addGoalContributions(matchID, goalContributions, connectio
   }
 }
 
+//add individual player stats to the player_performance table
 export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, homeScore, awayScore, connection) {
+
+  //get all players from the match and set their initial stats to 0
   const players = [...homeTeam, ...awayTeam];
   const playerStats = players.reduce((stats, id) => {
     stats[id] = { goals: 0, assists: 0 };
@@ -112,6 +126,7 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, homeS
   try {
     const result = await connection.query(query, [matchID]);
 
+    //if there are goals in the match, update player stats
     if (result[0].length > 0) {
       result[0].forEach(({ goal_scorer_id, assist_player_id }) => {
         if (goal_scorer_id !== null) {
@@ -133,6 +148,7 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, homeS
 
     const values = [];
 
+    //for each player, calculate the transfer value change from the match using their stats
     const performances = players.map(id => {
       const { goals, assists } = playerStats[id];
       const team = homeTeam.includes(id) ? 'home' : 'away';
@@ -148,11 +164,12 @@ export async function updatePlayerPerformance(matchID, homeTeam, awayTeam, homeS
     await Promise.all(performances);
 
     const query3 = `UPDATE players SET value = value + ? WHERE id = ?`;
+    
+    //update the value of players in the match with their value changes
     const updateValues = values.map(({ id, valueChange }) => {
       return connection.query(query3, [valueChange, id]);
     });
     await Promise.all(updateValues);
-
   } catch (error) {
     console.error('Error updating player performance: ', error);
     throw error;

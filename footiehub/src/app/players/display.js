@@ -5,11 +5,14 @@ import Link from 'next/link'
 import Card from '@/app/components/ui/Card'
 import { ChevronUpDownIcon, ChevronUpIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 
+//client component to display players in sortable table, can change by years
 const Display = ({ stats }) => {
 
+  //list of years, default to all time
   const years = ['All Time', ...new Set(stats.map(stat => stat.year).filter(year => year !== null).sort())];
   const [year, setYear] = useState(years[0]);
 
+  //reduce all stats into all time stats
   const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
     const { id, name, games, wins, clean_sheets, goals, assists, value } = currentStats;
     if (!accumulator[name]) {
@@ -26,9 +29,11 @@ const Display = ({ stats }) => {
     return accumulator;
   }, {}));
 
+  //default to using all time stats and no sorter
   const [yearStats, setYearStats] = useState(allTimeStats);
   const [sorter, setSorter] = useState({ col: null, sort: 'none' });
 
+  //sorting the table by column
   useEffect(() => {
     if (sorter.col === 'name') {
       if (sorter.sort === 'ascending') {
@@ -68,6 +73,7 @@ const Display = ({ stats }) => {
     }
   }, [sorter]);
 
+  //handle when column is changed for sorting
   const changeSort = (col) => {
     let sort = 'ascending';
     if (sorter.col === col) {
@@ -81,6 +87,7 @@ const Display = ({ stats }) => {
     setSorter({ col, sort });
   };
 
+  //render table header with icon to show how column is sorted
   const tableHeader = sort => {
     return (
       <th className='py-2 text-center text-xs font-bold text-foreground uppercase'>
@@ -95,6 +102,7 @@ const Display = ({ stats }) => {
     );
   };
 
+  //handle when year is changed
   const handleYearChange = (dir) => {
     let i = years.indexOf(year);
     if (dir === 'next') {

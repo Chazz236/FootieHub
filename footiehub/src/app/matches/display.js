@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Card from '@/app/components/ui/Card';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 
+//component to display goals by players for each match
 const DisplayGoals = ({ goals }) => (
   <>
     {goals.map((goal, i) => (
@@ -22,16 +23,19 @@ const DisplayGoals = ({ goals }) => (
   </>
 );
 
-const Display = ({ matches, goals }) => {
+//client component to display matches
+const Display = ({ matches, stats }) => {
 
+  //split matches by all time and by year
   const years = ['All Time', ...new Set(matches.map(match => new Date(match.date).getFullYear()).filter(year => year !== null).sort())];
   const [year, setYear] = useState(years[0]);
   const [yearMatches, setYearMatches] = useState(matches);
-  
 
+
+  //find the goals of each match, and if there is no player for every goal, make them scored by randoms
   const getGoals = (match, team) => {
-    const teamGoals = goals.filter((goal) => goal.team === team && goal.match_id === match.id && goal.goals > 0);
-    const totalGoals = teamGoals.reduce((sum, goal) => sum + goal.goals, 0);
+    const teamGoals = stats.filter((stat) => stat.team === team && stat.match_id === match.id && stat.goals > 0);
+    const totalGoals = teamGoals.reduce((sum, stat) => sum + stat.goals, 0);
     const teamScore = team === 'home' ? match.home_score : match.away_score;
     const unaccountedGoals = teamScore - totalGoals;
     const allGoals = [...teamGoals];
@@ -47,6 +51,7 @@ const Display = ({ matches, goals }) => {
     return allGoals;
   }
 
+  //handle when the years are changed to display matches in selected year
   const handleYearChange = (dir) => {
     let i = years.indexOf(year);
     if (dir === 'next') {

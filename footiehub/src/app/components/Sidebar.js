@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+//sidebar component for navigation
 const Sidebar = () => {
 
   const path = usePathname();
-  
+
+  //styles for links and active link
   const linkStyles = 'block py-2 px-3 hover:text-primary-accent transition-colors duration-200';
   const activeLinkStyle = 'text-primary-accent font-semibold';
 

@@ -4,16 +4,22 @@ import { useState, useEffect } from 'react';
 import ScatterChart from '../components/charts/ScatterChart';
 import Card from '@/app/components/ui/Card';
 
-const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
-  const [playerId, setPlayerId] = useState(firstPlayerId);
-  const [stats, setStats] = useState(teammateStats[firstPlayerId]);
+//client component to display teammate stats and analysis
+const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
+
+  //states for player, stats of teammates and how to sort stats table, and charts
+  const [playerID, setPlayerID] = useState(firstPlayerID);
+  const [stats, setStats] = useState(teammateStats[firstPlayerID]);
   const [bestTeammateChartData, setBestTeammateChartData] = useState(null);
   const [bestTeammateChartOptions, setBestTeammateChartOptions] = useState(null);
   const [teammateGoalsAssistsChartData, setTeammateGoalsAssistsChartData] = useState(null);
   const [teammateGoalsAssistsChartOptions, setTeammateGoalsAssistsChartOptions] = useState(null);
   const [sortBy, setSortBy] = useState('win percentage');
 
+  //change chart data when a new player is selected
   useEffect(() => {
+
+    //find teammate data if there are stats
     if (stats && stats.length > 0) {
       const bestTeammateData = stats.map(player => ({
         x: player.win_percentage,
@@ -40,12 +46,6 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
                 return tooltipItem.raw.label + ': (' + tooltipItem.raw.x + '% Win, ' + tooltipItem.raw.y + ' Contributions)';
               }
             }
-          },
-          quadrants: {
-            topLeft: '#fdf90033',
-            topRight: '#84cc1633',
-            bottomRight: '#fdf90033',
-            bottomLeft: '#dc262633'
           },
           title: {
             display: true,
@@ -112,12 +112,6 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
               }
             }
           },
-          quadrants: {
-            topLeft: '#fdf90033',
-            topRight: '#84cc1633',
-            bottomRight: '#fdf90033',
-            bottomLeft: '#dc262633'
-          },
           title: {
             display: true,
             text: 'Teammate Assists Distribution',
@@ -153,20 +147,24 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
       setTeammateGoalsAssistsChartData(teammateGoalsAssistsValueData);
       setTeammateGoalsAssistsChartOptions(teammateGoalsAssistsValueOptions);
     }
+
+    //clear charts if there are no stats
     else {
       setBestTeammateChartData(null);
       setBestTeammateChartOptions(null);
       setTeammateGoalsAssistsChartData(null);
       setTeammateGoalsAssistsChartOptions(null);
     }
-  }, [stats]);
+  }, [playerID]);
 
+  //handle when new player is selected
   const handlePlayerChange = async (event) => {
     const id = event.target.value;
-    setPlayerId(id);
+    setPlayerID(id);
     setStats(teammateStats[id]);
   };
 
+  //sort stats table by what user selects, empty array if stats is null
   const sortedTeammates = stats ?
     [...stats].sort((a, b) => {
       if (sortBy === 'win percentage') {
@@ -198,7 +196,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerId }) => {
             <div className='mb-2'>
               <label className='block text-xs font-medium text-foreground mb-1'>Player</label>
               {allPlayers.length > 0 ? (
-                <select onChange={handlePlayerChange} value={playerId} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
+                <select onChange={handlePlayerChange} value={playerID} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                   {allPlayers.map(player => (
                     <option key={player.id} value={player.id}>
                       {player.name}

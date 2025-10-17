@@ -7,12 +7,17 @@ import { XCircleIcon } from '@heroicons/react/20/solid';
 import LineChart from '../components/charts/LineChart';
 import Card from '@/app/components/ui/Card';
 
+//client component to display player stats and transfer changes to compare
 const Display = ({ players, stats }) => {
+  
+  //initialize states with first 3 players and their all time stats
   const [comparePlayers, setComparePlayers] = useState(players.slice(0, 3));
   const [compareStats, setCompareStats] = useState(stats.slice(0, 3));
 
+  //set max # of players to compare
   const maxCompares = 3;
 
+  //handle when players being compared are changed by id
   const handlePlayerChange = async (e, i) => {
     const id = parseInt(e.target.value);
     setComparePlayers(prevPlayers => {
@@ -27,6 +32,7 @@ const Display = ({ players, stats }) => {
     });
   };
 
+  //update player stats when year is changed
   const handleYearChange = async (e, i) => {
     const year = e.target.value === 'All Time' ? e.target.value : Number(e.target.value);
     const comparePlayer = { ...comparePlayers[i], compareYear: year };
@@ -47,6 +53,7 @@ const Display = ({ players, stats }) => {
     });
   };
 
+  //add a player to compare
   const addPlayer = () => {
     if (comparePlayers.length < maxCompares) {
       const player = players[0];
@@ -56,11 +63,13 @@ const Display = ({ players, stats }) => {
     }
   };
 
+  //remove player from comparison
   const removePlayer = (index) => {
     setComparePlayers(prevPlayers => prevPlayers.filter((_, i) => i !== index));
     setCompareStats(prevStats => prevStats.filter((_, i) => i !== index));
   };
 
+  //find the best value of stat for players being compared
   const getMaxStat = (stat) => {
     let max = -Infinity;
     compareStats.forEach(compareStat => {
@@ -75,6 +84,7 @@ const Display = ({ players, stats }) => {
     return max;
   };
 
+  //render table row of stat, highlight the best value in green
   const tableRow = (statName, stat) => {
     return (
       <tr>
@@ -103,6 +113,7 @@ const Display = ({ players, stats }) => {
     );
   };
 
+  //set up data for the transfer changes compare chart
   const datasets = compareStats.map(stats => {
     const sortedTransferChanges = stats.transferChanges.sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
@@ -125,10 +136,12 @@ const Display = ({ players, stats }) => {
     };
   });
 
+  //data for the chart
   const transferData = {
     datasets: datasets
   };
 
+  //options for the chart
   const transferOptions = {
     responsive: true,
     maintainAspectRatio: false,

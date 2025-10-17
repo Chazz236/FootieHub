@@ -5,6 +5,7 @@ import DoughnutChart from '@/app/components/charts/DoughnutChart';
 import LineChart from '@/app/components/charts/LineChart';
 import Card from '@/app/components/ui/Card'
 
+//set up data and options for doughnut chart
 const doughnutChartConfig = (games, value, colour, title) => {
   const data = {
     datasets: [
@@ -45,10 +46,12 @@ const doughnutChartConfig = (games, value, colour, title) => {
   return { data, options };
 }
 
+//client component to display player stats and transfer changes
 const Display = ({ transferChanges, stats }) => {
 
   const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
 
+  //state to show value and date on hover
   const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(stats[0].value)}`);
   const [marketDate, setMarketDate] = useState(`As of ${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(`${transferChanges[transferChanges.length - 1].date}T12:00:00`))}`);
 
@@ -62,6 +65,7 @@ const Display = ({ transferChanges, stats }) => {
 
   let sum = 0;
 
+  //set up data and options for transfer chart
   const transferData = {
     datasets: [
       {
@@ -113,6 +117,7 @@ const Display = ({ transferChanges, stats }) => {
         display: false,
       },
     },
+    //for when a point on the transfer chart is hovered
     onHover: (e, elements, chart) => {
       if (elements.length > 0) {
         const dataIndex = elements[0].index;
@@ -124,7 +129,7 @@ const Display = ({ transferChanges, stats }) => {
         const lastDate = transferChanges[transferChanges.length - 1].date;
 
         if (date === lastDate && value === stats[0].value) {
-        setMarketDate(`As of ${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(`${lastDate}T12:00:00`))}`);
+          setMarketDate(`As of ${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(`${lastDate}T12:00:00`))}`);
         }
         else {
           setMarketDate(`${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(`${date}T12:00:00`))}`);
@@ -138,6 +143,7 @@ const Display = ({ transferChanges, stats }) => {
     }
   };
 
+  //handle when user changes year for stats
   const handleYearChange = (e) => {
     const year = e.target.value === 'All Time' ? e.target.value : Number(e.target.value);
     setSelectedYear(year);

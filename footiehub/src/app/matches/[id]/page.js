@@ -1,15 +1,16 @@
 import { getMatch } from '@/lib/data/matches';
 import Display from './display';
 
-
+//server component to get match data, player stats, and goal contributions
 export default async function Match({ params }) {
+  
   try {
     const id = (await params).id;
-    const res = await getMatch(id);
-    let match = res.match[0];
-    let stats = res.stats;
-    let goals = res.goals;
+    
+    //get match details
+    const { match: [match], stats, goals } = await getMatch(id);
 
+    //handle if there is no match
     if (!match || match.length === 0) {
       return (
         <main className='flex-1 p-6'>

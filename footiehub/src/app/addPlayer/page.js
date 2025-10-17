@@ -4,15 +4,18 @@ import { useState } from 'react';
 import { createPlayer } from '@/lib/actions/players';
 import Card from '@/app/components/ui/Card';
 
+//page to add a new player to the database
 const AddPlayer = () => {
 
   const [name, setName] = useState('');
 
+  //check if there is a name, then add player to the database
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!name) {
       return;
     }
+    
     try {
       const res = await createPlayer(name);
       alert(res.message);
