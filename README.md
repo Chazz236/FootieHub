@@ -1,27 +1,100 @@
+<div align="center">
+
 # FootieHub
 
-A Next.js application designed to track and analyze player performance data from recreational soccer games. It provides detailed statistics and insights, allowing players to better understand individual performance and how they perform with different teammates on the pitch.
+### Advanced Analytics for Grassroots Football
 
-## 💻 Built With
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=flat&logo=chart.js&logoColor=white)](https://www.chartjs.org/)
 
-* **Next.js**: The React framework used for server-side rendering and routing
-* **React**: The core JavaScript library for building the user interface
-* **Tailwind CSS**: A utility-first CSS framework used for styling and responsive design
-* **MySQL**: The relational database used to store player and match data
-* **Chart.js**: A powerful charting library for creating dynamic and interactive data visualizations
+**A high-performance Next.js application built to transform recreational soccer data into player and team insights.**
 
-## ✨ Features
+---
 
-* **Player and Match Management**: Users can add new players and matches, logging information for each game
-* **Dynamic Player & Match Pages**: Each player and match has a unique, dynamically generated URL, offering a dedicated page for in-depth statistics
-* **Interactive Player Table**: View players in a sortable table with key statistics, allowing for quick data overview and organization
-* **Match Overview**: A dedicated page provides an overview of every recorded match
-* **Player-Centric Analytics**: Explore individual player pages that display detailed statistics, charts, and graphs
-* **Comprehensive Teammate Performance Analysis**: A unique feature that includes a chart displaying assists received vs. assists provided, and a sortable table highlighting the best teammates based on win percentage or goal contributions
-* **Player Comparison Tool**: Compare detailed statistics and trends for 2-3 players side-by-side on a dedicated page
-* **Historical Analytics**: Gain deep insights by filtering and viewing all matches, team statistics, and individual player performance by all-time totals or by specific year, allowing for detailed period-over-period comparisons
-  
-## 🛠️ Installation & Setup
+</div>
+
+## Why I Built This
+
+In recreational soccer, teams change every week. Without a formal league structure, individual contributions often go unrecorded, and "who makes the team better" remains a matter of opinion. 
+
+I built **FootieHub** to bridge the gap between casual play and professional-grade analytics. I wanted to move beyond simple win/loss records to uncover the **hidden dynamics** of the pitch:
+* **Teammate Synergy:** Identifying which combinations of players yield the highest goal contributions.
+* **Performance Trends:** Visualizing personal growth and "market value" over time.
+* **Data Integrity:** Building a reliable system to track goals, assists, and clean sheets across ever-changing team rosters.
+
+This project was a deep dive into **relational data modeling** and **interactive data visualization**, ensuring that every match outcome and scoring contribution is captured as actionable, structured data.
+
+---
+
+## Screenshots
+
+| Homepage |
+|-----------|
+| ![Screenshot of the Homepage](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Home.PNG) |
+
+| Players | Individual Player |
+|-------|-----------|
+| ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Players.PNG) | ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Individual%20Player.png) |
+
+| Compare | Teammate Performance |
+|----------|--------------|
+| ![Screenshot of the Player Comparison Tool](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Compare.PNG) | ![Screenshot of the Teammate Performance Page](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Teammate%20Dynamics.PNG) |
+
+---
+
+## Skills Demonstrated
+
+| Domain | Technologies & Concepts |
+|--------|-------------------------|
+| **Frontend** | React 19, Next.js 15, Client/Server Components, Tailwind CSS |
+| **Data Visualization** | Chart.js, Interactive Event Handling, Time-Series Visualization |
+| **Backend & Logic** | Node.js, Server-Side Rendering, Error Handling, Data Access Object Pattern |
+| **Database** | MySQL, Relational Schema Design, Many-to-Many Relationships, Data Aggregation |
+
+---
+
+## Features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### Performance Analytics
+- Real-time G/A & Win% aggregation
+- "All-Time" vs. Seasonal filtering
+- Automated clean sheet attribution
+- Dynamic doughnut chart snapshots
+
+### Player & Match Management
+- Dynamic Next.js URL routing
+- Global player & match directories
+- Responsive CRUD entry
+- Multi-year data archiving
+
+</td>
+<td width="50%" valign="top">
+
+### Player Comparison Tool
+- 3-player side-by-side benchmarking
+- Dynamic best-stat highlighting
+- Comparative market value trends
+
+### Teammate Synergy Tracking
+- Relational scorer-assister mapping
+- Success-correlation scatter plots
+- Assist distribution analytics
+- Multi-factor teammate ranking
+
+</td>
+</tr>
+</table>
+
+---
+
+## Installation & Setup
 
 To get a local copy of this project up and running, follow these steps.
 
@@ -97,25 +170,59 @@ You must first create the following tables with the exact schemas in your MySQL 
     npm run dev
     ```
 
-## 📸 Screenshots
+---
 
-Here are a few screenshots showcasing the main pages and functionalities of the application:
-* **Homepage**
-    ![Screenshot of the Homepage](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Home.PNG)
-    _The application's homepage, displaying important statistics and the best/worst players_
+## Project Structure
 
-* **Players Table**
-    ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Players.PNG)
-    _An interactive table displaying players and basic statistics, with sorting functionality and historical filtering_
+```
+FootieHub/
+├── README.md
+│
+├── src/app/
+│   ├── addMatch/            # Add match to db
+│   ├── addPlayer/           # Add player to db
+│   ├── compare/             # Compare player stats
+│   ├── teammate/            # Synergy & contribution analysis
+│   ├── matches/             # View all matches or by year
+│   │   ├── [id]/            # View individual match details
+│   ├── players/             # View all players and stats
+│   │   ├── [id]/            # View individual player details
+│   └── components/          # Reusable UI cards and charts
+│
+├── src/lib/              
+│   ├── actions/             # Adding matches and players
+│   └── data/                # Server-side data fetching & processing
+│
+├── src/db/
+│   ├── matches.js           # Transactional match logging    
+│   ├── mysql.js             # Core database connection pool with Promises
+│   ├── players.js           # Transactional player logging
+│   ├── stats.js             # Aggregations for Win% and G/A
+│   └── teammates.js         # Relational mapping for assister-scorer pairs
+│   └── transferValues.js    # Historical market value trend queries
+│
+├── public/                  # Asset directory (match event icons)
+└── _assets/                 # Documentation assets (README, screenshots)
+```
 
-* **Individual Players Page**
-    ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Individual%20Player.png)
-    _A dedicated page displaying detailed statistics, historical trend filtering, and a line chart tracking the player's market value over time_
+---
 
-* **Teammate Performance**
-    ![Screenshot of the Teammate Performance Page](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Teammate%20Dynamics.PNG)
-    _The teammate analysis page, featuring charts to display effectiveness with teammates, and a table of top teammates_
+## What I Learned
 
-* **Player Comparison Tool**
-    ![Screenshot of the Player Comparison Tool](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Compare.PNG)
-    _A dedicated page for comparing up to three players side-by-side by year with a market value chart and data_
+### Modern Web Engineering
+- Building a server-first application with **Next.js 15** and **React 19**
+- Implementing **Server Actions** to handle complex data mutations and state transitions
+- Orchestrating **atomic database updates** across multiple tables using **Node.js Promises**
+- Securing sensitive database credentials through **Environment Variable** management
+- Designing a **Data Access Object pattern** to decouple SQL from backend
+
+### Data Architecture & Logic
+- Architecting a **relational MySQL schema** for complex scorer-assister synergies
+- Developing a **custom valuation algorithm** to calculate dynamic market fluctuations
+- Implementing **advanced SQL JOINs** for multi-year stat aggregation and filtering
+- Managing **connection pooling** with **mysql2** for high-performance data retrieval
+
+### UI/UX & Data Visualization
+- Visualizing high-density sports analytics with **Chart.js**
+- Implementing **dynamic routes** for individual player and match profiles
+- Optimizing **layout composition** for data-heavy tables and statistics grids
