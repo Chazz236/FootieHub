@@ -10,12 +10,13 @@ import Card from '@/app/components/ui/Card';
 //client component to display player stats and transfer changes to compare
 const Display = ({ players, stats }) => {
   
-  //initialize states with first 3 players and their all time stats
-  const [comparePlayers, setComparePlayers] = useState(players.slice(0, 3));
-  const [compareStats, setCompareStats] = useState(stats.slice(0, 3));
-
   //set max # of players to compare
   const maxCompares = 3;
+
+  //initialize states with first 3 players and their all time stats
+  const initialCount = Math.min(players.length, maxCompares)
+  const [comparePlayers, setComparePlayers] = useState(players.slice(0, initialCount));
+  const [compareStats, setCompareStats] = useState(stats.slice(0, initialCount));
 
   //handle when players being compared are changed by id
   const handlePlayerChange = async (e, i) => {
