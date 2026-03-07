@@ -34,15 +34,15 @@ This project was a deep dive into **relational data modeling** and **interactive
 
 | Homepage |
 |-----------|
-| ![Screenshot of the Homepage](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Home.PNG) |
+| ![Screenshot of the Homepage](_assets/Home.PNG) |
 
 | Players | Individual Player |
 |-------|-----------|
-| ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Players.PNG) | ![Screenshot of the sortable Players Table](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Individual%20Player.png) |
+| ![Screenshot of the sortable Players Table](_assets/Players.PNG) | ![Screenshot of the sortable Players Table](_assets/Individual%20Player.png) |
 
 | Compare | Teammate Performance |
 |----------|--------------|
-| ![Screenshot of the Player Comparison Tool](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Compare.PNG) | ![Screenshot of the Teammate Performance Page](https://raw.githubusercontent.com/Chazz236/FootieHub/main/footiehub/_assets/Teammate%20Dynamics.PNG) |
+| ![Screenshot of the Player Comparison Tool](_assets/Compare.PNG) | ![Screenshot of the Teammate Performance Page](_assets/Teammate%20Dynamics.PNG) |
 
 ---
 
