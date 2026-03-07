@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import mysql from 'mysql2'
 
 //create a connection pool using environment variables

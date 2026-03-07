@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getAllStats } from '@/lib/data/stats';
 import { getTransferChanges } from '@/lib/data/transfers';
 import Display from './display';

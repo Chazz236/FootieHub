@@ -1,0 +1,33 @@
+services:
+  #DATABASE
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: footiehub
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: footie_user
+      MYSQL_PASSWORD: footie_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./src/db/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+
+  #APP
+  app:
+    build: .
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: db
+      DB_USER: footie_user
+      DB_PASSWORD: footie_password
+      DB_SCHEMA: footiehub
+      DB_PORT: 3306
+    depends_on:
+      - db
+      
+volumes:
+  mysql_data:

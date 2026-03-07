@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getPlayers } from '@/lib/data/players';
 import { getTeammateStats } from '@/lib/data/teammate';
 import Display from './display';

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link'
 import { getAllStats } from '@/lib/data/stats';
 import { getPlayers } from '@/lib/data/players';

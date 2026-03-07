@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getMatch } from '@/lib/data/matches';
 import Display from './display';
 
