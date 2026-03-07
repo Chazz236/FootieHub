@@ -108,7 +108,6 @@ This project was a deep dive into **relational data modeling** and **interactive
 # Clone the repository
 git clone https://github.com/Chazz236/FootieHub.git
 cd FootieHub
-cd footiehub
 
 # Start all services
 docker compose up --build
