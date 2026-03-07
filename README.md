@@ -9,6 +9,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=flat&logo=chart.js&logoColor=white)](https://www.chartjs.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 
 **A high-performance Next.js application built to transform recreational soccer data into player and team insights.**
 
@@ -51,7 +52,7 @@ This project was a deep dive into **relational data modeling** and **interactive
 |--------|-------------------------|
 | **Frontend** | React 19, Next.js 15, Client/Server Components, Tailwind CSS |
 | **Data Visualization** | Chart.js, Interactive Event Handling, Time-Series Visualization |
-| **Backend & Logic** | Node.js, Server-Side Rendering, Error Handling, Data Access Object Pattern |
+| **Backend & Logic** | Node.js, Docker, Server-Side Rendering, Error Handling, Data Access Object Pattern |
 | **Database** | MySQL, Relational Schema Design, Many-to-Many Relationships, Data Aggregation |
 
 ---
@@ -94,81 +95,30 @@ This project was a deep dive into **relational data modeling** and **interactive
 
 ---
 
-## Installation & Setup
-
-To get a local copy of this project up and running, follow these steps.
+## Quick Start
 
 ### Prerequisites
 
-* **Node.js** and **npm** installed on your machine.
-* A running **MySQL** instance. The database tables must be created manually before proceeding, as this project does not include a migration script.
+- **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop/)) - Make sure it's **running**
+- Ports 3000 and 3306 available
 
-### Database Setup
+### One-Command Setup
 
-You must first create the following tables with the exact schemas in your MySQL database.
+```bash
+# Clone the repository
+git clone https://github.com/Chazz236/FootieHub.git
+cd FootieHub
+cd footiehub
 
-#### `players`
-| Field             | Type                | Null | Key | Default           | Extra                     |
-| :---------------- | :------------------ | :--- | :-- | :---------------- | :------------------------ |
-| `id`              | `INT`               | NO   | PRI | NULL              | `auto_increment`          |
-| `name`            | `VARCHAR(100)`      | NO   |     |                   |                           |
-| `value`           | `BIGINT`            | NO   |     |                   |                           |
-| `createdAt`       | `TIMESTAMP`         | NO   |     | `CURRENT_TIMESTAMP` |                           |
-| `updatedAt`       | `TIMESTAMP`         | NO   |     | `CURRENT_TIMESTAMP` | `ON UPDATE CURRENT_TIMESTAMP` |
+# Start all services
+docker compose up --build
+```
 
-#### `matches`
-| Field        | Type     | Null | Key | Default | Extra          |
-| :----------- | :------- | :--- | :-- | :------ | :------------- |
-| `id`         | `INT`    | NO   | PRI | NULL    | auto_increment |
-| `date`       | `DATE`   | NO   |     |        |                |
-| `home_score` | `INT`    | NO   |     |        |                |
-| `away_score` | `INT`    | NO   |     |        |                |
+### Access the Application
 
-#### `player_performance`
-| Field        | Type                  | Null | Key | Default | Extra |
-| :----------- | :-------------------- | :--- | :-- | :------ | :---- |
-| `player_id`  | `INT`                 | NO   | PRI |        |       |
-| `match_id`   | `INT`                 | NO   | PRI |        |       |
-| `team`       | `ENUM('home','away')` | NO   |     |        |       |
-| `goals`      | `INT`                 | NO   |     |        |       |
-| `assists`    | `INT`                 | NO   |     |        |       |
-| `value_change` | `BIGINT`            | NO   |     |        |       |
-
-#### `goal_contributions`
-| Field            | Type         | Null | Key | Default | Extra          |
-| :--------------- | :----------- | :--- | :-- | :------ | :------------- |
-| `id`             | `INT`        | NO   | PRI | NULL    | auto_increment |
-| `match_id`       | `INT`        | NO   | MUL |        |                |
-| `goal_scorer_id` | `INT`        | YES  | MUL | NULL    |                |
-| `assist_player_id` | `INT`      | YES  | MUL | NULL    |                |
-
-### Steps
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [your-repo-url]
-    ```
-2.  **Navigate into the project directory:**
-    ```bash
-    cd [your-repo-name]
-    ```
-3.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-4.  **Create and configure your `.env` file:**
-    Create a file named `.env` in the root of the project and add your database credentials:
-    ```
-    DB_HOST=[your_host]
-    DB_USER=[your_username]
-    DB_PASSWORD=[your_password]
-    DB_SCHEMA=[your_database_name]
-    DB_PORT=[your_port]
-    ```
-5.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend** | http://localhost:3000 | Next.js application |
 
 ---
 
@@ -177,6 +127,8 @@ You must first create the following tables with the exact schemas in your MySQL 
 ```
 FootieHub/
 ├── README.md
+├── Dockerfile
+├── compose.yml
 │
 ├── src/app/
 │   ├── addMatch/            # Add match to db
@@ -213,7 +165,6 @@ FootieHub/
 - Building a server-first application with **Next.js 15** and **React 19**
 - Implementing **Server Actions** to handle complex data mutations and state transitions
 - Orchestrating **atomic database updates** across multiple tables using **Node.js Promises**
-- Securing sensitive database credentials through **Environment Variable** management
 - Designing a **Data Access Object pattern** to decouple SQL from backend
 
 ### Data Architecture & Logic
