@@ -10,12 +10,11 @@ const AddPlayer = () => {
   const [name, setName] = useState('');
 
   //check if there is a name, then add player to the database
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleAdd = async () => {
     if (!name) {
       return;
     }
-    
+
     try {
       const res = await createPlayer(name);
       alert(res.message);
@@ -28,20 +27,20 @@ const AddPlayer = () => {
 
   return (
     <main className='flex-1 p-6'>
-      <div className='flex justify-between items-center mb-6'>
-        <h2 className='text-2xl font-bold text-foreground'>Add New Player</h2>
-        <div>
-          <button type='button' onClick={(e) => handleSubmit(e)} className='w-full py-2 px-4 bg-primary-accent text-panel-foreground font-semibold rounded-md shadow-sm'>Add Player</button>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <div className='flex justify-between items-center mb-6'>
+          <h2 className='text-2xl font-bold text-foreground'>Add New Player</h2>
+          <div>
+            <button type='button' onClick={handleAdd} className='w-full py-2 px-4 bg-primary-accent text-panel-foreground font-semibold rounded-md shadow-sm'>Add Player</button>
+          </div>
         </div>
-      </div>
-      <Card className='w-full max-w-md p-6'>
-        <form>
+        <Card className='w-full max-w-md p-6'>
           <div className='mb-6'>
             <label className='block text-sm font-medium text-foreground mb-1'>Name</label>
             <input type='text' id='name' value={name} onChange={e => setName(e.target.value)} className='w-full p-2 border border-gray-300 rounded-md text-foreground bg-white' required autoComplete='off' />
           </div>
-        </form>
-      </Card>
+        </Card>
+      </form>
     </main>
   )
 }
