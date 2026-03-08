@@ -18,17 +18,21 @@ const Display = ({ players, stats }) => {
   const [comparePlayers, setComparePlayers] = useState(players.slice(0, initialCount));
   const [compareStats, setCompareStats] = useState(stats.slice(0, initialCount));
 
+  //should button be disabled condition
+  const isAddDisabled = comparePlayers.length >= maxCompares;
+
   //handle when players being compared are changed by id
   const handlePlayerChange = async (e, i) => {
     const id = parseInt(e.target.value);
+    const player = players.find(player => player.id === id)
     setComparePlayers(prevPlayers => {
       const newPlayers = [...prevPlayers];
-      newPlayers[i] = players.find(player => player.id === id);
+      newPlayers[i] = {...player, compareYear: 'All Time'};
       return newPlayers;
     });
     setCompareStats(prevStats => {
       const newStats = [...prevStats];
-      newStats[i] = stats.find(player => player.id === id);
+      newStats[i] = stats.find(stat => stat.id === id && stat.year === 'All Time');
       return newStats;
     });
   };
@@ -57,8 +61,8 @@ const Display = ({ players, stats }) => {
   //add a player to compare
   const addPlayer = () => {
     if (comparePlayers.length < maxCompares) {
-      const player = players[0];
-      const playerStats = stats[0];
+      const player = players.find(p => !comparePlayers.some(comparePlayer => comparePlayer.id === p.id)) || players[0];
+      const playerStats = stats.find(stat => stat.id === player.id && stat.year === 'All Time');
       setComparePlayers(prevPlayers => [...prevPlayers, player]);
       setCompareStats(prevStats => [...prevStats, playerStats]);
     }
@@ -208,7 +212,7 @@ const Display = ({ players, stats }) => {
                     ))
                   ))}
                 </select>
-                {comparePlayers.length > 2 &&
+                {comparePlayers.length > 1 &&
                   <button onClick={() => removePlayer(i)} className='text-danger-color p-1 absolute -top-2 -right-2 z-10'>
                     <XCircleIcon className='h-5 w-5'></XCircleIcon>
                   </button>
@@ -217,13 +221,10 @@ const Display = ({ players, stats }) => {
             ))}
             <button
               onClick={addPlayer}
-              disabled={comparePlayers.length >= maxCompares}
+              disabled={isAddDisabled}
               className={`flex items-center block p-2 bg-white rounded-lg shadow-md border border-gray-200 
-              ${comparePlayers.length >= maxCompares
-                  ? 'text-disable-text'
-                  : 'text-foreground'}
-            `}>
-              <PlusCircleIcon className={`h-5 w-5 ${comparePlayers.length >= maxCompares ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
+              ${isAddDisabled ? 'text-disable-text' : 'text-foreground'}`}>
+              <PlusCircleIcon className={`h-5 w-5 ${isAddDisabled ? 'text-disable-text' : 'text-primary-accent'}`}></PlusCircleIcon>
               Add Player
             </button>
           </Card>
