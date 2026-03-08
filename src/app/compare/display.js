@@ -9,7 +9,7 @@ import Card from '@/app/components/ui/Card';
 
 //client component to display player stats and transfer changes to compare
 const Display = ({ players, stats }) => {
-  
+
   //set max # of players to compare
   const maxCompares = 3;
 
@@ -27,7 +27,7 @@ const Display = ({ players, stats }) => {
     const player = players.find(player => player.id === id)
     setComparePlayers(prevPlayers => {
       const newPlayers = [...prevPlayers];
-      newPlayers[i] = {...player, compareYear: 'All Time'};
+      newPlayers[i] = { ...player, compareYear: 'All Time' };
       return newPlayers;
     });
     setCompareStats(prevStats => {
@@ -91,11 +91,11 @@ const Display = ({ players, stats }) => {
 
   //render table row of stat, highlight the best value in green
   const tableRow = (statName, stat) => {
+    const max = getMaxStat(stat);
     return (
       <tr>
         <td className='px-2 py-2 text-sm font-bold text-foreground text-left'>{statName}</td>
         {compareStats.map((compareStat, i) => {
-          const max = getMaxStat(stat);
           let statValue = compareStat[stat];
           let isMax = false;
           if (statName === 'Value') {
@@ -128,8 +128,13 @@ const Display = ({ players, stats }) => {
     const points = sortedTransferChanges.map(change => {
       values.unshift(value);
       value -= change.value_change;
+
+      //fixing dates
+      const date = new Date(change.date);
+      date.setHours(0, 0, 0, 0);
+
       return {
-        x: change.date,
+        x: date,
         y: values[0]
       };
     });
