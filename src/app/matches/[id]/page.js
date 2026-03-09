@@ -25,8 +25,12 @@ export default async function Match({ params }) {
       );
     }
 
+    //format match date
+    const formattedDate = new Date(match.date).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+    const matchData = {...match, displayDate: formattedDate};
+
     return (
-      <Display match={match} stats={stats} goals={goals} />
+      <Display match={matchData} stats={stats} goals={goals} />
     )
   } catch (error) {
     console.log('error getting matches:', error)

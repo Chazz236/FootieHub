@@ -160,7 +160,7 @@ const Display = ({ match, stats, goals }) => {
       <Card className='p-4 mb-4'>
         <div className='grid grid-cols-3'>
           <div className='text-left'>
-            {new Date(match.date).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })}
+            {match.displayDate}
           </div>
           <div className='text-center'>
             <span className={`${homeWin ? 'font-bold' : 'font-medium'} px-16`}>Home</span>
