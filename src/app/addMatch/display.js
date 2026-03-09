@@ -17,6 +17,21 @@ const Display = ({ players }) => {
   const [homeGoals, setHomeGoals] = useState([]);
   const [awayGoals, setAwayGoals] = useState([]);
 
+  //get players who joined the db before or on the match date
+  const matchPlayers = players.filter(player => {
+    const joinDate = new Date(player.joinedAt).toISOString().split('T')[0];
+    return joinDate <= date
+  });
+
+  //change players if date changes
+  useEffect(() => {
+    const matchIds = matchPlayers.map(player => player.id);
+    setHomeTeam(prev => prev.filter(id => matchIds.includes(id)));
+    setAwayTeam(prev => prev.filter(id => matchIds.includes(id)));
+  }, [date])
+
+  
+
   //adds or removes goal contributions for home team based on home score
   useEffect(() => {
     if (homeScore < homeGoals.length) {
@@ -185,7 +200,7 @@ const Display = ({ players }) => {
                     <span className='flex justify-center text-xs font-medium text-danger-color w-3'>Away</span>
                   </div>
                 </div>
-                {players.map(player => (
+                {matchPlayers.map(player => (
                   <div key={player.id} className='flex items-center justify-between pb-2'>
                     <span className='text-foreground font-medium'>{player.name}</span>
                     <div className='flex items-center gap-8'>
@@ -211,7 +226,7 @@ const Display = ({ players }) => {
                   <label className='block text-xs font-medium text-foreground mb-1'>Goal</label>
                   <select id={`home-goal-${i}`} value={contribution.goal_scorer_id === null ? '' : contribution.goal_scorer_id} onChange={e => handleHomeGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
-                    {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
+                    {matchPlayers.filter(player => homeTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
@@ -220,7 +235,7 @@ const Display = ({ players }) => {
                   <label className='block text-xs font-medium text-foreground mb-1'>Assist</label>
                   <select id={`home-assist-${i}`} value={contribution.assist_player_id === null ? '' : contribution.assist_player_id} onChange={e => handleHomeGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
-                    {players.filter(player => homeTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
+                    {matchPlayers.filter(player => homeTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
@@ -238,7 +253,7 @@ const Display = ({ players }) => {
                   <label className='block text-xs font-medium text-foreground mb-1'>Goal</label>
                   <select id={`away-goal-${i}`} value={contribution.goal_scorer_id === null ? '' : contribution.goal_scorer_id} onChange={e => handleAwayGoalContributionChange(i, 'goal_scorer_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
-                    {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
+                    {matchPlayers.filter(player => awayTeam.includes(player.id) && player.id !== contribution.assist_player_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
@@ -247,7 +262,7 @@ const Display = ({ players }) => {
                   <label className='block text-xs font-medium text-foreground mb-1'>Assist</label>
                   <select id={`away-assist-${i}`} value={contribution.assist_player_id === null ? '' : contribution.assist_player_id} onChange={e => handleAwayGoalContributionChange(i, 'assist_player_id', e.target.value)} className='flex-grow p-2 border border-gray-300 rounded-md text-foreground bg-white'>
                     <option value=''>None</option>
-                    {players.filter(player => awayTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
+                    {matchPlayers.filter(player => awayTeam.includes(player.id) && player.id !== contribution.goal_scorer_id).map(player => (
                       <option key={player.id} value={player.id}>{player.name}</option>
                     ))}
                   </select>
