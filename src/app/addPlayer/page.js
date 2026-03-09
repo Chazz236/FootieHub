@@ -8,7 +8,7 @@ import Card from '@/app/components/ui/Card';
 const AddPlayer = () => {
 
   const [name, setName] = useState('');
-  const [joinedAt, setJoinedAt] = useState(new Date().toISOString().split('T')[0]);
+  const [joinedAt, setJoinedAt] = useState('');
 
   //check if there is a name, then add player to the database
   const handleAdd = async () => {
@@ -21,7 +21,7 @@ const AddPlayer = () => {
       const res = await createPlayer(name, joinedAt);
       alert(res.message);
       setName('');
-      setJoinedAt(new Date().toISOString().split('T')[0]);
+      setJoinedAt('');
     } catch (error) {
       console.error('failed to add player:', error.message);
       alert(`Error: ${error.message}`);
