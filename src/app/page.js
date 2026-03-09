@@ -24,7 +24,7 @@ export default async function Home() {
       <main className='flex-1 p-6'>
         <div className='flex justify-center items-center h-full'>
           <h2 className='text-2xl font-medium text-foreground -mt-16'>
-            Add some players and matches to see stats!
+            Add some players and matches this year to see stuff!
           </h2>
         </div>
       </main>
@@ -101,6 +101,23 @@ export default async function Home() {
     return { ...player, score, value };
   }).sort((a, b) => b.score - a.score);
 
+  //setting up players for team of the year and flops of the year
+  const numOfPlayers = scoredPlayers.length;
+  const halfOfPlayers = Math.floor(numOfPlayers/2);
+
+  //toty is top half, foty takes bottom half
+  const totyPlayers = scoredPlayers.slice(0, Math.min(5, halfOfPlayers || 1));
+  const fotyPlayers = [...scoredPlayers].reverse().slice(0, Math.min(5, numOfPlayers - totyPlayers.length));
+
+  //split list into 2 rows
+  const getRows = (list => ({
+    top: list.slice(0, 3),
+    bottom: list.slice(3, 5)
+  }));
+
+  const totyRows = getRows(totyPlayers);
+  const fotyRows = getRows(fotyPlayers);
+
   //for rendering the stat leaders table
   const leaderTable = (stat, players) => {
     return (
@@ -125,14 +142,14 @@ export default async function Home() {
   };
 
   //for rendering the team/flops of the year
-  const teams = (toty, top, row) => {
+  const teams = (isToty, isTop, row) => {
     return (
-      <div className={top ? 'grid grid-cols-3 gap-2 text-center' : 'grid grid-cols-2 gap-2 text-center w-2/3 mx-auto'}>
+      <div className={isTop ? 'grid grid-cols-3 gap-2 text-center' : 'grid grid-cols-2 gap-2 text-center w-2/3 mx-auto'}>
         {row.map(player => (
           <Card key={player.id} className='p-3'>
             <div className='flex flex-col gap-1 text-sm'>
               <div className='flex justify-between'>
-                <h3 className={`font-bold ${toty ? 'text-success-color' : 'text-danger-color'}`}><Link href={`/players/${player.id}`}>{player.name}</Link></h3>
+                <h3 className={`font-bold ${isToty ? 'text-success-color' : 'text-danger-color'}`}><Link href={`/players/${player.id}`}>{player.name}</Link></h3>
                 <p className='font-bold'>${Intl.NumberFormat().format(player.value)}</p>
               </div>
               <div className='flex justify-between text-xs text-gray-500'>
@@ -155,15 +172,15 @@ export default async function Home() {
           <Card className='mb-4 p-6'>
             <h3 className='text-lg font-bold text-foreground mb-4'>Team Of The Year</h3>
             <div className='flex flex-col gap-4'>
-              {teams(true, true, scoredPlayers.slice(0, 3))}
-              {teams(true, false, scoredPlayers.slice(3, 5))}
+              {totyRows.top.length > 0 && teams(true, true, totyRows.top)}
+              {totyRows.bottom.length > 0 && teams(true, false, totyRows.bottom)}
             </div>
           </Card>
           <Card className='p-6'>
             <h3 className='text-lg font-bold text-foreground mb-4'>Flops Of The Year</h3>
             <div className='flex flex-col gap-4'>
-              {teams(false, true, scoredPlayers.slice(-3))}
-              {teams(false, false, scoredPlayers.slice(scoredPlayers.length - 5, scoredPlayers.length - 3))}
+              {fotyRows.top.length > 0 && teams(false, true, fotyRows.top)}
+              {fotyRows.bottom.length > 0 && teams(false, false, fotyRows.bottom)}
             </div>
           </Card>
         </div>
