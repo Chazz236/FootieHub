@@ -31,12 +31,12 @@ export default async function Player({ params }) {
 
     //start transfer value with $10,000,000 and add in transfer changes
     let value = 0;
-    const firstValue = { value_change: 10000000, date: stats[0].createdAt };
+    const firstValue = { value_change: 10000000, date: stats[0].joinedAt };
     const playerTransferChanges = [firstValue, ...transferChanges];
 
     //find current value by adding in all the value changes
     for (const change of playerTransferChanges) {
-      change.date = new Date(change.date).toLocaleDateString();
+      change.date = new Date(change.date).toLocaleDateString('en-CA');
       value += change.value_change;
     }
 
