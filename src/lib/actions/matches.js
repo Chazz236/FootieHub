@@ -9,8 +9,8 @@ export async function createMatch(data) {
 
   const { date, homeScore, awayScore, homeTeam, awayTeam, goalContributions } = data;
 
-  //make sure there is a date, scores, and the teams have players from the database
-  if (!date || Number.isNaN(homeScore) || Number.isNaN(awayScore) || homeTeam.length === 0 || awayTeam.length === 0) {
+  //make sure there is a date, scores, and at least one team has players from the database
+  if (!date || Number.isNaN(homeScore) || Number.isNaN(awayScore) || (homeTeam.length === 0 && awayTeam.length === 0)) {
     throw new Error('invalid input');
   }
 

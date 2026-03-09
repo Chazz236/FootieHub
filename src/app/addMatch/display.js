@@ -84,12 +84,8 @@ const Display = ({ players }) => {
       alert('Please fill awayScore');
       return;
     }
-    if (homeTeam.length === 0) {
-      alert('Please fill homeTeam');
-      return;
-    }
-    if (awayTeam.length === 0) {
-      alert('Please fill awayTeam');
+    if (homeTeam.length === 0 && awayTeam.length === 0) {
+      alert('Please add at least one player to one team');
       return;
     }
 
