@@ -40,7 +40,7 @@ export default async function Compare() {
       }
       else {
         stats[i].value = 10000000;
-        stats[i].transferChanges.push({ player_id: stats[i].id, value_change: 10000000, date: stats[i].createdAt })
+        stats[i].transferChanges.push({ player_id: stats[i].id, value_change: 10000000, date: new Date(stats[i].joinedAt).toLocaleDateString('en-CA') })
       }
       while (t < transferChanges.length && transferChanges[t].player_id === stats[i].id && new Date(transferChanges[t].date).getFullYear() === stats[i].year) {
         stats[i].value += transferChanges[t].value_change;
@@ -52,7 +52,7 @@ export default async function Compare() {
     //for every player, start with a value of $10,000,000
     const allTransferChanges = {};
     for (const player of players) {
-      allTransferChanges[player.id] = [{ player_id: player.id, value_change: 10000000, date: player.createdAt }]
+      allTransferChanges[player.id] = [{ player_id: player.id, value_change: 10000000, date: new Date(player.joinedAt).toLocaleDateString('en-CA') }]
     }
 
     //push all the transfer changes by player

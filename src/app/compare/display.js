@@ -121,21 +121,15 @@ const Display = ({ players, stats }) => {
   //set up data for the transfer changes compare chart
   const datasets = compareStats.map(stats => {
     const sortedTransferChanges = stats.transferChanges.sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
+      return new Date(a.date) - new Date(b.date);
     });
-    let value = stats.value;
-    const values = [];
+    let value = 0;
     const points = sortedTransferChanges.map(change => {
-      values.unshift(value);
-      value -= change.value_change;
-
-      //fixing dates
-      const date = new Date(change.date);
-      date.setHours(0, 0, 0, 0);
+      value += change.value_change;
 
       return {
-        x: date,
-        y: values[0]
+        x: new Date(change.date),
+        y: value
       };
     });
     return {
