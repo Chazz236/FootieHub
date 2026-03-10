@@ -109,7 +109,7 @@ This project was a deep dive into **relational data modeling** and **interactive
 git clone https://github.com/Chazz236/FootieHub.git
 cd FootieHub
 
-# Copy the environment example file
+# Copy the environment example file (for Windows, use copy instead of cp)
 cp .env.example .env
 
 # Start all services
