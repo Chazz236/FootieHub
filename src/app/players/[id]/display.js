@@ -47,7 +47,7 @@ const doughnutChartConfig = (games, value, colour, title) => {
 }
 
 //client component to display player stats and transfer changes
-const Display = ({ transferChanges, stats }) => {
+const Display = ({ transferChanges, stats, player }) => {
 
   const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
 
@@ -158,7 +158,8 @@ const Display = ({ transferChanges, stats }) => {
 
   return (
     <main className='flex-1 p-6'>
-      <h2 className='text-2xl font-bold text-foreground mb-6'>{stats[0].name}</h2>
+      <h2 className='text-2xl font-bold text-foreground mb-1'>{player.name}</h2>
+      <h3 className='text-foreground mb-6'>Joined: {new Date(player.joinedAt.replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })}</h3>
       <div className='grid grid-cols-2 gap-6 items-start'>
         <Card className='p-6'>
           <div className='flex justify-between mb-4'>
@@ -184,7 +185,7 @@ const Display = ({ transferChanges, stats }) => {
               </tr>
             </thead>
             <tbody>
-              <tr key={stats[0].name}>
+              <tr key={player.name}>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.games}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.goals}</td>
                 <td className='px-2 py-2 text-sm font-medium text-foreground text-center'>{yearStats.assists}</td>
