@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic';
 
+import { getPlayerByID } from '@/lib/data/players';
 import { getPlayerStatsByID } from '@/lib/data/stats';
 import { getPlayerChanges } from '@/lib/data/transfers';
 import Display from './display';
@@ -10,14 +11,15 @@ export default async function Player({ params }) {
   try {
     const id = (await params).id;
 
-    //get stats and transfer changes of player
-    const [stats, transferChanges] = await Promise.all([
+    //get info, stats, and transfer changes of player
+    const [player, stats, transferChanges] = await Promise.all([
+      getPlayerByID(id),
       getPlayerStatsByID(id),
       getPlayerChanges(id),
     ]);
 
     //handle if there are no stats
-    if (!stats || stats.length === 0 || !stats[0].name) {
+    if (!stats || stats.length === 0 || !player.name) {
       return (
         <main className='flex-1 p-6'>
           <div className='flex justify-center items-center h-full'>
@@ -29,9 +31,12 @@ export default async function Player({ params }) {
       );
     }
 
+    //fix for date
+    const playerData = {...player, joinedAt: new Date(player.joinedAt).toISOString().split('T')[0]};
+
     //start transfer value with $10,000,000 and add in transfer changes
     let value = 0;
-    const firstValue = { value_change: 10000000, date: stats[0].joinedAt };
+    const firstValue = { value_change: 10000000, date: player.joinedAt };
     const playerTransferChanges = [firstValue, ...transferChanges];
 
     //find current value by adding in all the value changes
@@ -43,18 +48,18 @@ export default async function Player({ params }) {
     //reduce yearly stats into a single 'all time' stats object for each player if there are years
     if (stats[0].year !== null) {
       const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
-        const { id, name, games, wins, draws, losses, clean_sheets, goals, assists } = currentStats;
-        if (!accumulator[name]) {
-          accumulator[name] = { id, name, games, wins, draws, losses, clean_sheets, goals, assists, year: 'All Time', value: value };
+        const { games, wins, draws, losses, clean_sheets, goals, assists } = currentStats;
+        if (!accumulator[player.id]) {
+          accumulator[player.id] = { id: player.id, name: player.name, games, wins, draws, losses, clean_sheets, goals, assists, year: 'All Time', value: value };
         }
         else {
-          accumulator[name].games += games;
-          accumulator[name].wins += wins;
-          accumulator[name].draws += draws;
-          accumulator[name].losses += losses;
-          accumulator[name].clean_sheets += clean_sheets;
-          accumulator[name].goals += goals;
-          accumulator[name].assists += assists;
+          accumulator[player.id].games += games;
+          accumulator[player.id].wins += wins;
+          accumulator[player.id].draws += draws;
+          accumulator[player.id].losses += losses;
+          accumulator[player.id].clean_sheets += clean_sheets;
+          accumulator[player.id].goals += goals;
+          accumulator[player.id].assists += assists;
         }
         return accumulator;
       }, {}));
@@ -63,7 +68,7 @@ export default async function Player({ params }) {
       const allStats = [...allTimeStats, ...stats];
 
       return (
-        <Display transferChanges={playerTransferChanges} stats={allStats} />
+        <Display transferChanges={playerTransferChanges} stats={allStats} player={playerData} />
       )
     }
 
@@ -72,7 +77,7 @@ export default async function Player({ params }) {
     stats[0].value = value;
 
     return (
-      <Display transferChanges={playerTransferChanges} stats={stats} />
+      <Display transferChanges={playerTransferChanges} stats={stats} player={playerData} />
     )
   } catch (error) {
     console.error('error getting player stuff:', error);
