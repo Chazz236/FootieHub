@@ -51,9 +51,14 @@ const Display = ({ transferChanges, stats }) => {
 
   const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
 
+  const formatDate = (date) => {
+    const d = new Date(date.replace(/-/g, '\/'));
+    return new Intl.DateTimeFormat('en-US', dateOptions).format(d);
+  };
+
   //state to show value and date on hover
   const [marketValue, setMarketValue] = useState(`\$${Intl.NumberFormat().format(stats[0].value)}`);
-  const [marketDate, setMarketDate] = useState(`As of ${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(transferChanges[transferChanges.length - 1].date))}`);
+  const [marketDate, setMarketDate] = useState(`As of ${formatDate(transferChanges[transferChanges.length - 1].date)}`);
 
   const [selectedYear, setSelectedYear] = useState(stats[0].year);
   const yearStats = stats.find(stat => stat.year === selectedYear);
@@ -72,7 +77,7 @@ const Display = ({ transferChanges, stats }) => {
         data: transferChanges.map(change => {
           sum += change.value_change;
           return {
-            x: change.date,
+            x: new Date(change.date).toISOString().split('T')[0],
             y: sum
           };
         }),
@@ -119,6 +124,8 @@ const Display = ({ transferChanges, stats }) => {
     },
     //for when a point on the transfer chart is hovered
     onHover: (e, elements, chart) => {
+      const lastDate = transferChanges[transferChanges.length - 1].date;
+      
       if (elements.length > 0) {
         const dataIndex = elements[0].index;
         const datasetIndex = elements[0].datasetIndex;
@@ -126,20 +133,19 @@ const Display = ({ transferChanges, stats }) => {
 
         const date = hoveredPoint.x;
         const value = hoveredPoint.y;
-        const lastDate = transferChanges[transferChanges.length - 1].date;
 
         if (date === lastDate && value === stats[0].value) {
-          setMarketDate(`As of ${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(lastDate))}`);
+          setMarketDate(`As of ${formatDate(date)}`);
         }
         else {
-          setMarketDate(`${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(date))}`);
+          setMarketDate(formatDate(date));
         }
 
         setMarketValue(`\$${Intl.NumberFormat().format(value)}`);
       }
       else {
         setMarketValue(`\$${Intl.NumberFormat().format(stats[0].value)}`);
-        setMarketDate(`As of ${new Intl.DateTimeFormat('en-US', dateOptions).format(new Date(transferChanges[transferChanges.length - 1].date))}`);
+        setMarketDate(`As of ${formatDate(lastDate)}`);
       }
     }
   };

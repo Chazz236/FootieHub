@@ -36,7 +36,7 @@ export default async function Player({ params }) {
 
     //find current value by adding in all the value changes
     for (const change of playerTransferChanges) {
-      change.date = new Date(change.date).toLocaleDateString('en-CA');
+      change.date = new Date(change.date).toISOString().split('T')[0];
       value += change.value_change;
     }
 
