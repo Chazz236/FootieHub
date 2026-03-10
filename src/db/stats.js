@@ -7,7 +7,6 @@ export async function getStats() {
     `SELECT
     players.id AS id,
     players.name AS name,
-    players.createdAt AS createdAt,
     YEAR(matches.date) AS year,
     COUNT(player_performance.match_id) AS games,
       CAST(COALESCE(SUM(CASE
@@ -67,12 +66,10 @@ export async function getPlayerStats(id) {
       END), 0) AS UNSIGNED) AS clean_sheets,
     CAST(COALESCE(SUM(player_performance.goals), 0) AS UNSIGNED) AS goals,
     CAST(COALESCE(SUM(player_performance.assists), 0) AS UNSIGNED) AS assists
-FROM players
-LEFT JOIN player_performance 
-    ON players.id = player_performance.player_id
-LEFT JOIN matches
+FROM player_performance
+JOIN matches
     ON matches.id = player_performance.match_id
-WHERE players.id = ?
+WHERE player_performance.player_id = ?
 GROUP BY year
 ORDER BY year DESC;`;
   
