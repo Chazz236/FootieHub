@@ -19,7 +19,7 @@ export default async function Player({ params }) {
     ]);
 
     //handle if there are no stats
-    if (!stats || stats.length === 0 || !player.name) {
+    if (!player || !player.name) {
       return (
         <main className='flex-1 p-6'>
           <div className='flex justify-center items-center h-full'>
@@ -46,7 +46,7 @@ export default async function Player({ params }) {
     }
 
     //reduce yearly stats into a single 'all time' stats object for each player if there are years
-    if (stats[0].year !== null) {
+    if (stats && stats.length > 0) {
       const allTimeStats = Object.values(stats.reduce((accumulator, currentStats) => {
         const { games, wins, draws, losses, clean_sheets, goals, assists } = currentStats;
         if (!accumulator[player.id]) {
@@ -73,11 +73,22 @@ export default async function Player({ params }) {
     }
 
     //if there are no years, default
-    stats[0].year = 'All Time';
-    stats[0].value = value;
+    const defaultStats = [{
+      id: player.id,
+      name: player.name,
+      games: 0,
+      wins: 0,
+      draws: 0,
+      losses: 0,
+      clean_sheets: 0,
+      goals: 0,
+      assists: 0,
+      year: 'All Time',
+      value: value
+    }];
 
     return (
-      <Display transferChanges={playerTransferChanges} stats={stats} player={playerData} />
+      <Display transferChanges={playerTransferChanges} stats={defaultStats} player={playerData} />
     )
   } catch (error) {
     console.error('error getting player stuff:', error);
