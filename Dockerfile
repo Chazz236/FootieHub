@@ -11,11 +11,6 @@ RUN npm install
 #copy code
 COPY . .
 
-# NEXT_PHASE=phase-production-build disables some pre-rendering checks
-ENV NEXT_PHASE=phase-production-build
-# We tell Next.js that we don't need a DB connection during build
-ENV SKIP_ENV_VALIDATION=true
-
 #build app
 RUN npm run build
 

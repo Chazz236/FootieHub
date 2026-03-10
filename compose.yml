@@ -4,10 +4,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: footiehub
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_USER: footie_user
-      MYSQL_PASSWORD: footie_password
+      MYSQL_DATABASE: ${DB_SCHEMA}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - '3306:3306'
     volumes:
@@ -21,13 +21,14 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DB_HOST: db
-      DB_USER: footie_user
-      DB_PASSWORD: footie_password
-      DB_SCHEMA: footiehub
-      DB_PORT: 3306
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_SCHEMA=${DB_SCHEMA}
+      - DB_PORT=${DB_PORT}
+      - NODE_ENV=production
     depends_on:
       - db
-      
+
 volumes:
   mysql_data:
