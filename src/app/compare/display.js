@@ -128,7 +128,7 @@ const Display = ({ players, stats }) => {
       value += change.value_change;
 
       return {
-        x: new Date(change.date),
+        x: new Date(change.date).toISOString().split('T')[0],
         y: value
       };
     });
