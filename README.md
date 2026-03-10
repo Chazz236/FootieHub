@@ -109,6 +109,9 @@ This project was a deep dive into **relational data modeling** and **interactive
 git clone https://github.com/Chazz236/FootieHub.git
 cd FootieHub
 
+# Copy the environment example file
+cp .env.example .env
+
 # Start all services
 docker compose up --build
 ```
@@ -118,6 +121,7 @@ docker compose up --build
 | Service | URL | Description |
 |---------|-----|-------------|
 | **Frontend** | http://localhost:3000 | Next.js application |
+| **Database** | localhost:3306 | MySQL Server |
 
 ---
 
