@@ -26,8 +26,7 @@ export default async function Match({ params }) {
     }
 
     //format match date
-    const formattedDate = new Date(match.date).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
-    const matchData = {...match, displayDate: formattedDate};
+    const matchData = {...match, date: new Date(match.date).toISOString().split('T')[0]};
 
     return (
       <Display match={matchData} stats={stats} goals={goals} />
