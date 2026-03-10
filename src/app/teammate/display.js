@@ -16,30 +16,13 @@ const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
   const [teammateGoalsAssistsChartOptions, setTeammateGoalsAssistsChartOptions] = useState(null);
   const [sortBy, setSortBy] = useState('win percentage');
 
-  //change chart data when a new player is selected
-  useEffect(() => {
-
-    //find teammate data if there are stats
-    if (stats && stats.length > 0) {
-      const bestTeammateData = stats.map(player => ({
-        x: player.win_percentage,
-        y: player.assists_received + player.assists_provided,
-        label: player.name
-      }));
-      const bestTeammateValueData = {
-        datasets: [
-          {
-            label: 'Teammates Performance',
-            data: bestTeammateData,
-            pointRadius: 5,
-            backgroundColor: '#4BC0C0',
-            borderColor: '#2D8282'
-          }
-        ]
-      };
-      const bestTeammateValueOptions = {
+  //options for teammate succes chart
+  const bestTeammateValueOptions = {
         responsive: true,
         plugins: {
+          legend: {
+            display: false,
+          },
           tooltip: {
             callbacks: {
               label: function (tooltipItem) {
@@ -81,30 +64,14 @@ const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
           }
         }
       };
-      setBestTeammateChartData(bestTeammateValueData);
-      setBestTeammateChartOptions(bestTeammateValueOptions);
 
-      const teammateGoalsAssistsData = stats.map(player => ({
-        x: player.assists_received,
-        y: player.assists_provided,
-        label: player.name
-      }));
-
-      const teammateGoalsAssistsValueData = {
-        datasets: [
-          {
-            label: 'Teammate Goals and Assists',
-            data: teammateGoalsAssistsData,
-            pointRadius: 5,
-            backgroundColor: '#4BC0C0',
-            borderColor: '#2D8282'
-          }
-        ]
-      };
-
+      //options for team goal combo chart
       const teammateGoalsAssistsValueOptions = {
         responsive: true,
         plugins: {
+          legend: {
+            display: false,
+          },
           tooltip: {
             callbacks: {
               label: function (tooltipItem) {
@@ -144,6 +111,50 @@ const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
           }
         }
       }
+  //change chart data when a new player is selected
+  useEffect(() => {
+
+    //find teammate data if there are stats
+    if (stats && stats.length > 0) {
+      const bestTeammateData = stats.map(player => ({
+        x: player.win_percentage,
+        y: player.assists_received + player.assists_provided,
+        label: player.name
+      }));
+      const bestTeammateValueData = {
+        datasets: [
+          {
+            label: 'Teammates Performance',
+            data: bestTeammateData,
+            pointRadius: 5,
+            backgroundColor: '#4BC0C0',
+            borderColor: '#2D8282'
+          }
+        ]
+      };
+      
+      setBestTeammateChartData(bestTeammateValueData);
+      setBestTeammateChartOptions(bestTeammateValueOptions);
+
+      const teammateGoalsAssistsData = stats.map(player => ({
+        x: player.assists_received,
+        y: player.assists_provided,
+        label: player.name
+      }));
+
+      const teammateGoalsAssistsValueData = {
+        datasets: [
+          {
+            label: 'Teammate Goals and Assists',
+            data: teammateGoalsAssistsData,
+            pointRadius: 5,
+            backgroundColor: '#4BC0C0',
+            borderColor: '#2D8282'
+          }
+        ]
+      };
+
+      
       setTeammateGoalsAssistsChartData(teammateGoalsAssistsValueData);
       setTeammateGoalsAssistsChartOptions(teammateGoalsAssistsValueOptions);
     }
