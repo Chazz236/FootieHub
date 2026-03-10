@@ -27,7 +27,7 @@ const DisplayGoals = ({ goals }) => (
 const Display = ({ matches, stats }) => {
 
   //split matches by all time and by year
-  const years = ['All Time', ...new Set(matches.map(match => new Date(match.date).getFullYear()).filter(year => year !== null).sort())];
+  const years = ['All Time', ...new Set(matches.map(match => match.date.split('-')[0]).filter(year => year !== null).sort())];
   const [year, setYear] = useState(years[0]);
   const [yearMatches, setYearMatches] = useState(matches);
 
@@ -63,7 +63,7 @@ const Display = ({ matches, stats }) => {
     const newYear = years[i];
     setYear(newYear);
     if (newYear !== 'All Time') {
-      setYearMatches(matches.filter(match => new Date(match.date).getFullYear() === newYear));
+      setYearMatches(matches.filter(match => match.date.startsWith(newYear)));
     }
     else {
       setYearMatches(matches);
@@ -102,7 +102,7 @@ const Display = ({ matches, stats }) => {
 
                 return (
                   <tr key={match.id} className='border-y border-gray-200 hover:bg-gray-100'>
-                    <td className='p-4 text-sm font-medium text-foreground text-center align-top'>{new Date(match.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</td>
+                    <td className='p-4 text-sm font-medium text-foreground text-center align-top'>{new Date(match.date.replace(/-/g, '/')).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' })}</td>
                     <td className='p-4 text-sm text-foreground text-right align-top'>
                       <div className='flex flex-col items-end'>
                         <div className={`${homeWins ? 'font-bold' : 'font-medium'} mb-2`}>

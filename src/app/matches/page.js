@@ -25,8 +25,14 @@ export default async function Matches() {
       );
     }
 
+    //fix date to ISO
+    const fixedMatches = matches.map(match => ({
+      ...match,
+      date: new Date(match.date).toISOString().split('T')[0]
+    }));
+
     //sort matches by ascending date
-    const sortedMatches = [...matches].sort((a, b) => {
+    const sortedMatches = [...fixedMatches].sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     })
 
