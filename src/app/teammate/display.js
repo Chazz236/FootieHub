@@ -26,7 +26,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
           tooltip: {
             callbacks: {
               label: function (tooltipItem) {
-                return tooltipItem.raw.label + ': (' + tooltipItem.raw.x + '% Win, ' + tooltipItem.raw.y + ' Contributions)';
+                return tooltipItem.raw.label + ': (' + tooltipItem.raw.x + '% Win, ' + tooltipItem.raw.y + ' Contributions/Game)';
               }
             }
           },
@@ -59,7 +59,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
             position: 'left',
             title: {
               display: true,
-              text: 'Goals + Assists'
+              text: 'Goals + Assists/Game'
             }
           }
         }
@@ -118,7 +118,7 @@ const Display = ({ allPlayers, teammateStats, firstPlayerID }) => {
     if (stats && stats.length > 0) {
       const bestTeammateData = stats.map(player => ({
         x: player.win_percentage,
-        y: player.assists_received + player.assists_provided,
+        y: (player.assists_received + player.assists_provided)/player.games,
         label: player.name
       }));
       const bestTeammateValueData = {
