@@ -102,7 +102,7 @@ This project was a deep dive into **relational data modeling** and **interactive
 - **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop/)) - Make sure it's **running**
 - Ports 3000 and 3306 available
 
-### One-Command Setup
+### Setup and Launch
 
 ```bash
 # Clone the repository
